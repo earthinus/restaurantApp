@@ -30,7 +30,6 @@ public class FirstList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.first_list);
-
         final ListView myList = (ListView) findViewById(R.id.myList);
         final ArrayList<User> users = new ArrayList<>();
 
