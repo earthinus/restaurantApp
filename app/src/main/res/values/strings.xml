@@ -3,8 +3,12 @@
     <string name="action_settings">Settings</string>
     <string name="textView_restaurantDetail">With 20 years experience, I personally invite you to try us. We use only the freshest local ingredients we can get. All our fish are prepared with care and in-house. You will taste and see what experience makes.</string>
     <string name="restaurantName">Sushi HACHI</string>
-
+    <string name="menu_bookList">Book List</string>
+    <string name="menu_favoriteList">Favorite List</string>
     <string name="index">M's search</string>
+<<<<<<< HEAD
     <string name="reserve_label">Your Reservation List</string>
     <string name="fav_label">Your Favorite List</string>
+=======
+>>>>>>> 7e204e3facd1f8febbf09c5b8423b3cafff34f5c
 </resources>
