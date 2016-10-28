@@ -5,4 +5,5 @@
     <string name="restaurantName">Sushi HACHI</string>
     <string name="menu_bookList">Book List</string>
     <string name="menu_favoriteList">Favorite List</string>
+    <string name="index">M's search</string>
 </resources>
