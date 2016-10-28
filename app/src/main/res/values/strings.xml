@@ -3,4 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="textView_restaurantDetail">With 20 years experience, I personally invite you to try us. We use only the freshest local ingredients we can get. All our fish are prepared with care and in-house. You will taste and see what experience makes.</string>
     <string name="restaurantName">Sushi HACHI</string>
+
+    <string name="index">M's search</string>
+
 </resources>
