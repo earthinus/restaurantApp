@@ -3,8 +3,15 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.example.admin.restaurantapp.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+        android:id="@+id/action_favorite"
+        android:orderInCategory="1"
+        android:title="@string/menu_favoriteList"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/star"/>
+    <item
+        android:id="@+id/action_book"
+        android:orderInCategory="2"
+        android:title="@string/menu_bookList"
+        android:icon="@drawable/icon_reservation"
+        app:showAsAction="ifRoom"/>
 </menu>
