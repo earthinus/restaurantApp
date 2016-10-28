@@ -34,14 +34,16 @@ public class FirstList extends AppCompatActivity {
         final ArrayList<User> users = new ArrayList<>();
 
         String[] names = {
-                "Sushi Restaurant Japan",
+                "Sushi Hachi",
                 "Korean Cousin",
                 "Chinese Dining",
+                "Super French"
         };
         String[] review = {
                 "★★☆☆☆",
                 "★★★★☆",
                 "★☆☆☆☆",
+                "★★★★★"
         };
 
         for (int i = 0; i < names.length; i++) {
