@@ -42,4 +42,33 @@
         <item>@drawable/icon_thekegsteakhouse</item>
         <item>@drawable/icon_nightingale</item>
     </integer-array>
+
+    <string-array name="details">
+        <item>@string/textView_restaurantDetail_1</item>
+        <item>@string/textView_restaurantDetail_2</item>
+        <item>@string/textView_restaurantDetail_3</item>
+        <item>@string/textView_restaurantDetail_4</item>
+        <item>@string/textView_restaurantDetail_5</item>
+        <item>@string/textView_restaurantDetail_6</item>
+        <item>@string/textView_restaurantDetail_1</item>
+        <item>@string/textView_restaurantDetail_2</item>
+        <item>@string/textView_restaurantDetail_3</item>
+        <item>@string/textView_restaurantDetail_4</item>
+        <item>@string/textView_restaurantDetail_5</item>
+        <item>@string/textView_restaurantDetail_6</item>
+    </string-array>
+    <integer-array name="mainVisuals">
+        <item>@drawable/lg_osteriasaviovolpe</item>
+        <item>@drawable/lg_guuotokomaegastown</item>
+        <item>@drawable/lg_tuccraftkitchen</item>
+        <item>@drawable/lg_ancorawaterfrontdining</item>
+        <item>@drawable/lg_thekegsteakhouse</item>
+        <item>@drawable/lg_nightingale</item>
+        <item>@drawable/lg_osteriasaviovolpe</item>
+        <item>@drawable/lg_guuotokomaegastown</item>
+        <item>@drawable/lg_tuccraftkitchen</item>
+        <item>@drawable/lg_ancorawaterfrontdining</item>
+        <item>@drawable/lg_thekegsteakhouse</item>
+        <item>@drawable/lg_nightingale</item>
+    </integer-array>
 </resources>

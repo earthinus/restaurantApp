@@ -23,13 +23,13 @@ public class RestaurantDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_detail);
 
-        Intent intent = getIntent();
+        // Initialize variables
+        int restaurantId = 0;
 
+        // Get intent
+        Intent intent = getIntent();
         if (intent != null) {
-            int restaurantId = intent.getIntExtra(RestaurantList.EXTRA_RESTAURANT_ID, 0);
-            String restaurantName = intent.getStringExtra(RestaurantList.EXTRA_RESTAURANT_NAME);
-            Log.d("Debug", "getExtra(id): " + restaurantId);
-            Log.d("Debug", "getExtra(name): " + restaurantName);
+            restaurantId = intent.getIntExtra(RestaurantList.EXTRA_RESTAURANT_ID, 0);
 
         } else {
             Log.d("Debug", "getExtra: NG");
@@ -46,9 +46,33 @@ public class RestaurantDetail extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-
+        // Initialize each object
         textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
         textView_restaurantDetail = (TextView) findViewById(R.id.textView_restaurantDetail);
         imageView_restaurantMainVisual = (ImageView) findViewById(R.id.imageView_restaurantMainVisual);
+
+        // Set each object
+        textView_restaurantName.setText(getResources().getStringArray(R.array.restaurants)[restaurantId]);
+        textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
+        int[] mainVisuals = {
+                R.drawable.lg_osteriasaviovolpe,
+                R.drawable.lg_guuotokomaegastown,
+                R.drawable.lg_tuccraftkitchen,
+                R.drawable.lg_ancorawaterfrontdining,
+                R.drawable.lg_thekegsteakhouse,
+                R.drawable.lg_nightingale,
+                R.drawable.lg_osteriasaviovolpe,
+                R.drawable.lg_guuotokomaegastown,
+                R.drawable.lg_tuccraftkitchen,
+                R.drawable.lg_ancorawaterfrontdining,
+                R.drawable.lg_thekegsteakhouse,
+                R.drawable.lg_nightingale
+        };
+        imageView_restaurantMainVisual.setImageResource(mainVisuals[restaurantId]);
+        //textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
+
+
+
+
     }
 }
