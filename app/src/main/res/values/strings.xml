@@ -1,9 +1,11 @@
 <resources>
-    <string name="app_name">restaurantApp</string>
+    <string name="app_name">Find Table</string>
     <string name="action_settings">Settings</string>
     <string name="textView_restaurantDetail">With 20 years experience, I personally invite you to try us. We use only the freshest local ingredients we can get. All our fish are prepared with care and in-house. You will taste and see what experience makes.</string>
-    <string name="restaurantName">Sushi HACHI</string>
+    <string name="restaurantName">Restaurant Name</string>
     <string name="menu_bookList">Book List</string>
     <string name="menu_favoriteList">Favorite List</string>
-    <string name="index">M's search</string>
+    <string name="index">M\'s search</string>
+    <string name="icon_contentDescription"/>
+    <string name="restaurant_main_visual">Restaurant Main Visual</string>
 </resources>
