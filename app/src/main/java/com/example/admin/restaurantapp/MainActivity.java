@@ -1,6 +1,9 @@
 package com.example.admin.restaurantapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,17 +12,28 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+    //launch screen
+    private final Handler handler = new Handler();
+    private final Runnable jumpPage = new Runnable() {
+        @Override
+        public void run() {
+            Intent intent = new Intent(MainActivity.this, RestaurantList.class);
+            startActivity(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        handler.postDelayed(jumpPage, 3000);
         // TODO : 1. Show launch screen (Mai)
         // 1. Set timer (as temporally, instead of loading)
-        //      call First_list after **sec automatically.
+        //      call First_list after **sec automatically
 
         // TODO : 2. Show Restaurant List (Mai)
         // 1. Initialize array data of restaurant list
@@ -75,16 +89,21 @@ public class MainActivity extends AppCompatActivity {
         //
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(new View.OnClickListener()
+
+                               {
+                                   @Override
+                                   public void onClick(View view) {
+                                       Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                                               .setAction("Action", null).show();
+                                   }
+                               }
+
+        );
     }
 
     @Override

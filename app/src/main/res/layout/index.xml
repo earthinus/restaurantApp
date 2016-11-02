@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/index"
         android:text="@string/index"
         android:textSize="40sp"
         android:textStyle="bold"
