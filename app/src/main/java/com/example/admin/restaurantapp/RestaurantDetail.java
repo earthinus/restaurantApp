@@ -2,19 +2,14 @@ package com.example.admin.restaurantapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RestaurantDetail extends AppCompatActivity {
 
-    TextView textView_restaurantName;
     TextView textView_restaurantDetail;
     ImageView imageView_restaurantMainVisual;
 
@@ -22,6 +17,12 @@ public class RestaurantDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_detail);
+
+        // Set backButton on ActionBar
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         // Initialize variables
         int restaurantId = 0;
@@ -47,12 +48,12 @@ public class RestaurantDetail extends AppCompatActivity {
 //            }
 //        });
         // Initialize each object
-        textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
+        //textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
         textView_restaurantDetail = (TextView) findViewById(R.id.textView_restaurantDetail);
         imageView_restaurantMainVisual = (ImageView) findViewById(R.id.imageView_restaurantMainVisual);
 
         // Set each object
-        textView_restaurantName.setText(getResources().getStringArray(R.array.restaurants)[restaurantId]);
+        setTitle(getResources().getStringArray(R.array.restaurants)[restaurantId]);
         textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
         int[] mainVisuals = {
                 R.drawable.lg_osteriasaviovolpe,
@@ -70,9 +71,17 @@ public class RestaurantDetail extends AppCompatActivity {
         };
         imageView_restaurantMainVisual.setImageResource(mainVisuals[restaurantId]);
         //textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
+    }
 
+    // Set function of backButton on ActionBar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-
-
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
