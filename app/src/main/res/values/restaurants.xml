@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="restaurants">
+        <item>Osteria Savio Volpe</item>
+        <item>Guu Otokomae - Gastown</item>
+        <item>Tuc Craft Kitchen</item>
+        <item>Ancora Waterfront Dining</item>
+        <item>The Keg Steakhouse + Bar - Kelowna</item>
+        <item>Nightingale</item>
+        <item>Osteria Savio Volpe</item>
+        <item>Guu Otokomae - Gastown</item>
+        <item>Tuc Craft Kitchen</item>
+        <item>Ancora Waterfront Dining</item>
+        <item>The Keg Steakhouse + Bar - Kelowna</item>
+        <item>Nightingale</item>
+    </string-array>
+    <string-array name="reviews">
+        <item>★★★☆☆</item>
+        <item>★★★★☆</item>
+        <item>★★★☆☆</item>
+        <item>★★★★☆</item>
+        <item>★★★★☆</item>
+        <item>★★★☆☆</item>
+        <item>★★★☆☆</item>
+        <item>★★★★☆</item>
+        <item>★★★☆☆</item>
+        <item>★★★★☆</item>
+        <item>★★★★☆</item>
+        <item>★★★☆☆</item>
+    </string-array>
+    <integer-array name="icons">
+        <item>@drawable/icon_osteriasaviovolpe</item>
+        <item>@drawable/icon_guuotokomaegastown</item>
+        <item>@drawable/icon_tuccraftkitchen</item>
+        <item>@drawable/icon_ancorawaterfrontdining</item>
+        <item>@drawable/icon_thekegsteakhouse</item>
+        <item>@drawable/icon_nightingale</item>
+        <item>@drawable/icon_osteriasaviovolpe</item>
+        <item>@drawable/icon_guuotokomaegastown</item>
+        <item>@drawable/icon_tuccraftkitchen</item>
+        <item>@drawable/icon_ancorawaterfrontdining</item>
+        <item>@drawable/icon_thekegsteakhouse</item>
+        <item>@drawable/icon_nightingale</item>
+    </integer-array>
+</resources>

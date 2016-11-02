@@ -65,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
         //      Remove data from array of favorite list
         //      Show toast "The selected item was removed."
 
+        // TODO : 6. Add notification
+        // 1. After **mins, show notification
+
+        // TODO (Advanced version) : 1. Use restaurant API of ZOMATO
+        // Reference :: https://developers.zomato.com/api
+
+        // TODO (Advanced version) : 2. Add form to make a reservation
+        //
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
