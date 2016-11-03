@@ -2,24 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ffffff">
+    android:orientation="vertical">
 
-    <TextView
-        android:text="@string/index"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:textColor="#00f200"
+    <ImageView
+        android:src="@drawable/logo_findtable"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_marginTop="140dp"
+        android:layout_width="131dp"
+        android:layout_height="124dp" />
 
     <ProgressBar
-        style="?android:attr/progressBarStyle"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_gravity="center_horizontal"
+        android:max="100"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/progress"
+        android:layout_marginTop="60dp"
+        android:id="@+id/progress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_marginTop="50dp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

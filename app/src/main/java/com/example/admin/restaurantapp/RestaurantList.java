@@ -21,8 +21,7 @@ import java.util.ArrayList;
 
 public class RestaurantList extends AppCompatActivity {
 
-    public final static String EXTRA_RESTAURANT_ID = "com.example.admin.restaurantapp";
-    public final static String EXTRA_RESTAURANT_NAME = "com.example.admin.restaurantapp.name";
+    public final static String EXTRA_RESTAURANT_ID = "com.example.admin.restaurantapp.id";
 
     ListView listView_restaurants;
     String[] names;
@@ -166,12 +165,9 @@ public class RestaurantList extends AppCompatActivity {
 
             // Create intent
             Intent intent = new Intent(RestaurantList.this, RestaurantDetail.class);
-            intent.putExtra(EXTRA_RESTAURANT_ID, id);
-            intent.putExtra(EXTRA_RESTAURANT_NAME, names[position]);
+            intent.putExtra(EXTRA_RESTAURANT_ID, position);
 
-            Log.d("Debug", "" + RestaurantList.this);
-            Log.d("Debug", "putExtra: " + id);
-
+            // Start Activity
             startActivity(intent);
         }
     }

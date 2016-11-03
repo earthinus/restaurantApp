@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
 
-    <TextView
-        android:text="@string/restaurantName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_restaurantName"
-        android:textAlignment="center"
-        android:textSize="32sp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"/>
+<ScrollView
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/sushi01"
-        android:id="@+id/imageView_restaurantMainVisual"
-        android:padding="0dp"
-        android:layout_margin="0dp"
-        android:contentDescription="@string/restaurant_main_visual"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
 
-    <TextView
-        android:text="@string/textView_restaurantDetail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_restaurantDetail"
-        android:padding="20dp"/>
-</LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/sushi01"
+            android:id="@+id/imageView_restaurantMainVisual"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/restaurant_main_visual"/>
+
+        <TextView
+            android:text="@string/textView_restaurantDetail_default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_restaurantDetail"
+            android:padding="20dp"/>
+    </LinearLayout>
+</ScrollView>
