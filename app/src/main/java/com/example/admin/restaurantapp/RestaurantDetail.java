@@ -5,13 +5,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
 
 public class RestaurantDetail extends AppCompatActivity {
 
     TextView textView_restaurantDetail;
     ImageView imageView_restaurantMainVisual;
+    FloatingActionButton menu1, menu2, menu3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +41,6 @@ public class RestaurantDetail extends AppCompatActivity {
             Log.d("Debug", "getExtra: NG");
         }
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
         // Initialize each object
         //textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
         textView_restaurantDetail = (TextView) findViewById(R.id.textView_restaurantDetail);
@@ -71,6 +65,41 @@ public class RestaurantDetail extends AppCompatActivity {
         };
         imageView_restaurantMainVisual.setImageResource(mainVisuals[restaurantId]);
         //textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
+
+
+        // Fab
+
+        menu1 = (FloatingActionButton)findViewById(R.id.subFloatingMenu1) ;
+        menu2 = (FloatingActionButton)findViewById(R.id.subFloatingMenu2) ;
+        menu3 = (FloatingActionButton)findViewById(R.id.subFloatingMenu3) ;
+
+        menu1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(RestaurantDetail.this , " Alarm Icon clicked ", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        menu2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(RestaurantDetail.this , "BackUp Icon clicked", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        menu3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(RestaurantDetail.this , "Settings Icon clicked", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
     }
 
     // Set function of backButton on ActionBar
