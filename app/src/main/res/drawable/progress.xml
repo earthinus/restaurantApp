@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="0"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:toDegrees="360" >
 
-    <!-- 背景 -->
-    <item android:id="@android:id/background">
-        <color android:color="#000" />
-    </item>
+    <shape
+        android:innerRadiusRatio="3"
+        android:shape="ring"
+        android:thicknessRatio="8"
+        android:useLevel="false" >
+        <size
+            android:height="76dip"
+            android:width="76dip" />
 
-    <!-- android:progress用のDrawable -->
-    <item android:id="@android:id/progress">
-        <clip>
-            <color android:color="#f00" />
-        </clip>
-    </item>
-
-</layer-list>
+        <gradient
+            android:angle="0"
+            android:endColor="#00aa4c"
+            android:startColor="#c0ffc0"
+            android:type="sweep"
+            android:useLevel="false" />
+    </shape>
+</rotate>

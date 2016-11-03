@@ -10,18 +10,20 @@
         android:text="@string/index"
         android:textSize="40sp"
         android:textStyle="bold"
-        android:textColor="#675800"
+        android:textColor="#a0a0a0"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="180dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <ProgressBar
-        style="?android:attr/progressBarStyle"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_gravity="center_horizontal"
+        android:max="100"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/progress"
         android:layout_marginTop="50dp"
-        android:progressDrawable="@drawable/progress"
+        android:id="@+id/progress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar" />
+        android:layout_height="wrap_content" />
 </LinearLayout>
