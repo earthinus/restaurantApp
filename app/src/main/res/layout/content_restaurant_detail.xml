@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/sushi01"
+            android:id="@+id/imageView_restaurantMainVisual"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/restaurant_main_visual"/>
+
+        <TextView
+            android:text="@string/textView_restaurantDetail_default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_restaurantDetail"
+            android:padding="20dp"/>
+    </LinearLayout>
+</ScrollView>
