@@ -1,21 +1,18 @@
 package com.example.admin.restaurantapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,19 +20,18 @@ public class RestaurantList extends AppCompatActivity {
 
     public final static String EXTRA_RESTAURANT_ID = "com.example.admin.restaurantapp.id";
 
-    ListView listView_restaurants;
-    String[] names;
+    // ArrayList of restaurants
+    private final ArrayList<Restaurant> restaurants = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_list);
 
-        // Initialize ListView of restaurantList
-        listView_restaurants = (ListView) findViewById(R.id.restaurantList);
-
-        // Initialize ArrayList of restaurants
-        ArrayList<Restaurant> restaurants = new ArrayList<>();
+        // Initialize Recycler of restaurantList
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.restaurantList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         // Define the variables of restaurant's data
 //        int[]    icons2   = getResources().getIntArray(R.array.icons);
@@ -53,8 +49,7 @@ public class RestaurantList extends AppCompatActivity {
                 R.drawable.icon_thekegsteakhouse,
                 R.drawable.icon_nightingale
         };
-
-        names   = getResources().getStringArray(R.array.restaurants);
+        String[] names   = getResources().getStringArray(R.array.restaurants);
         String[] reviews = getResources().getStringArray(R.array.reviews);
 
         // Set each restaurant's data to ArrayList
@@ -70,62 +65,70 @@ public class RestaurantList extends AppCompatActivity {
         }
 
         // Initialize adapter
-        RestaurantAdapter adapter = new RestaurantAdapter(this, 0, restaurants);
+        RecyclerView.Adapter adapter = new RestaurantAdapter(restaurants);
 
         // Set adapter to ListView
-        listView_restaurants.setAdapter(adapter);
-
-        // Set onClickListener
-        listView_restaurants.setOnItemClickListener(new ClickEvent());
+        recyclerView.setAdapter(adapter);
     }
 
-    public class RestaurantAdapter extends ArrayAdapter<Restaurant> {
+    public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
 
-        private LayoutInflater layoutInflater;
+        private ArrayList<Restaurant> restaurants;
 
-        RestaurantAdapter(Context c, int id, ArrayList<Restaurant> restaurants){
-            super(c, id, restaurants) ;
+        RestaurantAdapter(ArrayList<Restaurant> restaurants){
+            this.restaurants = restaurants;
+        }
 
-            this.layoutInflater = (LayoutInflater) c.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE
-            );
+        class Holder extends RecyclerView.ViewHolder {
+            ImageView icon;
+            TextView  name;
+            TextView  review;
+            View      row;
+
+            Holder(View row) {
+                super(row);
+                this.icon   = (ImageView) row.findViewById(R.id.icon);
+                this.name   = (TextView)  row.findViewById(R.id.name);
+                this.review = (TextView)  row.findViewById(R.id.review);
+                this.row    = row;
+            }
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_list, parent, false);
 
-            ViewHolder holder;
-
-            if(convertView == null){
-                convertView = layoutInflater.inflate(
-                        R.layout.item_list,
-                        parent,
-                        false
-                );
-                holder        = new ViewHolder();
-                holder.icon   = (ImageView) convertView.findViewById(R.id.icon);
-                holder.name   = (TextView) convertView.findViewById(R.id.name);
-                holder.review = (TextView) convertView.findViewById(R.id.review);
-                convertView.setTag(holder);
-
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            Restaurant user =  getItem(position);
-
-            holder.icon.setImageBitmap(user.getIcon());
-            holder.name.setText(user.getName());
-            holder.review.setText(user.getReview());
-
-            return convertView;
+            return new Holder(v);
         }
-    }
 
-    static class ViewHolder {
-        ImageView icon;
-        TextView name;
-        TextView review;
+        @Override
+        public void onBindViewHolder(Holder holder, int position) {
+
+            final int pos = position;
+            holder.icon.setImageBitmap(restaurants.get(position).getIcon());
+            holder.name.setText(restaurants.get(position).getName());
+            holder.review.setText(restaurants.get(position).getReview());
+
+            // Set onClickListener
+            holder.row.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // Create intent
+                    Intent intent = new Intent(RestaurantList.this, RestaurantDetail.class);
+                    intent.putExtra(EXTRA_RESTAURANT_ID, pos);
+
+                    // Start Activity
+                    startActivity(intent);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return restaurants.size();
+        }
     }
 
     public class Restaurant {
@@ -149,26 +152,12 @@ public class RestaurantList extends AppCompatActivity {
             this.name = name;
         }
 
-        public String getReview() {
+        String getReview() {
             return review;
         }
 
-        public void setReview(String review) {
+        void setReview(String review) {
             this.review = review;
-        }
-    }
-
-    // Set onClick event to ListViewItems
-    class ClickEvent implements AdapterView.OnItemClickListener {
-
-        public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-
-            // Create intent
-            Intent intent = new Intent(RestaurantList.this, RestaurantDetail.class);
-            intent.putExtra(EXTRA_RESTAURANT_ID, position);
-
-            // Start Activity
-            startActivity(intent);
         }
     }
 }
