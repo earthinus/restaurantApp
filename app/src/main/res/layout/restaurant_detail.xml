@@ -53,7 +53,7 @@
             android:id="@+id/subFloatingMenu1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/star"
+            android:src="@drawable/icon_star"
             fab:fab_label="Review"
             fab:fab_size="mini" />
 
@@ -67,11 +67,13 @@
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/subFloatingMenu3"
-            android:layout_width="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/icon_reservation"
             fab:fab_label="Book"
             fab:fab_size="mini"
-            android:layout_height="10dp"/>
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"/>
 
     </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>
