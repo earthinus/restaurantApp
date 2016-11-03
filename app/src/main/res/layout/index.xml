@@ -8,7 +8,7 @@
     <ImageView
         android:src="@drawable/logo_findtable"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="140dp"
         android:layout_width="131dp"
         android:layout_height="124dp" />
 
@@ -18,7 +18,7 @@
         android:max="100"
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/progress"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="60dp"
         android:id="@+id/progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
