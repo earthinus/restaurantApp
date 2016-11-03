@@ -14,7 +14,7 @@
     <string name="restaurantName">Restaurant Name</string>
     <string name="menu_bookList">Book List</string>
     <string name="menu_favoriteList">Favorite List</string>
-    <string name="index">M\'s search</string>
+    <string name="index">Find Table</string>
     <string name="icon_contentDescription"/>
     <string name="restaurant_main_visual">Restaurant Main Visual</string>
 </resources>

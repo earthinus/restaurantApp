@@ -12,47 +12,21 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    //launch screen
-    private final Handler handler = new Handler();
-    private final Runnable jumpPage = new Runnable() {
-        @Override
-        public void run() {
-            Intent intent = new Intent(MainActivity.this, RestaurantList.class);
-            startActivity(intent);
-        }
-    };
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        handler.postDelayed(jumpPage, 3000);
-        // TODO : 1. Show launch screen (Mai)
-        // 1. Set timer (as temporally, instead of loading)
-        //      call First_list after **sec automatically
 
-        // TODO : 2. Show Restaurant List (Mai)
-        // 1. Initialize array data of restaurant list
-        //    Array restaurants:
-        //      Array restaurant:
-        //          restaurantId,
-        //          restaurantName,
-        //          restaurantDetailText,
-        //          restaurantReview,
-        //          restaurantIcon,
-        //          restaurantMainVisual
-        //          Array menu:
-        //              menuListId,
-        //              menuName,
-        //              menuPrice,
-        //              menuImage
-        // 2. Set the array to ListView
-        // 3. Set onClick function to ListView's item (Intent: RestaurantId)
-        // 4. Set NavBar menu of "Favorite", "Reserved"
+        //launch screen
+        setContentView(R.layout.index);
+        Handler handler = new Handler();
+        handler.postDelayed(new jumpPage(), 3000);
 
         // TODO : 3. Show Restaurant Detail (Maki)
         // 1. Load array data by using restaurant's id
@@ -88,50 +62,14 @@ public class MainActivity extends AppCompatActivity {
         // TODO (Advanced version) : 2. Add form to make a reservation
         //
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
-
-                               {
-                                   @Override
-                                   public void onClick(View view) {
-                                       Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                                               .setAction("Action", null).show();
-                                   }
-                               }
-
-        );
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_book) {
-            Log.d("Tag", "Pressed book menu");
-            return true;
+    //splash
+    class jumpPage implements Runnable {
+        public void run() {
+            Intent intent = new Intent(MainActivity.this, RestaurantList.class);
+            startActivity(intent);
+            MainActivity.this.finish();
         }
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_favorite) {
-            Log.d("Tag", "Pressed favorite menu");
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
