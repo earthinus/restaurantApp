@@ -3,7 +3,6 @@ package com.example.admin.restaurantapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -21,6 +20,7 @@ public class RestaurantDetail extends AppCompatActivity {
     TextView textView_restaurantDetail;
     ImageView imageView_restaurantMainVisual;
     FloatingActionButton menu1, menu2, menu3;
+    int restaurantId = 0;
 
     private Menu mainMenu;
 
@@ -64,11 +64,8 @@ public class RestaurantDetail extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        // Initialize variables
-        int restaurantId = 0;
-
         // Get intent
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         if (intent != null) {
             restaurantId = intent.getIntExtra(RestaurantList.EXTRA_RESTAURANT_ID, 0);
 
@@ -112,8 +109,7 @@ public class RestaurantDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(RestaurantDetail.this , " Alarm Icon clicked ", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(RestaurantDetail.this , " Review Icon clicked ", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -121,8 +117,11 @@ public class RestaurantDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(RestaurantDetail.this , "BackUp Icon clicked", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(RestaurantDetail.this , "Added to Favorite list", Toast.LENGTH_LONG).show();
+                Intent intent_favoriteList = new Intent(getApplicationContext(), FavoriteList.class);
+                intent_favoriteList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
+                Log.d("Debug", "Start activity");
+                startActivity(intent_favoriteList);
             }
         });
 
@@ -130,11 +129,12 @@ public class RestaurantDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(RestaurantDetail.this , "Settings Icon clicked", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(RestaurantDetail.this , "Added to Book list", Toast.LENGTH_LONG).show();
+                Intent intent_bookList = new Intent(getApplicationContext(), BookList.class);
+                intent_bookList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
+                startActivity(intent_bookList);
             }
         });
-
     }
 
     // Set function of backButton on ActionBar
