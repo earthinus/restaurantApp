@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".RestaurantList"/>
         <activity android:name=".RestaurantDetail"/>
-        <activity android:name=".BookList"/>
+        <activity android:name=".BookList"
+                  android:label="@string/book_label"/>
     </application>
 
 </manifest>
