@@ -1,7 +1,6 @@
 package com.example.admin.restaurantapp;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +21,7 @@ public class RestaurantList extends AppCompatActivity {
 
     // ArrayList of restaurants
     private final ArrayList<Restaurant> restaurants = new ArrayList<>();
+    public int[] icons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +32,7 @@ public class RestaurantList extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.restaurantList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        // Define the variables of restaurant's data
-//        int[]    icons2   = getResources().getIntArray(R.array.icons);
-        int[] icons = {
+        icons = new int[]{
                 R.drawable.icon_osteriasaviovolpe,
                 R.drawable.icon_guuotokomaegastown,
                 R.drawable.icon_tuccraftkitchen,
@@ -49,16 +46,17 @@ public class RestaurantList extends AppCompatActivity {
                 R.drawable.icon_thekegsteakhouse,
                 R.drawable.icon_nightingale
         };
+
+        // Define the variables of restaurant's data
+//        int[]    icons2   = getResources().getIntArray(R.array.icons);
+
         String[] names   = getResources().getStringArray(R.array.restaurants);
         String[] reviews = getResources().getStringArray(R.array.reviews);
 
         // Set each restaurant's data to ArrayList
         for (int i = 0; i < names.length; i++) {
             Restaurant restaurant = new Restaurant();
-            restaurant.setIcon(BitmapFactory.decodeResource(
-                    getResources(),
-                    icons[i]
-            ));
+            restaurant.setIcon(BitmapFactory.decodeResource(getResources(), icons[i]));
             restaurant.setName(names[i]);
             restaurant.setReview(reviews[i]);
             restaurants.add(restaurant);
@@ -128,36 +126,6 @@ public class RestaurantList extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return restaurants.size();
-        }
-    }
-
-    public class Restaurant {
-        private Bitmap icon;
-        private String name;
-        private String review;
-
-        public Bitmap getIcon() {
-            return icon;
-        }
-
-        public void setIcon(Bitmap icon) {
-            this.icon = icon;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        String getReview() {
-            return review;
-        }
-
-        void setReview(String review) {
-            this.review = review;
         }
     }
 }

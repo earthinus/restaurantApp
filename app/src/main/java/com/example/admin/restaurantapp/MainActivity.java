@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
         alpha.setFillAfter(true);
 
-
         // TODO : 3. Show Restaurant Detail (Maki)
         // 1. Load array data by using restaurant's id
         // 2. Set the array to each object
