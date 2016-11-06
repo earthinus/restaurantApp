@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity {
         //      Change the color or icon of fab
         //      Set onClick function for removing from favorite list
 
-        // TODO : 4. Show Reservation List (Maki)
-        // 1. Load reservation list data
+        // TODO : 4. Show Book List (Maki)
+        // 1. Load book list data
         // 2. Set ListView
-        // 3. Set onClickListener to remove item from ListView
+        // 3. Set onLongClickListener to remove item from ListView
         //      Show dialog to confirm removing
         //      Remove data from array of favorite list
         //      Show toast "The selected item was removed."

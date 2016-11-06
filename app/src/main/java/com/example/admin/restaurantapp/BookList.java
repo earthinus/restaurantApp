@@ -26,12 +26,14 @@ public class BookList extends AppCompatActivity {
     int restaurantId = 0;
     final String PREFERENCE_FILENAME = "Book-list";
 
+    Book book;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_list);
 
-        Book book;
 
         // Set backButton on ActionBar
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -199,6 +201,9 @@ public class BookList extends AppCompatActivity {
                     // Remove ArrayList
                     books.remove(pos);
                     notifyItemRemoved(pos);
+
+                    // Show Toast
+                    Toast.makeText(getApplicationContext(), "\"" + restaurantName + "\" was removed.", Toast.LENGTH_SHORT).show();
 
                     Log.d("Debug", "pos: " + pos);
                     Log.d("Debug", "restaurantId: " + restaurantId);
