@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.index);
         //launch screen
         Handler handler = new Handler();
-        handler.postDelayed(new jumpPage(), 6000);
+        handler.postDelayed(new jumpPage(), 1000);
 
         // TODO : 3. Show Restaurant Detail (Maki)
         // 1. Load array data by using restaurant's id
