@@ -164,6 +164,5 @@ public class RestaurantList extends AppCompatActivity {
         public int getItemCount() {
             return restaurants.size();
         }
-
     }
 }
