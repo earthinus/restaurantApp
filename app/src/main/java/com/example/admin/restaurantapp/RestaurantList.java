@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class RestaurantList extends AppCompatActivity {
 
     public final static String EXTRA_RESTAURANT_ID = "com.example.admin.restaurantapp.id";
+    public final static String EXTRA_RESTAURANT_FAV_ID = "com.example.admin.restaurantapp.favid";
 
     // ArrayList of restaurants
     private final ArrayList<Restaurant> restaurants = new ArrayList<>();

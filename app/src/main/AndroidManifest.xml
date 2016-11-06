@@ -22,6 +22,8 @@
         <activity android:name=".RestaurantDetail"/>
         <activity android:name=".BookList"
                   android:label="@string/book_label"/>
+        <activity android:name=".FavoriteList"
+                  android:label="@string/fav_label"/>
     </application>
 
 </manifest>

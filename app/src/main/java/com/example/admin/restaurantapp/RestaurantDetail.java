@@ -83,8 +83,11 @@ public class RestaurantDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(RestaurantDetail.this , "Favorite Icon clicked", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(RestaurantDetail.this , "Added to Favorite list", Toast.LENGTH_LONG).show();
+                Intent intent_favoriteList = new Intent(getApplicationContext(), FavoriteList.class);
+                intent_favoriteList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
+                Log.d("Debug", "Start activity");
+                startActivity(intent_favoriteList);
             }
         });
 
@@ -92,7 +95,7 @@ public class RestaurantDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(RestaurantDetail.this , "Book Icon clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(RestaurantDetail.this , "Added to Book list", Toast.LENGTH_LONG).show();
                 Intent intent_bookList = new Intent(getApplicationContext(), BookList.class);
                 intent_bookList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
                 startActivity(intent_bookList);
