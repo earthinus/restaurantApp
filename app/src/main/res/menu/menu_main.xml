@@ -1,17 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.example.admin.restaurantapp.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.admin.restaurantapp.MainActivity">
     <item
-        android:id="@+id/action_favorite"
-        android:orderInCategory="1"
-        android:title="@string/menu_favoriteList"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/icon_star"/>
-    <item
-        android:id="@+id/action_book"
-        android:orderInCategory="2"
-        android:title="@string/menu_bookList"
-        android:icon="@drawable/icon_reservation"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/overflow_options"
+        android:title="Menu"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_favorite"
+                android:icon="@drawable/icon_star"
+                android:orderInCategory="1"
+                android:title="@string/menu_favoriteList"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_book"
+                android:icon="@drawable/icon_reservation"
+                android:orderInCategory="2"
+                android:title="@string/menu_bookList"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
 </menu>

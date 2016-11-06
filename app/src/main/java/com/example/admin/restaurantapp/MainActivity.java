@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         AlphaAnimation alpha = new AlphaAnimation(0.0f, 1.0f);
         alpha.setDuration(10000);
         logo.startAnimation(alpha);
-
         alpha.setFillAfter(true);
 
 

@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +21,37 @@ public class RestaurantDetail extends AppCompatActivity {
     TextView textView_restaurantDetail;
     ImageView imageView_restaurantMainVisual;
     FloatingActionButton menu1, menu2, menu3;
+
+    private Menu mainMenu;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        mainMenu = menu;
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        final int action = event.getAction();
+        final int keyCode = event.getKeyCode();
+        if (action == KeyEvent.ACTION_UP) {
+            //show menu
+            if (keyCode == KeyEvent.KEYCODE_MENU) {
+                if (mainMenu != null) {
+                    mainMenu.performIdentifierAction(R.id.overflow_options, 0);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

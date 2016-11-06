@@ -8,15 +8,50 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class RestaurantList extends AppCompatActivity {
+
+    private Menu mainMenu;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        mainMenu = menu;
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        final int action = event.getAction();
+        final int keyCode = event.getKeyCode();
+        if (action == KeyEvent.ACTION_UP) {
+            //show menu
+            if (keyCode == KeyEvent.KEYCODE_MENU) {
+                if (mainMenu != null) {
+                    mainMenu.performIdentifierAction(R.id.overflow_options, 0);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
     public final static String EXTRA_RESTAURANT_ID = "com.example.admin.restaurantapp.id";
 
@@ -69,6 +104,7 @@ public class RestaurantList extends AppCompatActivity {
 
         // Set adapter to ListView
         recyclerView.setAdapter(adapter);
+
     }
 
     public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
@@ -129,6 +165,7 @@ public class RestaurantList extends AppCompatActivity {
         public int getItemCount() {
             return restaurants.size();
         }
+
     }
 
     public class Restaurant {
