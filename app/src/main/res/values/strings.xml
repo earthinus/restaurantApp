@@ -15,6 +15,11 @@
     <string name="menu_bookList">Book List</string>
     <string name="menu_favoriteList">Favorite List</string>
 
+    <string name="reviews">Reviews</string>
+    <string name="review_default_1">This restaurant is amazing!I should go again.</string>
+    <string name="review_default_2">I saw a cockroach in here.I wont go again.</string>
+    <string name="review_default_3">This restaurant is amazing!I should go again.</string>
+
     <string name="book_label">Your Book List</string>
     <string name="fav_label">Your Favorite List</string>
     <string name="index">Find Table</string>

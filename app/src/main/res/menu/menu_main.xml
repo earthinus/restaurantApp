@@ -9,7 +9,7 @@
         <menu>
             <item
                 android:id="@+id/action_favorite"
-                android:icon="@drawable/icon_star"
+                android:icon="@drawable/icon_favorite"
                 android:orderInCategory="1"
                 android:title="@string/menu_favoriteList"
                 app:showAsAction="ifRoom" />

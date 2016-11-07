@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ public class RestaurantDetail extends AppCompatActivity {
     TextView textView_restaurantDetail;
     ImageView imageView_restaurantMainVisual;
     FloatingActionButton menu1, menu2, menu3;
+    Button favListButton,bookListButton;
     int restaurantId = 0;
 
     private Menu mainMenu;
@@ -29,9 +31,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
-
         mainMenu = menu;
-
         return super.onCreateOptionsMenu(menu);
     }
 
