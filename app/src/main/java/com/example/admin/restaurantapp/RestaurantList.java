@@ -11,8 +11,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +24,7 @@ import com.github.clans.fab.FloatingActionButton;
 import java.util.ArrayList;
 
 public class RestaurantList extends AppCompatActivity {
-
+    Button favListButton,bookListButton;
     private Menu mainMenu;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -164,5 +166,25 @@ public class RestaurantList extends AppCompatActivity {
         public int getItemCount() {
             return restaurants.size();
         }
+    }
+    // Set function of backButton on ActionBar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        favListButton = (Button)findViewById(R.id.action_favorite);
+        bookListButton = (Button)findViewById(R.id.action_book);
+        switch (item.getItemId()) {
+            case R.id.action_favorite:
+                Intent intent = new Intent(this, FavoriteList.class);
+                startActivity(intent);
+                break;
+            case R.id.action_book:
+                Intent intent2 = new Intent(this, BookList.class);
+                startActivity(intent2);
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

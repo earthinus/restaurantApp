@@ -56,25 +56,6 @@ public class RestaurantDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_detail);
-        /*favListButton = (Button)findViewById(R.id.action_favorite);
-        bookListButton = (Button)findViewById(R.id.action_book);
-        favListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            // go favorite list
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Favorite.class);
-                startActivity(intent);
-            }
-        });
-        bookListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            //go book list
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Book.class);
-                startActivity(intent);
-            }
-        });
-        */
 
         // Set backButton on ActionBar
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -158,8 +139,17 @@ public class RestaurantDetail extends AppCompatActivity {
     // Set function of backButton on ActionBar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        favListButton = (Button)findViewById(R.id.action_favorite);
+        bookListButton = (Button)findViewById(R.id.action_book);
         switch (item.getItemId()) {
+            case R.id.action_favorite:
+                Intent intent = new Intent(this, FavoriteList.class);
+                startActivity(intent);
+                break;
+            case R.id.action_book:
+                Intent intent2 = new Intent(this, BookList.class);
+                startActivity(intent2);
+                break;
             case android.R.id.home:
                 finish();
             break;
