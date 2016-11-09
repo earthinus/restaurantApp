@@ -209,7 +209,7 @@ public class BookList extends AppCompatActivity {
                     Log.d("Debug", "restaurantId: " + restaurantId);
                     Log.d("Debug", alertDialog.toString());
 
-                    return false;
+                    return true;
                 }
             });
         }

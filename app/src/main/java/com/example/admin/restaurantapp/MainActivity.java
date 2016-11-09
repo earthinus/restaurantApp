@@ -52,10 +52,12 @@ public class MainActivity extends AppCompatActivity {
         // TODO : 6. Add notification
         // 1. After **mins, show notification
 
-        // TODO (Advanced version) : 1. Use restaurant API of ZOMATO
-        // Reference :: https://developers.zomato.com/api
 
-        // TODO (Advanced version) : 2. Add form to make a reservation
+        // TODO (Advanced version) : 1. Use Google Place API (Maki)
+        // 1. Set
+        // 2.
+
+        // TODO (Advanced version) : 2. Add form for booking (Mai)
         //
 
     }

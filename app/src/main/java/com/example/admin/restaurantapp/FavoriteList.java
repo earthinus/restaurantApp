@@ -202,7 +202,7 @@ public class FavoriteList extends AppCompatActivity {
                     Log.d("Debug", "pos: " + pos);
                     Log.d("Debug", "restaurantId: " + restaurantId);
 
-                    return false;
+                    return true;
                 }
             });
         }
