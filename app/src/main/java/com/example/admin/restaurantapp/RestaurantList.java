@@ -17,9 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 

@@ -1,18 +1,18 @@
 package com.example.admin.restaurantapp;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 public class Book {
 
-    Bitmap icon;
+    Drawable icon;
     String name;
     String date;
 
-    public Bitmap getIcon() {
+    public Drawable getIcon() {
         return icon;
     }
 
-    public void setIcon(Bitmap icon) {
+    public void setIcon(Drawable icon) {
         this.icon = icon;
     }
 

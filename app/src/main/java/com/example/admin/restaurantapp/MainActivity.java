@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO : 5. Show Favorite List (Maki)
         // 1. Load item data by use
         // 2. Set ListView
-        // 3. Set onClickListener to remove item from ListView
+        // 3. Set onLongClickListener to remove item from ListView
         //      Show dialog to confirm removing
         //      Remove data from array of favorite list
         //      Show toast "The selected item was removed."
