@@ -14,15 +14,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -30,8 +35,17 @@ public class RestaurantList extends AppCompatActivity {
     Button favListButton,bookListButton;
     private Menu mainMenu;
 
-//    public String JSON_PATH = "https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4&key=AIzaSyBoVEOktMAbvYcZ9D-M8W0x7sSvELFxx6M";
-    public static final String JSON_PATH = "http://services.hanselandpetal.com/feeds/flowers.json";
+    public final String API_KEY_ANDROID = "AIzaSyBoVEOktMAbvYcZ9D-M8W0x7sSvELFxx6M";
+    public final String API_KEY_IP_ADDRESS = "AIzaSyBi-mlLpsIjVeqCroiK3nqtquNTTMq85EE";
+
+    public String GOOGLE_PLACE_ID = "ChIJN1t_tDeuEmsRUsoyG83frY4";
+
+    public String JSON_PATH = "https://maps.googleapis.com/maps/api/place/details/json?"
+            + "placeid=" + GOOGLE_PLACE_ID
+            + "&key=" + API_KEY_IP_ADDRESS;
+
+    //    public static final String JSON_PATH = "http://services.hanselandpetal.com/feeds/flowers.json";
+
     RequestQueue queue;
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
@@ -118,37 +132,49 @@ public class RestaurantList extends AppCompatActivity {
 
     public void loadJson(View v) {
         Log.d("Debug", "Start loadJson()");
-        JsonArrayRequest jsonRequest = new JsonArrayRequest(
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+                Request.Method.GET,
                 JSON_PATH,
-                new Response.Listener<JSONArray>() {
+                null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         TypedArray icons = getResources().obtainTypedArray(R.array.icons);
 
-                        for (int i = 0; i < 5; i++) {
-                            try{
+                            for (int i = 0; i < 1; i++) {
+
                                 String review = getResources().getStringArray(R.array.reviews)[i];
-                                String name = response.getJSONObject(i).getString("name");
 
-                                Restaurant restaurant = new Restaurant();
-                                restaurant.setIcon(icons.getDrawable(i));
-                                restaurant.setName(name);
-                                restaurant.setReview(review);
+                                try {
+                                    String name = response.getJSONObject("result").getString("name");
 
-                                restaurants.add(restaurant);
+                                    Restaurant restaurant = new Restaurant();
+                                    restaurant.setIcon(icons.getDrawable(i));
+                                    restaurant.setName(name);
+                                    restaurant.setReview(review);
+                                    restaurants.add(restaurant);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                            catch (JSONException e)
-                            {
-                                Log.d("Debug", e.toString());
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Debug", "ErrorMsg: " + error.toString());
+
+                        if (error instanceof NoConnectionError)
+                            Toast.makeText(RestaurantList.this, "No internet available", Toast.LENGTH_SHORT).show();
+
+                        else if(error instanceof TimeoutError)
+                            Toast.makeText(RestaurantList.this, "The request was timeout", Toast.LENGTH_SHORT).show();
+
+                        else if (error instanceof ServerError)
+                            Toast.makeText(RestaurantList.this, "Invalid username/password", Toast.LENGTH_SHORT).show();
+
+                        Log.d("Debug", "[onErrorResponse] ErrorMsg: " + error.toString());
                     }
                 });
 
