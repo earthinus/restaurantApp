@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".RestaurantList"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".RestaurantList"/>
+        <!--<activity android:name=".RestaurantList"/>-->
         <activity android:name=".RestaurantDetail"/>
         <activity android:name=".BookList"
                   android:label="@string/book_label"/>
