@@ -29,9 +29,9 @@ class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
 
         Holder(View itemView) {
             super(itemView);
-            //this.icon   = (ImageView) itemView.findViewById(R.id.icon);
+            this.icon   = (ImageView) itemView.findViewById(R.id.icon);
             this.name   = (TextView)  itemView.findViewById(R.id.name);
-            //this.review = (TextView)  itemView.findViewById(R.id.review);
+            this.review = (TextView)  itemView.findViewById(R.id.review);
             this.itemView = itemView;
         }
     }
@@ -48,9 +48,9 @@ class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
     public void onBindViewHolder(Holder holder, int position) {
 
         final int pos = position;
-        //holder.icon.setImageDrawable(restaurants.get(position).getIcon());
+        holder.icon.setImageDrawable(restaurants.get(position).getIcon());
         holder.name.setText(restaurants.get(position).getName());
-        //holder.review.setText(restaurants.get(position).getReview());
+        holder.review.setText(restaurants.get(position).getReview());
 
         // Set onClickListener
         holder.itemView.setOnClickListener(new View.OnClickListener() {
