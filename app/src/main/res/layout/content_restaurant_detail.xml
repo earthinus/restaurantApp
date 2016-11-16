@@ -32,9 +32,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/round_textview"
-            android:padding="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
             android:text="@string/reviews"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
 
         <ListView
             android:id="@+id/review_list"
@@ -50,7 +52,7 @@
             android:padding="15dp"
             android:layout_marginBottom="25dp"
             android:background="@drawable/round_textview2"
-            android:text="@string/onclick"
+            android:text="@string/see_more"
             android:layout_width="300dp"
             android:layout_height="wrap_content" />
 
@@ -69,7 +71,6 @@
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:background="#303030">
-
         </ListView>
 
         <TextView
@@ -78,9 +79,25 @@
             android:padding="15dp"
             android:layout_marginBottom="45dp"
             android:background="@drawable/round_textview2"
-            android:text="@string/onclick"
+            android:text="@string/see_more"
             android:layout_width="300dp"
             android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/date"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="40dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="#000000"
+            android:background="@drawable/round_textview3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/book_now" />
 
     </LinearLayout>
 </ScrollView>
