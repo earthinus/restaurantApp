@@ -1,19 +1,25 @@
 package com.example.admin.restaurantapp;
 
-import android.graphics.drawable.Drawable;
-
 public class Restaurant {
 
-    private Drawable icon;
+    private String thumb;
     private String name;
-    private String review;
+    private String rating;
+    private String id;
 
-    public Drawable getIcon() {
-        return icon;
+    public Restaurant(String thumb, String name, String rating, String id) {
+        this.thumb = thumb;
+        this.name = name;
+        this.rating = rating;
+        this.id = id;
     }
 
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String icon) {
+        this.thumb = thumb;
     }
 
     public String getName() {
@@ -24,11 +30,19 @@ public class Restaurant {
         this.name = name;
     }
 
-    public String getReview() {
-        return review;
+    public String getRating() {
+        return rating;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setRating(String review) {
+        this.rating = rating;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
@@ -16,22 +18,21 @@ class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
     private Context context;
     private ArrayList<Restaurant> restaurants;
 
-    public RestaurantAdapter(Context context, ArrayList<Restaurant> restaurants) {
+    RestaurantAdapter(Context context, ArrayList<Restaurant> restaurants) {
         this.context = context;
         this.restaurants = restaurants;
     }
 
     class Holder extends RecyclerView.ViewHolder {
-        ImageView icon;
-        TextView name;
-        TextView  review;
+        ImageView thumb;
+        TextView  name, rating;
         View itemView;
 
         Holder(View itemView) {
             super(itemView);
-            this.icon   = (ImageView) itemView.findViewById(R.id.icon);
+            this.thumb  = (ImageView) itemView.findViewById(R.id.thumb);
             this.name   = (TextView)  itemView.findViewById(R.id.name);
-            this.review = (TextView)  itemView.findViewById(R.id.review);
+            this.rating = (TextView)  itemView.findViewById(R.id.rating);
             this.itemView = itemView;
         }
     }
@@ -48,9 +49,10 @@ class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
     public void onBindViewHolder(Holder holder, int position) {
 
         final int pos = position;
-        holder.icon.setImageDrawable(restaurants.get(position).getIcon());
+
+        Picasso.with(context).load(restaurants.get(position).getThumb()).placeholder(R.drawable.progress).resize(100, 100).centerCrop().into(holder.thumb);
         holder.name.setText(restaurants.get(position).getName());
-        holder.review.setText(restaurants.get(position).getReview());
+        holder.rating.setText(restaurants.get(position).getRating());
 
         // Set onClickListener
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +61,7 @@ class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
 
                 // Create intent
                 Intent intent = new Intent(context, RestaurantDetail.class);
-                intent.putExtra(new RestaurantList().EXTRA_RESTAURANT_ID, pos);
+                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID + "restaurantId", restaurants.get(pos).getId());
 
                 // Start Activity
                 context.startActivity(intent);

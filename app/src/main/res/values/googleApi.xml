@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="API_KEY_ANDROID">AIzaSyBoVEOktMAbvYcZ9D-M8W0x7sSvELFxx6M</string>
+    <string name="API_KEY_IP_ADDRESS">AIzaSyBi-mlLpsIjVeqCroiK3nqtquNTTMq85EE</string>
+
+    <string name="jsonUrl_nearbySearch">https://maps.googleapis.com/maps/api/place/nearbysearch/json?</string>
+    <string name="jsonUrl_details">https://maps.googleapis.com/maps/api/place/details/json?</string>
+    <string name="jsonUrl_photo">https://maps.googleapis.com/maps/api/place/photo?</string>
+</resources>

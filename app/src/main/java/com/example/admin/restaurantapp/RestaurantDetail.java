@@ -22,7 +22,7 @@ public class RestaurantDetail extends AppCompatActivity {
     ImageView imageView_restaurantMainVisual;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton,bookListButton;
-    int restaurantId = 0;
+    String restaurantId;
 
     private Menu mainMenu;
 
@@ -66,11 +66,13 @@ public class RestaurantDetail extends AppCompatActivity {
         // Get intent
         final Intent intent = getIntent();
         if (intent != null) {
-            restaurantId = intent.getIntExtra(RestaurantList.EXTRA_RESTAURANT_ID, 0);
+            restaurantId = intent.getStringExtra(RestaurantList.EXTRA_RESTAURANT_ID + "restaurantId");
 
         } else {
-            Log.d("Debug", "getExtra: NG");
+            Log.d("Debug", "RestaurantDetail getExtra: NG");
         }
+
+        Toast.makeText(this, "place_id: " + restaurantId, Toast.LENGTH_SHORT).show();
 
         // Initialize each object
         //textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
@@ -78,28 +80,12 @@ public class RestaurantDetail extends AppCompatActivity {
         imageView_restaurantMainVisual = (ImageView) findViewById(R.id.imageView_restaurantMainVisual);
 
         // Set each object
-        setTitle(getResources().getStringArray(R.array.restaurants)[restaurantId]);
-        textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
-        int[] mainVisuals = {
-                R.drawable.lg_osteriasaviovolpe,
-                R.drawable.lg_guuotokomaegastown,
-                R.drawable.lg_tuccraftkitchen,
-                R.drawable.lg_ancorawaterfrontdining,
-                R.drawable.lg_thekegsteakhouse,
-                R.drawable.lg_nightingale,
-                R.drawable.lg_osteriasaviovolpe,
-                R.drawable.lg_guuotokomaegastown,
-                R.drawable.lg_tuccraftkitchen,
-                R.drawable.lg_ancorawaterfrontdining,
-                R.drawable.lg_thekegsteakhouse,
-                R.drawable.lg_nightingale
-        };
-        imageView_restaurantMainVisual.setImageResource(mainVisuals[restaurantId]);
+//        setTitle(getResources().getStringArray(R.array.restaurants)[restaurantId]);
+//        textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
+//        imageView_restaurantMainVisual.setImageResource(mainVisuals[restaurantId]);
         //textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
 
-
         // Fab
-
         menu1 = (FloatingActionButton)findViewById(R.id.subFloatingMenu1) ;
         menu2 = (FloatingActionButton)findViewById(R.id.subFloatingMenu2) ;
         menu3 = (FloatingActionButton)findViewById(R.id.subFloatingMenu3) ;

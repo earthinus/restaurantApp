@@ -1,71 +1,90 @@
 package com.example.admin.restaurantapp;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class RestaurantList extends AppCompatActivity {
-    Button favListButton,bookListButton;
+    Button favListButton, bookListButton;
     private Menu mainMenu;
-
-    static Resources resources;
-
-    static RecyclerView recyclerView;
-
-    static ArrayList<Restaurant> restaurants;
-
-    public final String API_KEY_ANDROID = "AIzaSyBoVEOktMAbvYcZ9D-M8W0x7sSvELFxx6M";
-    public final String API_KEY_IP_ADDRESS = "AIzaSyBi-mlLpsIjVeqCroiK3nqtquNTTMq85EE";
-
-    public String GOOGLE_PLACE_ID = "ChIJN1t_tDeuEmsRUsoyG83frY4";
-    public String LOCATION = "49.2845258,-123.1145378";
-    public String RADIUS = "500";
-    static RecyclerView.Adapter adapter;
-
-    // Json URL for Google Place [details]
-    public String jsonUrl_details = "https://maps.googleapis.com/maps/api/place/details/json?"
-            + "&placeid=" + GOOGLE_PLACE_ID
-            + "&key=" + API_KEY_IP_ADDRESS;
-
-    // Json URL for Google Place RadarSearch
-    public String jsonUrl_RadarSearch = "https://maps.googleapis.com/maps/api/place/radarsearch/json?"
-            + "location=" + LOCATION
-            + "&type=restaurant"
-            + "&radius=" + RADIUS
-            + "&key=" + API_KEY_IP_ADDRESS;
-
-    //    public static final String JSON_PATH = "http://services.hanselandpetal.com/feeds/flowers.json";
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
+    ArrayList<Restaurant> restaurants;
+    JSONObject response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_list);
 
-        resources = getResources();
-
-        recyclerView = (RecyclerView) findViewById(R.id.restaurantList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Intent intent = getIntent();
 
         restaurants = new ArrayList<>();
 
-        adapter = new RestaurantAdapter(this, restaurants);
+        try {
+            String stringResponse = intent.getStringExtra("splash_jsonResponse");
 
-        // Set adapter to RecyclerView
-        recyclerView.setAdapter(adapter);
+            response = new JSONObject(stringResponse);
 
-        // Get Json response
-        new LoadJson().getResponse(jsonUrl_RadarSearch, this, adapter);
+            JSONArray results = response.getJSONArray("results");
+            Log.d("Debug", "results.length(): " + String.valueOf(results.length())); // TODO : delete this later
+
+            for (int i = 0; i < results.length(); i++) {
+
+                // photosUrl default
+                String[] photoUrls = new String[1];
+
+                // Set photosUrl
+                if(results.getJSONObject(i).has("photos")) {
+
+                    JSONArray results_photos = results.getJSONObject(i).getJSONArray("photos");
+                    photoUrls = new String[results_photos.length()];
+
+                    for (int j = 0; j < results_photos.length(); j++)
+                        photoUrls[j] =
+                            getResources().getString(R.string.jsonUrl_photo)
+                            + "photoreference=" + results.getJSONObject(i).getJSONArray("photos").getJSONObject(0).getString("photo_reference")
+                            + "&maxwidth=400"
+                            + "&maxheight=400"
+                            + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
+                // No photo
+                } else
+                    photoUrls[0] = results.getJSONObject(i).getString("icon");
+
+                String thumb = photoUrls[0];
+                Log.d("Debug", "photoURL: " + "i:" + i + " " + photoUrls[0]);
+                String name   = results.getJSONObject(i).getString("name");
+                String rating = "★" + results.getJSONObject(i).getString("rating");
+                String id     = results.getJSONObject(i).getString("place_id");
+                restaurants.add(new Restaurant(thumb, name, rating, id));
+            }
+
+            recyclerView = (RecyclerView) findViewById(R.id.restaurantList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+            adapter = new RestaurantAdapter(this, restaurants);
+
+            // Set adapter to RecyclerView
+            recyclerView.setAdapter(adapter);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
