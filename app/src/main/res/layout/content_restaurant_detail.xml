@@ -1,30 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:app="http://schemas.android.com/apk/res-auto"
-                  android:orientation="vertical"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/imageView_restaurantMainVisual"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/sushi01"
-            android:id="@+id/imageView_restaurantMainVisual"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/restaurant_main_visual"/>
+            android:contentDescription="@string/restaurant_main_visual"
+            app:srcCompat="@drawable/sushi01" />
 
         <TextView
-            android:text="@string/textView_restaurantDetail_default"
+            android:id="@+id/textView_restaurantDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView_restaurantDetail"
-            android:padding="20dp"/>
+            android:layout_gravity="center"
+            android:padding="20dp"
+            android:text="@string/textView_restaurantDetail_default" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/round_textview"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:text="@string/reviews"
+            android:textSize="22sp" />
+
+        <ListView
+            android:id="@+id/review_list"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:background="#303030">
+        </ListView>
+
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="15dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/round_textview2"
+            android:text="@string/see_more"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/round_textview"
+            android:padding="15dp"
+            android:text="@string/menus"
+            android:textSize="20sp" />
+
+        <ListView
+            android:id="@+id/menu_list"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:background="#303030">
+        </ListView>
+
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="15dp"
+            android:layout_marginBottom="45dp"
+            android:background="@drawable/round_textview2"
+            android:text="@string/see_more"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/date"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="40dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="#000000"
+            android:background="@drawable/round_textview3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/book_now" />
+
     </LinearLayout>
 </ScrollView>

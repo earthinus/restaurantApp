@@ -18,8 +18,15 @@
     <string name="reviews">Reviews</string>
     <string name="review_default_1">This restaurant is amazing!I should go again.</string>
     <string name="review_default_2">I saw a cockroach in here.I wont go again.</string>
-    <string name="review_default_3">This restaurant is amazing!I should go again.</string>
+    <string name="review_default_3">Taste is well.It should be cheaper.</string>
 
+    <string name="menus">Menus</string>
+    <string name="menu_default_1">This restaurant is amazing!I should go again.</string>
+    <string name="menu_default_2">I saw a cockroach in here.I wont go again.</string>
+    <string name="menu_default_3">This restaurant is amazing!I should go again.</string>
+
+    <string name="see_more">See More</string>
+    <string name="book_now">Book Now?</string>
     <string name="book_label">Your Book List</string>
     <string name="fav_label">Your Favorite List</string>
     <string name="index">Find Table</string>
