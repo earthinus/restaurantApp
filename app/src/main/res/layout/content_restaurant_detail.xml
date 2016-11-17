@@ -159,24 +159,17 @@
                 android:layout_toRightOf="@+id/btn_time" />
 
             <EditText
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_below="@+id/in_time"
-                android:layout_toRightOf="@+id/name_text"/>
-
-            <EditText
+                android:id="@+id/in_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="25dp"
-                android:layout_below="@+id/in_time"
                 android:layout_toRightOf="@+id/btn_time"
-                android:layout_toEndOf="@+id/btn_time" />
+                android:layout_below="@+id/in_time" />
 
         </RelativeLayout>
         <Button
+            android:id="@+id/book_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/reservation_button"
