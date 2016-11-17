@@ -104,6 +104,7 @@
 
             <Button
                 android:id="@+id/btn_time"
+                android:onClick="onButtonClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/btn_date"
@@ -115,6 +116,7 @@
                 android:id="@+id/btn_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onButtonClick"
                 android:text="DATE"
                 android:layout_marginLeft="24dp"
                 android:layout_marginStart="24dp"
@@ -175,6 +177,7 @@
             android:text="@string/reservation_button"
             android:textSize="16sp"
             android:layout_gravity="center"
+            android:onClick="onButtonClick"
             android:gravity="center"
             android:background="#45aa3f"
             android:paddingRight="30dp"

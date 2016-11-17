@@ -1,8 +1,15 @@
 package com.example.admin.restaurantapp;
 
+import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,9 +21,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import java.util.ArrayList;
@@ -30,6 +40,9 @@ public class RestaurantDetail extends AppCompatActivity {
     String restaurantId;
     private TextView mDate;
     private Menu mainMenu;
+    Button DatePickButton, TimePickButton, BookButton;
+    EditText txtDate, txtTime, txtName;
+    int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,7 +96,12 @@ public class RestaurantDetail extends AppCompatActivity {
         //textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
         textView_restaurantDetail = (TextView) findViewById(R.id.textView_restaurantDetail);
         imageView_restaurantMainVisual = (ImageView) findViewById(R.id.imageView_restaurantMainVisual);
-
+        DatePickButton = (Button) findViewById(R.id.btn_date);
+        TimePickButton = (Button) findViewById(R.id.btn_time);
+        BookButton = (Button) findViewById(R.id.book_button);
+        txtDate = (EditText) findViewById(R.id.in_date);
+        txtTime = (EditText) findViewById(R.id.in_time);
+        txtName = (EditText) findViewById(R.id.in_name);
         // Set each object
 //        setTitle(getResources().getStringArray(R.array.restaurants)[restaurantId]);
 //        textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
@@ -263,6 +281,83 @@ public class RestaurantDetail extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void onButtonClick(View v) {
+
+        if (v == DatePickButton) {
+
+            // Get Current Date
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        }
+        if (v == TimePickButton) {
+
+            // Get Current Time
+            final Calendar c = Calendar.getInstance();
+            mHour = c.get(Calendar.HOUR_OF_DAY);
+            mMinute = c.get(Calendar.MINUTE);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                    new TimePickerDialog.OnTimeSetListener() {
+
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay,
+                                              int minute) {
+
+                            txtTime.setText(hourOfDay + ":" + minute);
+                        }
+                    }, mHour, mMinute, false);
+            timePickerDialog.show();
+        }
+
+        // show notification or error message
+        if (v == BookButton) {
+            if ((txtDate.getText() != null && txtTime.getText() != null && txtName.getText() != null))
+            {
+                showNotification(v);
+            }else{
+                if ((txtDate.getText() == null)) {
+                    txtDate.setError("Please chose the date.");
+                }else if(txtTime.getText() == null){
+                    txtTime.setError("Please chose the time.");
+                }else if(txtName.getText() == null){
+                    txtName.setError("Please enter your name.");
+                }
+            }
+        }
+    }
+
+    public void showNotification(View v) {
+
+        Intent intent = new Intent(this, RestaurantDetail.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Notification notification =
+                new NotificationCompat.Builder(this)
+                        .setContentText("Booking Complete!")
+                        .setContentTitle("Thank you for using our app.Please confirm your book from Book List.")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentIntent(pendingIntent)
+                        .build();
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(0, notification);
     }
 }
 
