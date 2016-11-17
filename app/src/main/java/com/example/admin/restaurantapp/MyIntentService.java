@@ -61,7 +61,6 @@ public class MyIntentService extends IntentService {
 
                             switch (status) {
                                 case "OK":
-                                    new MainActivity().hideProgressDialog(new View(context));
 
                                     // Send Broadcast
                                     Intent intent = new Intent()
@@ -83,8 +82,6 @@ public class MyIntentService extends IntentService {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
-                        new MainActivity().hideProgressDialog(new View(context));
 
                         if (error instanceof NoConnectionError)
                             Toast.makeText(context, "No internet available", Toast.LENGTH_SHORT).show();

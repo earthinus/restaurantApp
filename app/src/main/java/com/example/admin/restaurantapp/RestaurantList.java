@@ -12,12 +12,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RestaurantList extends AppCompatActivity {
     Button favListButton, bookListButton;
@@ -32,55 +34,70 @@ public class RestaurantList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_list);
 
-        Intent intent = getIntent();
-
         restaurants = new ArrayList<>();
 
+        // Get json response through intent
+        Intent intent = getIntent();
         try {
-            String stringResponse = intent.getStringExtra("splash_jsonResponse");
-
-            response = new JSONObject(stringResponse);
-
+            response = new JSONObject(intent.getStringExtra("splash_jsonResponse"));
+            String status = response.getString("status");
             JSONArray results = response.getJSONArray("results");
-            Log.d("Debug", "results.length(): " + String.valueOf(results.length())); // TODO : delete this later
 
-            for (int i = 0; i < results.length(); i++) {
+            // Json status OK
+            switch (status) {
 
-                // photosUrl default
-                String[] photoUrls = new String[1];
+                case "OK":
+                    for (int i = 0; i < results.length(); i++) {
 
-                // Set photosUrl
-                if(results.getJSONObject(i).has("photos")) {
+                        // photosUrl default
+                        String[] photoUrls = new String[1];
 
-                    JSONArray results_photos = results.getJSONObject(i).getJSONArray("photos");
-                    photoUrls = new String[results_photos.length()];
+                        // Set photosUrl
+                        if (results.getJSONObject(i).has("photos")) {
 
-                    for (int j = 0; j < results_photos.length(); j++)
-                        photoUrls[j] =
-                            getResources().getString(R.string.jsonUrl_photo)
-                            + "photoreference=" + results.getJSONObject(i).getJSONArray("photos").getJSONObject(0).getString("photo_reference")
-                            + "&maxwidth=400"
-                            + "&maxheight=400"
-                            + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
-                // No photo
-                } else
-                    photoUrls[0] = results.getJSONObject(i).getString("icon");
+                            JSONArray results_photos = results.getJSONObject(i).getJSONArray("photos");
+                            photoUrls = new String[results_photos.length()];
 
-                String thumb = photoUrls[0];
-                Log.d("Debug", "photoURL: " + "i:" + i + " " + photoUrls[0]);
-                String name   = results.getJSONObject(i).getString("name");
-                String rating = "★" + results.getJSONObject(i).getString("rating");
-                String id     = results.getJSONObject(i).getString("place_id");
-                restaurants.add(new Restaurant(thumb, name, rating, id));
+                            for (int j = 0; j < results_photos.length(); j++)
+                                photoUrls[j] =
+                                        getResources().getString(R.string.jsonUrl_photo)
+                                                + "photoreference=" + results.getJSONObject(i).getJSONArray("photos").getJSONObject(0).getString("photo_reference")
+                                                + "&maxwidth=400"
+                                                + "&maxheight=400"
+                                                + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
+
+                            // If no photo
+                        } else
+                            photoUrls[0] = results.getJSONObject(i).getString("icon");
+
+                        Log.d("Debug", "photoURL: " + "i:" + i + " " + photoUrls[0]);
+
+                        // restaurants ArrayList
+                        String thumb = photoUrls[0],
+                                name = results.getJSONObject(i).getString("name"),
+                                rating = "★" + results.getJSONObject(i).getString("rating"),
+                                id = results.getJSONObject(i).getString("place_id");
+                        restaurants.add(new Restaurant(thumb, name, rating, id));
+                    }
+
+                    // Adapter
+                    adapter = new RestaurantAdapter(this, restaurants);
+
+                    // RecyclerView
+                    recyclerView = (RecyclerView) findViewById(R.id.restaurantList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    recyclerView.setAdapter(adapter);
+                    break;
+
+                case "ZERO_RESULTS":
+                    Toast.makeText(this, "Zero", Toast.LENGTH_SHORT).show(); // TODO : change message later
+                    break;
+
+                case "REQUEST_DENIED":
+                default:
+                    Toast.makeText(this, "Your request was denied.", Toast.LENGTH_SHORT).show(); // TODO : change message later
+                    break;
             }
-
-            recyclerView = (RecyclerView) findViewById(R.id.restaurantList);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-            adapter = new RestaurantAdapter(this, restaurants);
-
-            // Set adapter to RecyclerView
-            recyclerView.setAdapter(adapter);
 
         } catch (JSONException e) {
             e.printStackTrace();

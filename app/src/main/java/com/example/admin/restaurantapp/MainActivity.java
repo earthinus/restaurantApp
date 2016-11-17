@@ -15,23 +15,18 @@ import android.widget.ProgressBar;
  *
  * @author Mai
  *
- * 1. Set tag of progressBar
- *          {@link #progressBar}
- *
- * 2. Start Service
+ * 1. Start Service
  *          {@link MyIntentService#onHandleIntent}
  *
- * 3. Receive Broadcast
+ * 2. Receive Broadcast
  *
- * 4. Start Activity of RestaurantList
+ * 3. Start Activity of RestaurantList
  *
  */
 
 public class MainActivity extends AppCompatActivity {
 
     public static Context context;
-
-    ProgressBar progressBar;
     IntentFilter filter;
     BroadcastReceiver broadcastReceiver;
 
@@ -42,10 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO : あとで消す
         context = this;
-
-        // Show Logo
-        progressBar = (ProgressBar) findViewById(R.id.progress);
-        progressBar.setTag("progressBar");
 
         // Start Service
         Intent intent_service = new Intent(this, MyIntentService.class);
@@ -103,10 +94,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         registerReceiver(broadcastReceiver, filter);
-    }
-
-    public void hideProgressDialog(View view) {
-        Log.d("Debug", "Start hideProgressDialog");
-        view.findViewWithTag("progressBar");
     }
 }
