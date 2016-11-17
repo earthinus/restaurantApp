@@ -26,7 +26,8 @@
     <string name="menu_default_3">This restaurant is amazing!I should go again.</string>
 
     <string name="see_more">See More</string>
-    <string name="book_now">Book Now?</string>
+    <string name="reservation_text">Book your Dinner Now?</string>
+    <string name="reservation_button">COMPLETE!</string>
     <string name="book_label">Your Book List</string>
     <string name="fav_label">Your Favorite List</string>
     <string name="index">Find Table</string>

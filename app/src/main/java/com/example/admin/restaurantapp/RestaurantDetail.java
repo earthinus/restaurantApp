@@ -1,14 +1,9 @@
 package com.example.admin.restaurantapp;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,18 +12,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class RestaurantDetail extends AppCompatActivity {
 
@@ -70,29 +61,6 @@ public class RestaurantDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_detail);
-        mDate = (TextView) findViewById(R.id.date);
-        mDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String date = mDate.getText().toString();
-
-                int year = 0;
-                int month = 0;
-                int dayOfMonth = 0;
-                if (TextUtils.isEmpty(date)) {
-                    Calendar calendar = Calendar.getInstance();
-                    year = calendar.get(Calendar.YEAR);
-                    month = calendar.get(Calendar.MONTH);
-                    dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                } else {
-                    year = Integer.valueOf(date.substring(0, 4));
-                    month = Integer.valueOf(date.substring(5, 7));
-                    month = month - 1;
-                    dayOfMonth = Integer.valueOf(date.substring(8, 10));
-                }
-                showDatePickerDialog(year, month, dayOfMonth);
-            }
-        });
 
         // Set backButton on ActionBar
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -295,18 +263,6 @@ public class RestaurantDetail extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void showDatePickerDialog(int year, int month, int dayOfMonth) {
-        DatePickerDialogFragment dialog = DatePickerDialogFragment.newInstance(year, month, dayOfMonth);
-        dialog.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    public void setDate(int year, int month, int dayOfMonth) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, dayOfMonth);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        mDate.setText(sdf.format(cal.getTime()));
     }
 }
 
