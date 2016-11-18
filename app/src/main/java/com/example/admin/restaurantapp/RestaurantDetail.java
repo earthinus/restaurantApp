@@ -11,6 +11,8 @@ import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import java.util.ArrayList;
 
+
 public class RestaurantDetail extends AppCompatActivity {
 
     TextView textView_restaurantDetail;
@@ -38,11 +41,11 @@ public class RestaurantDetail extends AppCompatActivity {
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
     String restaurantId;
-    private TextView mDate;
     private Menu mainMenu;
     Button DatePickButton, TimePickButton, BookButton;
-    EditText txtDate, txtTime, txtName;
+    EditText txtDate, txtTime, txtName, txtNum;
     int mYear, mMonth, mDay, mHour, mMinute;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,7 +105,35 @@ public class RestaurantDetail extends AppCompatActivity {
         txtDate = (EditText) findViewById(R.id.in_date);
         txtTime = (EditText) findViewById(R.id.in_time);
         txtName = (EditText) findViewById(R.id.in_name);
+        txtNum = (EditText) findViewById(R.id.in_num);
+        txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
 
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+        txtDate.addTextChangedListener(textWatcher);
+        txtName.addTextChangedListener(textWatcher);
+        txtNum.addTextChangedListener(textWatcher);
+        txtTime.addTextChangedListener(textWatcher);
         // Fab
         menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
         menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
@@ -277,10 +308,13 @@ public class RestaurantDetail extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // reservation form buttons function
     public void onButtonClick(View v) {
         String bookDate = txtDate.getText().toString().trim();
         String bookTime = txtTime.getText().toString().trim();
         String bookName = txtName.getText().toString().trim();
+        String bookNum = txtNum.getText().toString().trim();
 
         if (v == DatePickButton) {
 
@@ -327,16 +361,33 @@ public class RestaurantDetail extends AppCompatActivity {
 
         // show notification or error message
         if (v == BookButton) {
-            if (!(bookDate.equals("") && bookTime.equals("") && bookName.equals("")))
+
+            if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") ||bookNum.equals("")))
             {
                 showNotification(v);
+                txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtDate.setText("");
+                txtName.setText("");
+                txtTime.setText("");
+                txtNum.setText("");
             }else{
                 if (bookDate.equals("")) {
-                    txtDate.setError("Please choose the date.");
+                    txtDate.setError(null);
+                    txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+
                 }if(bookTime.equals("")){
-                    txtTime.setError("Please choose the time.");
+                    txtTime.setError(null);
+                    txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
                 }if(bookName.equals("")){
-                    txtName.setError("Please enter your name.");
+                    txtName.setError(null);
+                    txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+
+                }if(bookNum.equals("")){
+                    txtNum.setError(null);
+                    txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
                 }
             }
         }
@@ -355,7 +406,7 @@ public class RestaurantDetail extends AppCompatActivity {
                         .setContentIntent(pendingIntent)
                         .build();
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manager.notify(0, notification);
+        manager.notify(3000, notification);
     }
 }
 

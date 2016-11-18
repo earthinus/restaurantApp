@@ -26,6 +26,10 @@
     <string name="menu_default_3">This restaurant is amazing!I should go again.</string>
 
     <string name="see_more">See More</string>
+    <string name="hint_date">Chose Book Date from left</string>
+    <string name="hint_time">Chose Book Time from left</string>
+
+    <string name="how_many">HOW MANY ?</string>
     <string name="reservation_text">Book your Dinner Now?</string>
     <string name="reservation_button">COMPLETE!</string>
     <string name="book_label">Your Book List</string>
@@ -34,4 +38,17 @@
     <string name="icon_contentDescription"/>
     <string name="restaurant_main_visual">Restaurant Main Visual</string>
     <string name="no_data_available">No data</string>
+
+    <string-array name="spinner_items">
+        <item>ー</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
 </resources>
