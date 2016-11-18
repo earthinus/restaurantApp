@@ -1,6 +1,7 @@
 package com.example.admin.restaurantapp;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class RestaurantList extends AppCompatActivity {
@@ -28,13 +30,20 @@ public class RestaurantList extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     ArrayList<Restaurant> restaurants;
     JSONObject response;
+    DBHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_list);
 
+        // ArrayList
         restaurants = new ArrayList<>();
+
+        // Database
+        db = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
+
+        HashMap<String, String> data = new HashMap<>();
 
         // Get json response through intent
         Intent intent = getIntent();
@@ -66,7 +75,7 @@ public class RestaurantList extends AppCompatActivity {
                                                 + "&maxheight=400"
                                                 + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
 
-                            // If no photo
+                        // If no photo
                         } else
                             photoUrls[0] = results.getJSONObject(i).getString("icon");
 
@@ -78,7 +87,30 @@ public class RestaurantList extends AppCompatActivity {
                                 rating = "★" + results.getJSONObject(i).getString("rating"),
                                 id = results.getJSONObject(i).getString("place_id");
                         restaurants.add(new Restaurant(thumb, name, rating, id));
+
+                        // Database insert
+                        data.put("PLACE_ID", id);
+                        data.put("NAME", name);
+                        data.put("THUMB", thumb);
+                        data.put("RATING", results.getJSONObject(i).getString("rating"));
+                        db.insertRecord(data);
                     }
+
+                    // Database read // TODO: move this to intent.getExtra of RestaurantDetail later
+                    Cursor cursor = db.getAllRecords();
+
+                    System.out.println("Count: " + cursor.getCount());
+                    while (cursor.moveToNext()) {
+
+                        System.out.println(
+                                cursor.getString(0) + "\t" +
+                                        cursor.getString(1) + "\t" +
+                                        cursor.getString(2) + "\t" +
+                                        cursor.getString(3) + "\n" +
+                                        "-------------------------------------"
+                        );
+                    }
+                    cursor.close();
 
                     // Adapter
                     adapter = new RestaurantAdapter(this, restaurants);

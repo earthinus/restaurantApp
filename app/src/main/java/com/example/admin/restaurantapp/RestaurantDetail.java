@@ -4,9 +4,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,6 +29,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
+import com.squareup.picasso.Picasso;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,15 +75,22 @@ public class RestaurantDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_detail);
+
+        // View Objects
+        textView_restaurantDetail = (TextView) findViewById(R.id.textView_restaurantDetail);
+
+        // TODO Picassoで、CardViewのhorizontalScroll表示にする
+        imageView_restaurantMainVisual = (ImageView) findViewById(R.id.imageView_restaurantMainVisual);
+
         mDate = (TextView) findViewById(R.id.date);
         mDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String date = mDate.getText().toString();
 
-                int year = 0;
-                int month = 0;
-                int dayOfMonth = 0;
+                int year;
+                int month;
+                int dayOfMonth;
                 if (TextUtils.isEmpty(date)) {
                     Calendar calendar = Calendar.getInstance();
                     year = calendar.get(Calendar.YEAR);
@@ -94,13 +106,7 @@ public class RestaurantDetail extends AppCompatActivity {
             }
         });
 
-        // Set backButton on ActionBar
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        // Get intent
+        // Get intent from previous activity
         final Intent intent = getIntent();
         if (intent != null) {
             restaurantId = intent.getStringExtra(RestaurantList.EXTRA_RESTAURANT_ID + "restaurantId");
@@ -109,12 +115,49 @@ public class RestaurantDetail extends AppCompatActivity {
             Log.d("Debug", "RestaurantDetail getExtra: NG");
         }
 
-        Toast.makeText(this, "place_id: " + restaurantId, Toast.LENGTH_SHORT).show();
+        // TODO : restaurantIdをkeyにして、DBから取得する
+        SQLiteDatabase db = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION).getReadableDatabase();
+        //Cursor cursor = db.getReadableDatabase(restaurantId);
+
+        // Check the table was removed or not
+        Cursor cursor;
+        try {
+            cursor = db.query(
+                    DBHelper.TABLE_NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            Log.d("Debug", "Count: " + cursor.getCount()); // TODO : あとで消す
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                setTitle(cursor.getString(2));
+//                textView_restaurantDetail.setText("test");
+                Log.d("Debug", "PhotoURL: " + cursor.getString(3));
+                Picasso.with(this).load(cursor.getString(3)).fit().into(imageView_restaurantMainVisual);
+
+//                System.out.println(
+//                        cursor.getString(0) + "\t" +
+//                        cursor.getString(1) + "\t\t" +
+//                        cursor.getString(2) + "\t\t" +
+//                        cursor.getString(3) + "\t\t" +
+//                        cursor.getString(4) + "\n");
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+            Log.d("Debug", e.toString());
+
+        } finally {
+            db.close();
+        }
 
         // Initialize each object
         //textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
-        textView_restaurantDetail = (TextView) findViewById(R.id.textView_restaurantDetail);
-        imageView_restaurantMainVisual = (ImageView) findViewById(R.id.imageView_restaurantMainVisual);
 
         // Set each object
 //        setTitle(getResources().getStringArray(R.array.restaurants)[restaurantId]);
@@ -159,7 +202,7 @@ public class RestaurantDetail extends AppCompatActivity {
         });
 
         final ListView review_list = (ListView) findViewById(R.id.review_list);
-        final ListView menu_list = (ListView) findViewById(R.id.menu_list);
+        final ListView menu_list   = (ListView) findViewById(R.id.menu_list);
         final ArrayList<User> users = new ArrayList<>();
 
         String[] title = {
@@ -198,20 +241,27 @@ public class RestaurantDetail extends AppCompatActivity {
 
         final UserAdapter adapter = new UserAdapter(this, 0, users);
         review_list.setAdapter(adapter);
+
+        // Set backButton on ActionBar
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     public class UserAdapter extends ArrayAdapter<User> {
         private LayoutInflater layoutInflater;
 
-        public UserAdapter(Context c, int id, ArrayList<User> users) {
+        UserAdapter(Context c, int id, ArrayList<User> users) {
             super(c, id, users);
             this.layoutInflater = (LayoutInflater) c.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE
             );
         }
 
+        @NonNull
         @Override
-        public View getView(int pos, View convertView, ViewGroup parent) {
+        public View getView(int pos, View convertView, @NonNull ViewGroup parent) {
 
             ViewHolder holder;
             if (convertView == null) {
@@ -309,6 +359,3 @@ public class RestaurantDetail extends AppCompatActivity {
         mDate.setText(sdf.format(cal.getTime()));
     }
 }
-
-
-
