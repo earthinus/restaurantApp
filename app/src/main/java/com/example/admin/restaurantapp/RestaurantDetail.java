@@ -102,11 +102,6 @@ public class RestaurantDetail extends AppCompatActivity {
         txtDate = (EditText) findViewById(R.id.in_date);
         txtTime = (EditText) findViewById(R.id.in_time);
         txtName = (EditText) findViewById(R.id.in_name);
-        // Set each object
-//        setTitle(getResources().getStringArray(R.array.restaurants)[restaurantId]);
-//        textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
-//        imageView_restaurantMainVisual.setImageResource(mainVisuals[restaurantId]);
-        //textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
 
         // Fab
         menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
@@ -283,6 +278,9 @@ public class RestaurantDetail extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     public void onButtonClick(View v) {
+        String bookDate = txtDate.getText().toString().trim();
+        String bookTime = txtTime.getText().toString().trim();
+        String bookName = txtName.getText().toString().trim();
 
         if (v == DatePickButton) {
 
@@ -329,15 +327,15 @@ public class RestaurantDetail extends AppCompatActivity {
 
         // show notification or error message
         if (v == BookButton) {
-            if ((txtDate.getText() != null && txtTime.getText() != null && txtName.getText() != null))
+            if (!(bookDate.equals("") && bookTime.equals("") && bookName.equals("")))
             {
                 showNotification(v);
             }else{
-                if ((txtDate.getText() == null)) {
+                if (bookDate.equals("")) {
                     txtDate.setError("Please chose the date.");
-                }else if(txtTime.getText() == null){
+                }if(bookTime.equals("")){
                     txtTime.setError("Please chose the time.");
-                }else if(txtName.getText() == null){
+                }if(bookName.equals("")){
                     txtName.setError("Please enter your name.");
                 }
             }
