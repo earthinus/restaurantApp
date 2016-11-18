@@ -82,17 +82,26 @@ public class RestaurantList extends AppCompatActivity {
                         Log.d("Debug", "photoURL: " + "i:" + i + " " + photoUrls[0]);
 
                         // restaurants ArrayList
-                        String thumb = photoUrls[0],
-                                name = results.getJSONObject(i).getString("name"),
-                                rating = "★" + results.getJSONObject(i).getString("rating"),
-                                id = results.getJSONObject(i).getString("place_id");
-                        restaurants.add(new Restaurant(thumb, name, rating, id));
+                        String thumb    = photoUrls[0],
+                               name     = results.getJSONObject(i).getString("name"),
+                               rating   = "★" + results.getJSONObject(i).getString("rating"),
+                               place_id = results.getJSONObject(i).getString("place_id");
+                        restaurants.add(new Restaurant(thumb, name, rating, place_id));
 
                         // Database insert
-                        data.put("PLACE_ID", id);
-                        data.put("NAME", name);
-                        data.put("THUMB", thumb);
-                        data.put("RATING", results.getJSONObject(i).getString("rating"));
+                        data.put(DBHelper.PLACE_ID, place_id);
+                        data.put(DBHelper.NAME, name);
+                        data.put(DBHelper.THUMB, thumb);
+                        data.put(DBHelper.RATING, results.getJSONObject(i).getString(DBHelper.RATING)); // the number without star sign
+//                        data.put(DBHelper.LOCATION_LAT, results.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT));
+//                        data.put(DBHelper.LOCATION_LNG, results.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG));
+
+                        //data.put(DBHelper.FORMATTED_ADDRESS, results.getJSONObject(i).getString(DBHelper.FORMATTED_ADDRESS));
+                        //data.put(DBHelper.PRICE_LEVEL, results.getJSONObject(i).getString(DBHelper.PRICE_LEVEL));
+                        //data.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, results.getJSONObject(i).getString(DBHelper.INTERNATIONAL_PHONE_NUMBER));
+                        //data.put(DBHelper.OPENING_HOURS, results.getJSONObject(i).getString(DBHelper.OPENING_HOURS));
+                        //data.put(DBHelper.URL, results.getJSONObject(i).getString(DBHelper.URL));
+                        //data.put(DBHelper.WEBSITE, results.getJSONObject(i).getString(DBHelper.WEBSITE));
                         db.insertRecord(data);
                     }
 

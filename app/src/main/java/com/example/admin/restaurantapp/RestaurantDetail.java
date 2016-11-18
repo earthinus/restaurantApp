@@ -1,13 +1,9 @@
 package com.example.admin.restaurantapp;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,10 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,7 +35,7 @@ public class RestaurantDetail extends AppCompatActivity {
     ImageView imageView_restaurantMainVisual;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
-    String restaurantId;
+    String placeId;
     private TextView mDate;
     private Menu mainMenu;
 
@@ -109,61 +103,40 @@ public class RestaurantDetail extends AppCompatActivity {
         // Get intent from previous activity
         final Intent intent = getIntent();
         if (intent != null) {
-            restaurantId = intent.getStringExtra(RestaurantList.EXTRA_RESTAURANT_ID + "restaurantId");
+            placeId = intent.getStringExtra(RestaurantList.EXTRA_RESTAURANT_ID + "restaurantId");
 
         } else {
             Log.d("Debug", "RestaurantDetail getExtra: NG");
         }
 
-        // TODO : restaurantIdをkeyにして、DBから取得する
+        // Get resource from DB by using placeId
         SQLiteDatabase db = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION).getReadableDatabase();
-        //Cursor cursor = db.getReadableDatabase(restaurantId);
 
-        // Check the table was removed or not
         Cursor cursor;
         try {
             cursor = db.query(
-                    DBHelper.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
+                    DBHelper.TABLE_NAME,    // Table name
+                    null,                   // columns
+                    DBHelper.PLACE_ID + " = ?" ,        // Selection
+                    new String[]{placeId},  // SelectionArgs
+                    null,                   // groupBy
+                    null,                   // Having
+                    null                    // orderBy
             );
-            Log.d("Debug", "Count: " + cursor.getCount()); // TODO : あとで消す
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-
                 setTitle(cursor.getString(2));
 //                textView_restaurantDetail.setText("test");
-                Log.d("Debug", "PhotoURL: " + cursor.getString(3));
-                Picasso.with(this).load(cursor.getString(3)).fit().into(imageView_restaurantMainVisual);
-
-//                System.out.println(
-//                        cursor.getString(0) + "\t" +
-//                        cursor.getString(1) + "\t\t" +
-//                        cursor.getString(2) + "\t\t" +
-//                        cursor.getString(3) + "\t\t" +
-//                        cursor.getString(4) + "\n");
+                Picasso.with(this).load(cursor.getString(3)).fit().placeholder(R.drawable.progress).into(imageView_restaurantMainVisual);
             }
             cursor.close();
 
         } catch (Exception e) {
-            Log.d("Debug", e.toString());
+            Log.d("Debug", "Catch error: " + e.toString());
 
         } finally {
             db.close();
         }
-
-        // Initialize each object
-        //textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
-
-        // Set each object
-//        setTitle(getResources().getStringArray(R.array.restaurants)[restaurantId]);
-//        textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
-//        imageView_restaurantMainVisual.setImageResource(mainVisuals[restaurantId]);
-        //textView_restaurantDetail.setText(getResources().getStringArray(R.array.details)[restaurantId]);
 
         // Fab
         menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
@@ -184,7 +157,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
                 Toast.makeText(RestaurantDetail.this, "Added to Favorite list", Toast.LENGTH_LONG).show();
                 Intent intent_favoriteList = new Intent(getApplicationContext(), FavoriteList.class);
-                intent_favoriteList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
+                intent_favoriteList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, placeId);
                 Log.d("Debug", "Start activity");
                 startActivity(intent_favoriteList);
             }
@@ -196,7 +169,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
                 Toast.makeText(RestaurantDetail.this, "Added to Book list", Toast.LENGTH_LONG).show();
                 Intent intent_bookList = new Intent(getApplicationContext(), BookList.class);
-                intent_bookList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
+                intent_bookList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, placeId);
                 startActivity(intent_bookList);
             }
         });
