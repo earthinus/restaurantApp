@@ -12,8 +12,9 @@ import java.util.HashMap;
 class DBHelper extends SQLiteOpenHelper {
 
     static final String DB_NAME    = "Restaurant";
-    static final String TABLE_NAME = "restaurant";
-    static final int DB_VERSION = 9;
+    static final String TABLE_NAME_RESTAURANT = "restaurants";
+    static final String TABLE_NAME_REVIEW = "reviews";
+    static final int DB_VERSION = 11;
     static final String
             NO = "no",
             LOCATION_LAT = "lat",
@@ -44,33 +45,42 @@ class DBHelper extends SQLiteOpenHelper {
 
         // Create table
         sqLiteDatabase.execSQL(
-            "create table " + TABLE_NAME +
-                " (" +
-                    NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                    PLACE_ID + " TEXT ," +
-                    NAME     + " TEXT ," +
-                    THUMB    + " TEXT ," +
-                    RATING   + " TEXT ," +
-                    REVIEWS  + " TEXT ," +
-                    PRICE_LEVEL  + " TEXT ," +
-                    FORMATTED_ADDRESS  + " TEXT ," +
-                    OPENING_HOURS  + " TEXT ," +
-                    LOCATION_LAT  + " TEXT ," +
-                    LOCATION_LNG  + " TEXT ," +
-//                        REVIEW_AUTHOR_NAME + " TEXT ," +
-//                        REVIEW_TEXT + " TEXT ," +
-//                        REVIEW_TIME + " TEXT ," +
-                    INTERNATIONAL_PHONE_NUMBER + " TEXT ," +
-                    URL + " TEXT ," +
-                    WEBSITE + " TEXT" +
-                ")"
+                "create table " + TABLE_NAME_RESTAURANT +
+                    " (" +
+                        NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                        PLACE_ID + " TEXT ," +
+                        NAME     + " TEXT ," +
+                        THUMB    + " TEXT ," +
+                        RATING   + " TEXT ," +
+                        REVIEWS  + " TEXT ," +
+                        PRICE_LEVEL  + " TEXT ," +
+                        FORMATTED_ADDRESS  + " TEXT ," +
+                        OPENING_HOURS  + " TEXT ," +
+                        LOCATION_LAT  + " TEXT ," +
+                        LOCATION_LNG  + " TEXT ," +
+                        INTERNATIONAL_PHONE_NUMBER + " TEXT ," +
+                        URL + " TEXT ," +
+                        WEBSITE + " TEXT" +
+                    ")"
+        );
+
+        sqLiteDatabase.execSQL(
+                "create table " + TABLE_NAME_REVIEW +
+                    " (" +
+                        NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                        PLACE_ID + " TEXT ," +
+                        REVIEW_AUTHOR_NAME + " TEXT ," +
+                        REVIEW_TEXT + " TEXT ," +
+                        REVIEW_TIME + " TEXT" +
+                    ")"
         );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-        sqLiteDatabase.execSQL("drop table if exists " + TABLE_NAME);
+        sqLiteDatabase.execSQL("drop table if exists " + TABLE_NAME_RESTAURANT);
+        sqLiteDatabase.execSQL("drop table if exists " + TABLE_NAME_REVIEW);
 
         // Recreate
         onCreate(sqLiteDatabase);
@@ -86,7 +96,7 @@ class DBHelper extends SQLiteOpenHelper {
         values.put(THUMB,    data.get(THUMB));
         values.put(RATING,   data.get(RATING));
 
-        long result = db.insert(TABLE_NAME, null, values);
+        long result = db.insert(TABLE_NAME_RESTAURANT, null, values);
 
         if (result != -1) {
             Log.d("Debug", "insertRecord: successful");
@@ -99,10 +109,10 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     Cursor getAllRecords() {
-        return this.getWritableDatabase().rawQuery("select * from " + TABLE_NAME, null);
+        return this.getWritableDatabase().rawQuery("select * from " + TABLE_NAME_RESTAURANT, null);
     }
 
     public Cursor getSpecificRecord(int id) {
-        return this.getWritableDatabase().rawQuery("select * from " + TABLE_NAME + " where " + TABLE_NAME + ".id=?", new String[]{id + ""});
+        return this.getWritableDatabase().rawQuery("select * from " + TABLE_NAME_RESTAURANT + " where " + TABLE_NAME_RESTAURANT + ".id=?", new String[]{id + ""});
     }
 }

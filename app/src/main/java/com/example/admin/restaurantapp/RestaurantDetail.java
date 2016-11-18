@@ -115,7 +115,7 @@ public class RestaurantDetail extends AppCompatActivity {
         Cursor cursor;
         try {
             cursor = db.query(
-                    DBHelper.TABLE_NAME,    // Table name
+                    DBHelper.TABLE_NAME_RESTAURANT,    // Table name
                     null,                   // columns
                     DBHelper.PLACE_ID + " = ?" ,        // Selection
                     new String[]{placeId},  // SelectionArgs
