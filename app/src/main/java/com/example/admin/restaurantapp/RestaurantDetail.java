@@ -332,9 +332,9 @@ public class RestaurantDetail extends AppCompatActivity {
                 showNotification(v);
             }else{
                 if (bookDate.equals("")) {
-                    txtDate.setError("Please chose the date.");
+                    txtDate.setError("Please choose the date.");
                 }if(bookTime.equals("")){
-                    txtTime.setError("Please chose the time.");
+                    txtTime.setError("Please choose the time.");
                 }if(bookName.equals("")){
                     txtName.setError("Please enter your name.");
                 }
