@@ -31,18 +31,22 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Scenario of this class
  *
- * @author Maki
+ * 1. Get place_id through intent
  *
- * 1. Start Service
- *          {@link MyIntentService#onHandleIntent}
+ * 2. Load restaurant info of the place_id
  *
- * 2. Receive Broadcast
+ * 3. Start Service {@link MyIntentService#onHandleIntent}
  *
- * 3. Start Activity of RestaurantList
+ * 4. Receive Broadcast
+ *
+ * 5. Set ArrayList of review
+ *
+ * 6. Save to database
  *
  */
 
@@ -64,14 +68,12 @@ public class RestaurantDetail extends AppCompatActivity {
     DBHelper dbHelper;
     Context context;
 
-    IntentFilter filter;
     BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restaurant_detail);
-
         context = getApplicationContext();
 
         // View Objects
@@ -89,7 +91,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
         /*
         * -------------------------------------------------------------------
-        * Get intent from previous activity
+        * Get place_id from intent of previous activity
         * -------------------------------------------------------------------
         */
 
@@ -103,12 +105,14 @@ public class RestaurantDetail extends AppCompatActivity {
 
         /*
         * -------------------------------------------------------------------
-        * Get resource of nearbyAPI from DB by using placeId
+        * Get restaurant data from DB by using placeId
         * -------------------------------------------------------------------
         */
 
         dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
         db = dbHelper.getReadableDatabase();
+
+        int restaurant_id = 0; // default
 
         Cursor cursor;
         try {
@@ -121,6 +125,7 @@ public class RestaurantDetail extends AppCompatActivity {
                     null,                               // Having
                     null                                // orderBy
             );
+
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
 
@@ -128,6 +133,10 @@ public class RestaurantDetail extends AppCompatActivity {
                 Picasso.with(this).load(cursor.getString(3)).fit().placeholder(R.drawable.progress).into(imageView_photo);
                 textView_name.setText(cursor.getString(2));
                 textView_rating.setText(cursor.getString(4));
+
+                // Keep RestaurantID to insert to reviews table
+                System.out.println("rowID: " + cursor.getString(0));
+                restaurant_id = Integer.valueOf(cursor.getString(0));
             }
             cursor.close();
 
@@ -140,7 +149,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
         /*
         * -------------------------------------------------------------------
-        * Start IntentService
+        * Start IntentService to request to detail API
         * -------------------------------------------------------------------
         */
 
@@ -151,11 +160,11 @@ public class RestaurantDetail extends AppCompatActivity {
 
         /*
         * -------------------------------------------------------------------
-        * Broadcast Receiver
+        * Get Json (by Broadcast Receiver)
         * -------------------------------------------------------------------
         */
 
-        filter = new IntentFilter("com.example.admin.restaurantapp.restaurantdetail");
+        final int final_restaurant_id = restaurant_id;
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -163,28 +172,67 @@ public class RestaurantDetail extends AppCompatActivity {
 
                 try {
                     // Convert to JSONObject
-                    response = new JSONObject(intent.getStringExtra("broadcast_detail"));
+                    response = new JSONObject(intent.getStringExtra(MyIntentService.BROADCAST_KEY_DETAIL));
                     Log.d("Debug", "Response: " + response);
                     String status = response.getString("status");
                     JSONObject result = response.getJSONObject("result");
+
+                    HashMap<String, String> hashMap_restaurant = new HashMap<>();
+                    HashMap<String, String> hashMap_review = new HashMap<>();
 
                     switch (status) {
 
                         case "OK":
 
+                            /*
+                            * -------------------------------------------------------------------
+                            * Insert additional restaurant info to Database
+                            * -------------------------------------------------------------------
+                            */
+
+                            hashMap_restaurant.put(DBHelper.LOCATION_LAT, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT));
+                            hashMap_restaurant.put(DBHelper.LOCATION_LNG, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG));
+                            hashMap_restaurant.put(DBHelper.FORMATTED_ADDRESS, (result.has(DBHelper.FORMATTED_ADDRESS) ? result.getString(DBHelper.FORMATTED_ADDRESS) : ""));
+                            hashMap_restaurant.put(DBHelper.PRICE_LEVEL, (result.has(DBHelper.PRICE_LEVEL) ? result.getString(DBHelper.PRICE_LEVEL) : ""));
+                            hashMap_restaurant.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, (result.has(DBHelper.INTERNATIONAL_PHONE_NUMBER) ? result.getString(DBHelper.INTERNATIONAL_PHONE_NUMBER) : ""));
+                            hashMap_restaurant.put(DBHelper.OPENING_HOURS, (result.has(DBHelper.OPENING_HOURS) ? result.getString(DBHelper.OPENING_HOURS) : ""));
+                            hashMap_restaurant.put(DBHelper.URL, (result.has(DBHelper.URL)) ? result.getString(DBHelper.URL) : "");
+                            hashMap_restaurant.put(DBHelper.WEBSITE, (result.has(DBHelper.WEBSITE) ? result.getString(DBHelper.WEBSITE) : ""));
+                            dbHelper.insertRecord(DBHelper.TABLE_NAME_RESTAURANT, hashMap_restaurant);
+
                             if (result.has("reviews")) {
 
                                 JSONArray reviews = result.getJSONArray("reviews");
+
+                                Review review;
+
                                 // Set reviewsArrayList
                                 for (int i = 0; i < reviews.length(); i++) {
 
                                     String text              = (reviews.getJSONObject(i).has("text")) ? reviews.getJSONObject(i).getString("text") : "",
                                            author_name       = (reviews.getJSONObject(i).has("author_name")) ? reviews.getJSONObject(i).getString("author_name") : "",
                                            author_url        = (reviews.getJSONObject(i).has("author_url")) ? reviews.getJSONObject(i).getString("author_url") : "",
-                                           profile_photo_url = (reviews.getJSONObject(i).has("profile_photo_url")) ? reviews.getJSONObject(i).getString("profile_photo_url") : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAADjVJREFUeNrsnc1vG8cZxmeJAHbhAqZdII57iCgDNeIChshbexBEHd2LpNySi8gcc5H4BxiSoD9A0iXHiLykt0g6+SgKOrg3rRCgDmwgWgdovoDaFNCgNlCg3ZcztCiVS+7H7Ox8PA9ArWBLFHdmfvO878zsDGMQBEEQlEYeiiBHPT6ui++q4assvp8b8ZP1Ef/mh6/eiH87F9933/3b5mwPhQ1AdIWgLACg19TQ92XFn4SACcLXS/E9wAEghQBRFT3+jLhWNP60gXCd0z40m7NdVCAAkQ1ERYCwIK5lw++IIDkQwPioYACS1iWWBRBVi+80eAfM5uw+Kh6AxIFiUfOwKS9RvkKQdBCKAZDhBLshwKiiOVxylk74aoewBADEPTDqAooGWIiVs+y4GoJ5joHRGMotoOSusiNcpQdA7ANjzdHcIo9chUDZdgEUD2BAAMU1QAAGQAEgkcn3LsAoDJRWCEkbgOgHRkWAgeS7ePkClC4A0QOOdRFOQXqpLUDpARCEU1B02LURQrINQNSBURaOsYr2Z4wo3GqaOCvvGQYHXANJPABBrmG19oWb9ACIvJBqj2GEyiZRqLVkwvMonuZw1AUcZbQpK9XUPeTyNIaDkvAttCHrRYsfmwAkGRyUiDfQdpwRhVrzOuYlnmZgUCh1yPDwkovqCUi0yktKGsFRBRxOi3eOF3uJwUFGwIFkHNIqefcABwRIdAUEw7iQ5pB4BcLRYHzZCARpC4lXEBx1EVZBkNaQeAXAgZwDMgYSD3BAgEQHQAAHJEdLKjex8xTBgRlySJaUzrirmkkHHJAsDWbcK3YAwhceAg5INiR7IjIxGBC+ZL2B+oRyEHW6uT8O4eUIR51hrgPKX608d03xcoKDrO+MYcQKUqP5vDaqyyvEwvoqSKVyy0fkA8J3H6mjziDlSbv2IRbyjtiqT99k9cpNNlW+ziq3rkX+3NHZOQt6b1m3f32DglOcj3gS4SCKTxg2dRvdxV1/jy0++B1b+Oh2/5pGA1A6/s/9K/R/kj6JKBMQGnLDdqBXVAkdYm3+Q9aovS/1fQmWjcPvWfvkZxTyZfkhIDW9AEFopQwMgBJLtGH2uk6AnCG0utDqn3/fh4PCKlXqBues+fUL5CkXoVZNxmbZJQlwrAOOizxj75MHbOvRPaVw9JP+MOE/+byaOr+xrSqYpKdVvYxwEBhnqA/Gqh/cYLsf3+9fC48vwpBrPXxB2ZfGZ3UQPFMu4Dj87KEWcJAovNtduo+KobVaGScQ0wPCE/M64OBwqA6pJokGBwBJP/RfLQYQuAfPOT79o3ZwDENCAwaOayXLsyPpAOFb9jifmO99+oBVytf0jjEe3evP2juesK+pBQQnPbH1MM6nkSMjQP7kgbYup8pM07pIckDgHu8mAU0KBXeX/uB6n7amBhC4B9v92LzGRvMjjodaqVwkGSBwj3ercI3sQg1yPV1cpJT3H7CuhA1uZAQ2XCSZi8QHBO7Rn/Mw1T0GWvkThn3zcpBl10t2uXbH+HugXIQGGRx3kbJcQDBr/q5x2XEft12uxjJLsBVVXAdx3j0ovNJ9UjCu5io3Xa/OFXmAcDtquF6iNiW3WBIf5tIxDwuN4yDOw2Fjr6vLyuMiU0pZgCwDj7DLuXUd9+Ngsl6aEF7R/qfYeNrCHhcOwqPNrA4C94CcDrNKWQmDIINVnzSzXpoQXlVQhnZqqnwdhRDDBEoIr9zUS2wPNNBcWkDqKDvICQcZM5pVigivKLTC6BXkTi6S0EHgHlfk//Qr7sdeLSQFZAFldlnB6ze4HzgIHCRKR4Fdxw3AQS6pEjXcWxqRf1DugePTrsim8zj2n/0TFRrTFEpwj/g9Lh01ADe0VnNxAZlBWdnd8+4/e4XKhIPIV8eCQ2oIcpwhEpmHlMcDwn+ggrKKDrO6hocnO3/7ARUZreokB8Hk4ARtGHzuBsGNwz+ThVkAJGkjCxuYqS6ygUN1JmlmEiBTKKPJorMATcw94B4x8hA4SHZRkmtSb9x78x/W3HuBikMOok50BqApodbSX5/1IYFi6MqM+lVAMIOepOF99Uz7ycPWk+8QWmUIs0pD5NRRNslDl6Wv/q5t79w++YVtP8WwbpYwq4TyyCaaG5n/8hvtICE4mnvPUUHJVY4CBPlHRkh0WSFLAwiAI7WmogBB/iEBkiLXa/VDvjAhX8d8h7Qc5D2UR0Qg+sENVr372/6G1XND+/IGr9/2e+hR65kGDZSOXqaDdlQenEkjajQ/M26dVaN2hy3X3r90L7R5A/2u/+OvGOkaIW8oST9kji9UpHMzVsLGzc/QuDa2pyZIxiXABAcdwdwYapB5iEbR6LO0xyykpPuicxUnHf5D7nfw7av+1WFYArY5Ow1AUjSgNL324ERc2aDEAYOUxs0Ijp0QfmdDtc1ZD4AI0XnnWc4djNuYqIGSMy18dDv18QMEBfXutOx+0oAAhYhbf7mX6cg4+hvNr5+793guAOEN9vCzh9I2caZGlGRSbnBaLu1wWLkVHc4dhe9HYHT71zex7mvgGrJEy1TaFjwLA0AKguNqHN96clbIQ0mUhG89ms5lcIDCOWdCrghA/gs45Ikm6nae/kNJeEJgkGPkfUScM07iMiAnn9eUno1BiXwnhEV2wxqMuFHyr3I4mYaxrd8VxVVAaNiV4vMiRMk8bZZwJJ7qSxOCEdj9RD98FXUADt1H7Qvf9ufaayEkvlOAUFJ82HyozeehxNv/8V/s9Cc+QXc1FCNXIAhu0vXujUyjUXm4Iq0acMFBnJlJ3126r9XnoXyBXiaeOEuwUt7jQj4yvBbLt/UmKayy5YxzfcLVaaW5jw6A9Gy8QapEmXMC0EW5FpXPFQWIlaIQxoWergitABDzBffI10UoFwEghopGrpB7wEUSqudMkr5cvYMWnLNoKLpi14m5fhQg1m19sfjgNlowyhkhFpLzgp3arjwkMsTq2nSXcxrNPCPMMkqnzjgIpE71aTs7pAtANmetcRAKrTB6BcdOqa71DmJrb6Z1mHX3hi230hsHiBUuUtRScNfzECsklrlHARJYYfdwEDh3OgXROQjXSxsqyrKJK7iIOvmTAOnaAQgS9CI0ZX7HdDoJEOOXmyBBR6Ken4NszvZMz0Mwe46yzzPEMt5FMIKFsk+pXmgQQRxATlHVkIMamX+X4v6gKZqBgyAHTKejeIAYvuSk/BvkIFC+DmK8i0BQivzDTwLIAcoMSiNDJ2kjDcE6B6njOZCCATFykvYgGSDcbgJUN+Ry/jHOQUj7KDfIAfmj5j/iAHKEsoMcUGfcf0YDsjm7zyzdjhSC4kZKpSy/DEE2h1dxAOmYdscOn+8NSQ6vJgPCZ9UDo7oE144s1kx0uI4t4VUcBzHORXr/hoOg/OOxPCm8igtI26QKOgrO0Urh4FLCq3iAcMq6xnQLZwCksHjFnNNvae1VWw4gXDsm9WB0QCakXgffvjLlo8Zuz/EA4XMixiTrHRcOu9etS+4fc22Mg7TlAmKYi2w//QHDvaq7ZHPKvB0nOU8DSJsZMrNOFUUVBqkr721zyjvRqGx8QPiOJ8a4yPrh95gTUaTm3gtT3KOb9InZpJtXbzOD1mfNf/kNQi0F4axBucdG0l9IBohhLkJwAJIcg/mTX1jryXemfNxumv0W0hx/YJSLUJhV+8JHuCW7Kw5D2Obec6M+cppf8lL9qcfH6+HXNdMqdX3+Q5ybLqHDIdcwbEKW3GNeJSDl8OtZ+CqbVsG0qQBBQiezYpvS+KLJV3KNtplzTLWoXUvyAYRD0gi/7ppa4QQHnWNIR4fRZmfYEX5Etxucs6PQKSgJNzhEpXmPZtpf9jL96cfHJ+HXqi0NAjvDC7d4/TZ0jDc23EpPuEeQ9g2yxhit8HVoTY+JhY62aScLHNkdhLsIhVkN1AWkmxGGcExnfRMZp9y2GDZ3gPRTU8abZAeETx5uoD4gjbQtaxN2Oeekb87S5GEX9QJpEVpJ7LBLEj9YE6EWpEVoxaMazQDhowUt1A9kQ2iVh4Mw8ZwvNpuDipCfRy5cyuGDNhl2hofUqic7tBrIy+XjPj6m2fUT1BukMO9o5/HGpVw+Ll8Y1kS9QQrUzguO/AC5yEfaqD8o57wj14EhL/dbsGxBI6RV3lHLutaqOAe50DzD/AiUR7vKGQ41gPCRBUACyU7KfRV/yFN2S4+P68yipfFQYWqJpU3MLkA4JA1m8FOIUOHK9HSg/oAAEsggOIoBBJBAhsBRHCCABDIAjmIBASSQ5nAUDwgggTSGQw9AAAmkKRz6AMIhWRSQlNE+nJbSeQ5zAOGQ0JqtQ0DirJp5rsw1HxAOSVlAggWO7ogvR1K0fCSJStoV1cXarTbajRMiKGo6wqGng1x2k9Xw6xbakMXJOM85tF3I6mlfhHyR4x7yEutCqpZu+YaZgFzkJQRJHW3LipCqqWtIZSYgl0OuNbiJsaLh2w2dQyqzAeGQ0OgWzZdglMscBcI1uqZ9cM/YIufnJK7ATeAaACQakopwE+QmcA0AMgYUWqZCw8EVtMvCRU5BJzut23AznjXVwke6VhF2Faq2CKcCW27Is66KeNhFI10NtFdlojCqZcrQrduAABTVYGyYnme4CQhAARgAJDEoKwIU5Cjpc4yOC2C4B8jlZL4hYKmgzU8UH5XiT/kFrt2853TV84WQywi/IsOojgkLCgGIGldZFLDUHS4Jvw8FHaPnoFsAkPi5CsEyJ66AAoBAY5yFHGVBXG3IWXoifDroXwEFAJHsLnXhLqYAMwDiSADhoyIBiEqHqQpYZgQwRS7DD0TIdCquPhwCgOjqNANYCKKpIbeppHSenmj0g+9Ph/6tB2eAIAiCIAiCDNH/BBgAYwMVhflO5V4AAAAASUVORK5CYII=",
-                                           rating            = (reviews.getJSONObject(i).has("rating")) ? reviews.getJSONObject(i).getString("rating") : "";
-                                    int    time              = reviews.getJSONObject(i).getInt("time");
-                                    reviewsArrayList.add(new Review(text, author_name, author_url, profile_photo_url, rating, time));
+                                           profile_photo_url = (reviews.getJSONObject(i).has("profile_photo_url")) ? "https:" + reviews.getJSONObject(i).getString("profile_photo_url") : "http://pictogram2.com/p/p0146/i/m.png";
+                                    int    rating            = (reviews.getJSONObject(i).has("rating")) ? reviews.getJSONObject(i).getInt("rating") : 0,
+                                           time              = reviews.getJSONObject(i).getInt("time");
+
+                                    review = new Review(text, author_name, author_url, profile_photo_url, rating, time, final_restaurant_id);
+                                    reviewsArrayList.add(review);
+
+                                    /*
+                                    * -------------------------------------------------------------------
+                                    * Insert reviews to Database
+                                    * -------------------------------------------------------------------
+                                    */
+
+                                    hashMap_review.put(DBHelper.REVIEW_TEXT, text);
+                                    hashMap_review.put(DBHelper.REVIEW_AUTHOR_NAME, author_name);
+                                    hashMap_review.put(DBHelper.REVIEW_AUTHOR_URL, author_url);
+                                    hashMap_review.put(DBHelper.REVIEW_PROFILE_PHOTO_URL, profile_photo_url);
+                                    hashMap_review.put(DBHelper.REVIEW_RATING, String.valueOf(rating));
+                                    hashMap_review.put(DBHelper.REVIEW_TIME, String.valueOf(time));
+                                    hashMap_review.put(DBHelper.RESTAURANT_NO, String.valueOf(final_restaurant_id));
+                                    dbHelper.insertRecord(DBHelper.TABLE_NAME_REVIEW, hashMap_review);
                                 }
 
                                 // Adapter
@@ -259,7 +307,7 @@ public class RestaurantDetail extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        registerReceiver(broadcastReceiver, filter);
+        registerReceiver(broadcastReceiver, new IntentFilter(MyIntentService.INTENT_FILTER_RESTAURANT_DETAIL));
     }
 
     @Override
@@ -351,13 +399,5 @@ public class RestaurantDetail extends AppCompatActivity {
         cal.set(year, month, dayOfMonth);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         mDate.setText(sdf.format(cal.getTime()));
-    }
-
-    @Override
-    protected void onStop() {
-
-        Log.d("Debug", "[onDestroy]");
-        dbHelper.deleteDatabase(); // TODO : Delete this command later
-        super.onStop();
     }
 }

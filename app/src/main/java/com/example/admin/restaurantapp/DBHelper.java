@@ -15,9 +15,10 @@ class DBHelper extends SQLiteOpenHelper {
             DB_NAME = "Restaurants",
             TABLE_NAME_RESTAURANT = "restaurants",
             TABLE_NAME_REVIEW = "reviews";
-    static final int DB_VERSION = 14;
+    static final int DB_VERSION = 16;
     static final String
             NO = "no",
+            RESTAURANT_NO = "restaurant_no",
             LOCATION_LAT = "lat",
             LOCATION_LNG = "lng",
             THUMB = "thumb",
@@ -31,6 +32,9 @@ class DBHelper extends SQLiteOpenHelper {
             INTERNATIONAL_PHONE_NUMBER = "international_phone_number",
             REVIEWS = "reviews",
             REVIEW_AUTHOR_NAME = "author_name",
+            REVIEW_AUTHOR_URL = "author_url",
+            REVIEW_PROFILE_PHOTO_URL = "profile_photo_url",
+            REVIEW_RATING = RATING,
             REVIEW_TEXT = "text",
             REVIEW_TIME = "time",
             URL = "url",
@@ -46,34 +50,37 @@ class DBHelper extends SQLiteOpenHelper {
 
         // Create table
         sqLiteDatabase.execSQL(
-                "create table " + TABLE_NAME_RESTAURANT +
-                    " (" +
-                        NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                        PLACE_ID + " TEXT ," +
-                        NAME     + " TEXT ," +
-                        THUMB    + " TEXT ," +
-                        RATING   + " TEXT ," +
-                        REVIEWS  + " TEXT ," +
-                        PRICE_LEVEL  + " TEXT ," +
-                        FORMATTED_ADDRESS  + " TEXT ," +
-                        OPENING_HOURS  + " TEXT ," +
-                        LOCATION_LAT  + " TEXT ," +
-                        LOCATION_LNG  + " TEXT ," +
-                        INTERNATIONAL_PHONE_NUMBER + " TEXT ," +
-                        URL + " TEXT ," +
-                        WEBSITE + " TEXT" +
-                    ")"
+            "create table " + TABLE_NAME_RESTAURANT +
+                " (" +
+                    NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                    PLACE_ID + " TEXT ," +
+                    NAME     + " TEXT ," +
+                    THUMB    + " TEXT ," +
+                    RATING   + " TEXT ," +
+                    REVIEWS  + " TEXT ," +
+                    PRICE_LEVEL  + " TEXT ," +
+                    FORMATTED_ADDRESS  + " TEXT ," +
+                    OPENING_HOURS  + " TEXT ," +
+                    LOCATION_LAT  + " TEXT ," +
+                    LOCATION_LNG  + " TEXT ," +
+                    INTERNATIONAL_PHONE_NUMBER + " TEXT ," +
+                    URL + " TEXT ," +
+                    WEBSITE + " TEXT" +
+                ")"
         );
 
         sqLiteDatabase.execSQL(
-                "create table " + TABLE_NAME_REVIEW +
-                    " (" +
-                        NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                        PLACE_ID + " TEXT ," +
-                        REVIEW_AUTHOR_NAME + " TEXT ," +
-                        REVIEW_TEXT + " TEXT ," +
-                        REVIEW_TIME + " TEXT" +
-                    ")"
+            "create table " + TABLE_NAME_REVIEW +
+                " (" +
+                    NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                    REVIEW_AUTHOR_NAME + " TEXT ," +
+                    REVIEW_AUTHOR_URL + " TEXT ," +
+                    REVIEW_PROFILE_PHOTO_URL + " TEXT ," +
+                    REVIEW_RATING + " TEXT ," +
+                    REVIEW_TEXT + " TEXT ," +
+                    REVIEW_TIME + " TEXT ," +
+                    RESTAURANT_NO + " TEXT" +
+                ")"
         );
     }
 
@@ -95,17 +102,40 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    boolean insertRecord(HashMap<String, String> data) {
+    boolean insertRecord(String target_table, HashMap<String, String> data) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         ContentValues values = new ContentValues();
+        long result = -1; // Default value
 
-        values.put(PLACE_ID, data.get(PLACE_ID));
-        values.put(NAME,     data.get(NAME));
-        values.put(THUMB,    data.get(THUMB));
-        values.put(RATING,   data.get(RATING));
+        switch (target_table) {
 
-        long result = db.insert(TABLE_NAME_RESTAURANT, null, values);
+            // Insert to restaurants table
+            case TABLE_NAME_RESTAURANT :
+                values.put(PLACE_ID, data.get(PLACE_ID));
+                values.put(NAME,     data.get(NAME));
+                values.put(THUMB,    data.get(THUMB));
+                values.put(RATING,   data.get(RATING));
+
+                result = db.insert(TABLE_NAME_RESTAURANT, null, values);
+                break;
+
+            // Insert to reviews table
+            case TABLE_NAME_REVIEW :
+                values.put(REVIEW_TEXT,                 data.get(REVIEW_TEXT));
+                values.put(REVIEW_AUTHOR_NAME,          data.get(REVIEW_AUTHOR_NAME));
+                values.put(REVIEW_AUTHOR_URL,           data.get(REVIEW_AUTHOR_URL));
+                values.put(REVIEW_PROFILE_PHOTO_URL,    data.get(REVIEW_PROFILE_PHOTO_URL));
+                values.put(REVIEW_RATING,               data.get(REVIEW_RATING));
+                values.put(REVIEW_TIME,                 data.get(REVIEW_TIME));
+                values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
+
+                result = db.insert(TABLE_NAME_REVIEW, null, values);
+                break;
+
+            default:
+                break;
+        }
 
         if (result != -1) {
             Log.d("Debug", "insertRecord: successful");
@@ -119,9 +149,5 @@ class DBHelper extends SQLiteOpenHelper {
 
     Cursor getAllRecords() {
         return this.getWritableDatabase().rawQuery("select * from " + TABLE_NAME_RESTAURANT, null);
-    }
-
-    public Cursor getSpecificRecord(int id) {
-        return this.getWritableDatabase().rawQuery("select * from " + TABLE_NAME_RESTAURANT + " where " + TABLE_NAME_RESTAURANT + ".id=?", new String[]{id + ""});
     }
 }

@@ -11,13 +11,14 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
 
     private Context context;
     private ArrayList<Review> reviews;
 
-    public ReviewAdapter(Context context, ArrayList<Review> reviews) {
+    ReviewAdapter(Context context, ArrayList<Review> reviews) {
         this.context = context;
         this.reviews = reviews;
     }
@@ -33,10 +34,10 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
 
         Holder(View itemView) {
             super(itemView);
-            this.author_name = (TextView) itemView.findViewById(R.id.textView_authorName);
-            this.rating = (TextView) itemView.findViewById(R.id.textView_rating);
-            this.text = (TextView) itemView.findViewById(R.id.textView_text);
-            this.time = (TextView) itemView.findViewById(R.id.textView_time);
+            this.author_name   = (TextView)  itemView.findViewById(R.id.textView_authorName);
+            this.rating        = (TextView)  itemView.findViewById(R.id.textView_rating);
+            this.text          = (TextView)  itemView.findViewById(R.id.textView_text);
+            this.time          = (TextView)  itemView.findViewById(R.id.textView_time);
             this.profile_photo = (ImageView) itemView.findViewById(R.id.imageView_profilePhoto);
         }
 
@@ -55,7 +56,7 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
 
         Picasso.with(context).load(reviews.get(position).getProfile_photo_url()).fit().into(holder.profile_photo);
         holder.author_name.setText(reviews.get(position).getAuthor_name());
-        holder.rating.setText(reviews.get(position).getRating());
+        holder.rating.setText(String.valueOf(reviews.get(position).getRating()));
         holder.text.setText(reviews.get(position).getText());
         holder.time.setText(String.valueOf(reviews.get(position).getTime()));
 

@@ -25,8 +25,10 @@ public class MyIntentService extends IntentService {
     String RADIUS = "500";
     String jsonUrl_nearbySearch;
     String jsonUrl_detail;
-    final static String broadcastKey_nearby = "broadcast_nearbySearch";
-    final static String broadcastKey_detail = "broadcast_detail";
+    final static String BROADCAST_KEY_NEARBY = "broadcast_nearbySearch";
+    final static String BROADCAST_KEY_DETAIL = "broadcast_detail";
+    final static String INTENT_FILTER_MAIN_ACTIVITY = "com.example.admin.restaurantapp.mainactivity";
+    final static String INTENT_FILTER_RESTAURANT_DETAIL = "com.example.admin.restaurantapp.restaurantdetail";
 
     public MyIntentService() {
         super("MyIntentService");
@@ -57,12 +59,6 @@ public class MyIntentService extends IntentService {
 
                 Log.d("Debug", "JsonURL(nearby) : " + jsonUrl_nearbySearch);
 
-                /*
-                * -------------------------------------------------------------------
-                * Request to API
-                * -------------------------------------------------------------------
-                */
-
                 requestAPI(referrer, jsonUrl_nearbySearch);
                 break;
 
@@ -90,10 +86,16 @@ public class MyIntentService extends IntentService {
         }
     }
 
+    /*
+    * -------------------------------------------------------------------
+    * Request API
+    * -------------------------------------------------------------------
+    */
+
     private void requestAPI(final String referrer, String jsonUrl) {
 
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        Request<JSONObject> add = queue.add(new JsonObjectRequest(
+        queue.add(new JsonObjectRequest(
                 Request.Method.GET,
                 jsonUrl,
                 null,
@@ -117,13 +119,13 @@ public class MyIntentService extends IntentService {
                                     switch (referrer) {
 
                                         case "MainActivity":
-                                            intent.setAction("com.example.admin.restaurantapp.mainactivity");
-                                            intent.putExtra(broadcastKey_nearby, jsonResponse);
+                                            intent.setAction(INTENT_FILTER_MAIN_ACTIVITY);
+                                            intent.putExtra(BROADCAST_KEY_NEARBY, jsonResponse);
                                             break;
 
                                         case "RestaurantDetail":
-                                            intent.setAction("com.example.admin.restaurantapp.restaurantdetail");
-                                            intent.putExtra(broadcastKey_detail, jsonResponse);
+                                            intent.setAction(INTENT_FILTER_RESTAURANT_DETAIL);
+                                            intent.putExtra(BROADCAST_KEY_DETAIL, jsonResponse);
                                             break;
 
                                         default:

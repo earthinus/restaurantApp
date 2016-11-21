@@ -55,12 +55,14 @@ public class RestaurantList extends AppCompatActivity {
         // Database
         dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
 
-        // Delete database file
-        //boolean re = SQLiteDatabase.deleteDatabase(this.getDatabasePath(dbHelper.DB_NAME));
-
         HashMap<String, String> data = new HashMap<>();
 
-        // Get json response through intent
+        /*
+        * -------------------------------------------------------------------
+        * Get Json (by intent)
+        * -------------------------------------------------------------------
+        */
+
         Intent intent = getIntent();
         try {
             response = new JSONObject(intent.getStringExtra("splash_jsonResponse"));
@@ -108,16 +110,7 @@ public class RestaurantList extends AppCompatActivity {
                         data.put(DBHelper.NAME, name);
                         data.put(DBHelper.THUMB, thumb);
                         data.put(DBHelper.RATING, results.getJSONObject(i).getString(DBHelper.RATING)); // the number without star sign
-//                        data.put(DBHelper.LOCATION_LAT, results.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT));
-//                        data.put(DBHelper.LOCATION_LNG, results.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG));
-
-                        //data.put(DBHelper.FORMATTED_ADDRESS, results.getJSONObject(i).getString(DBHelper.FORMATTED_ADDRESS));
-                        //data.put(DBHelper.PRICE_LEVEL, results.getJSONObject(i).getString(DBHelper.PRICE_LEVEL));
-                        //data.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, results.getJSONObject(i).getString(DBHelper.INTERNATIONAL_PHONE_NUMBER));
-                        //data.put(DBHelper.OPENING_HOURS, results.getJSONObject(i).getString(DBHelper.OPENING_HOURS));
-                        //data.put(DBHelper.URL, results.getJSONObject(i).getString(DBHelper.URL));
-                        //data.put(DBHelper.WEBSITE, results.getJSONObject(i).getString(DBHelper.WEBSITE));
-                        dbHelper.insertRecord(data);
+                        dbHelper.insertRecord(DBHelper.TABLE_NAME_RESTAURANT, data);
                     }
 
                     // Database read // TODO: move this to intent.getExtra of RestaurantDetail later

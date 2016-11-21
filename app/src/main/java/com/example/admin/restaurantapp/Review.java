@@ -5,17 +5,19 @@ public class Review {
     private String text,
                    author_name,
                    author_url,
-                   profile_photo_url,
-                   rating;
-    private int    time;
+                   profile_photo_url;
+    private int    rating,
+                   time,
+                   restaurant_id; // = primary key of the restaurant in restaurants table
 
-    public Review(String text, String author_name, String author_url, String profile_photo_url, String rating, int time) {
+    public Review(String text, String author_name, String author_url, String profile_photo_url, int rating, int time, int restaurant_id) {
         this.text = text;
         this.author_name = author_name;
         this.author_url = author_url;
         this.profile_photo_url = profile_photo_url;
         this.rating = rating;
         this.time = time;
+        this.restaurant_id = restaurant_id;
     }
 
     public String getText() {
@@ -50,11 +52,11 @@ public class Review {
         this.profile_photo_url = profile_photo_url;
     }
 
-    public String getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -64,5 +66,13 @@ public class Review {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public int getRestaurant_id() {
+        return restaurant_id;
+    }
+
+    public void setRestaurant_id(int restaurant_id) {
+        this.restaurant_id = restaurant_id;
     }
 }

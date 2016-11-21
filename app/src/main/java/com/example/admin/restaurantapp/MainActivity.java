@@ -12,20 +12,18 @@ import android.util.Log;
 /**
  * Scenario of this class
  *
- * 1. Start Service
- *          {@link MyIntentService#onHandleIntent}
+ * 1. Start Service {@link MyIntentService#onHandleIntent}
  *
  * 2. Receive Broadcast
  *
  * 3. Set intent
  *
- * 3. Start Activity of RestaurantList
+ * 4. Start Activity of RestaurantList
  *
  */
 
 public class MainActivity extends AppCompatActivity {
 
-    IntentFilter filter;
     BroadcastReceiver broadcastReceiver;
     String response;
 
@@ -48,18 +46,16 @@ public class MainActivity extends AppCompatActivity {
 
         /*
         * -------------------------------------------------------------------
-        * Receive Broadcast
+        * Get Json (by Receive Broadcast)
         * -------------------------------------------------------------------
         */
-
-        filter = new IntentFilter("com.example.admin.restaurantapp.mainactivity");
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
                 // Receive json response
-                response = intent.getStringExtra("broadcast_nearbySearch");
+                response = intent.getStringExtra(MyIntentService.BROADCAST_KEY_NEARBY);
 
                 Log.d("Debug", "Response: " + response);
 
@@ -102,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        registerReceiver(broadcastReceiver, filter);
+        registerReceiver(broadcastReceiver, new IntentFilter(MyIntentService.INTENT_FILTER_MAIN_ACTIVITY));
     }
 
     @Override
