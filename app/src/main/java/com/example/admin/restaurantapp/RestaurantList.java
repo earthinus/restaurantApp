@@ -21,7 +21,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+
+/**
+ * Scenario of this class
+ *
+ * 1. Get intent
+ *
+ * 2. Set ArrayList of restaurants
+ *
+ * 3. Save on database
+ *
+ * 4. Set Adapter to RecyclerView
+ *
+ */
 
 public class RestaurantList extends AppCompatActivity {
     Button favListButton, bookListButton;
@@ -30,7 +42,7 @@ public class RestaurantList extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     ArrayList<Restaurant> restaurants;
     JSONObject response;
-    DBHelper db;
+    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +53,10 @@ public class RestaurantList extends AppCompatActivity {
         restaurants = new ArrayList<>();
 
         // Database
-        db = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
+        dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
+
+        // Delete database file
+        //boolean re = SQLiteDatabase.deleteDatabase(this.getDatabasePath(dbHelper.DB_NAME));
 
         HashMap<String, String> data = new HashMap<>();
 
@@ -69,17 +84,17 @@ public class RestaurantList extends AppCompatActivity {
 
                             for (int j = 0; j < results_photos.length(); j++)
                                 photoUrls[j] =
-                                        getResources().getString(R.string.jsonUrl_photo)
-                                                + "photoreference=" + results.getJSONObject(i).getJSONArray("photos").getJSONObject(0).getString("photo_reference")
-                                                + "&maxwidth=400"
-                                                + "&maxheight=400"
-                                                + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
+                                    getResources().getString(R.string.jsonUrl_photo)
+                                    + "photoreference=" + results.getJSONObject(i).getJSONArray("photos").getJSONObject(0).getString("photo_reference")
+                                    + "&maxwidth=400"
+                                    + "&maxheight=400"
+                                    + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
 
-                        // If no photo
+                        // If no photo, set icon
                         } else
                             photoUrls[0] = results.getJSONObject(i).getString("icon");
 
-                        Log.d("Debug", "photoURL: " + "i:" + i + " " + photoUrls[0]);
+                        Log.d("Debug", "Thumb " + i + " : " + photoUrls[0]);
 
                         // restaurants ArrayList
                         String thumb    = photoUrls[0],
@@ -102,21 +117,21 @@ public class RestaurantList extends AppCompatActivity {
                         //data.put(DBHelper.OPENING_HOURS, results.getJSONObject(i).getString(DBHelper.OPENING_HOURS));
                         //data.put(DBHelper.URL, results.getJSONObject(i).getString(DBHelper.URL));
                         //data.put(DBHelper.WEBSITE, results.getJSONObject(i).getString(DBHelper.WEBSITE));
-                        db.insertRecord(data);
+                        dbHelper.insertRecord(data);
                     }
 
                     // Database read // TODO: move this to intent.getExtra of RestaurantDetail later
-                    Cursor cursor = db.getAllRecords();
+                    Cursor cursor = dbHelper.getAllRecords();
 
                     System.out.println("Count: " + cursor.getCount());
                     while (cursor.moveToNext()) {
 
                         System.out.println(
-                                cursor.getString(0) + "\t" +
-                                        cursor.getString(1) + "\t" +
-                                        cursor.getString(2) + "\t" +
-                                        cursor.getString(3) + "\n" +
-                                        "-------------------------------------"
+                            cursor.getString(0) + "\t" +
+                            cursor.getString(1) + "\t" +
+                            cursor.getString(2) + "\t" +
+                            cursor.getString(3) + "\n" +
+                            "-------------------------------------"
                         );
                     }
                     cursor.close();
@@ -174,7 +189,6 @@ public class RestaurantList extends AppCompatActivity {
     }
 
     public final static String EXTRA_RESTAURANT_ID = "com.example.admin.restaurantapp.id";
-    public final static String EXTRA_RESTAURANT_FAV_ID = "com.example.admin.restaurantapp.favid";
 
     // Set function of backButton on ActionBar
     @Override

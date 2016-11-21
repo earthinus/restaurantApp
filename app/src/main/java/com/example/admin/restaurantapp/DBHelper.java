@@ -11,10 +11,11 @@ import java.util.HashMap;
 
 class DBHelper extends SQLiteOpenHelper {
 
-    static final String DB_NAME    = "Restaurant";
-    static final String TABLE_NAME_RESTAURANT = "restaurants";
-    static final String TABLE_NAME_REVIEW = "reviews";
-    static final int DB_VERSION = 11;
+    static final String
+            DB_NAME = "Restaurants",
+            TABLE_NAME_RESTAURANT = "restaurants",
+            TABLE_NAME_REVIEW = "reviews";
+    static final int DB_VERSION = 14;
     static final String
             NO = "no",
             LOCATION_LAT = "lat",
@@ -84,6 +85,14 @@ class DBHelper extends SQLiteOpenHelper {
 
         // Recreate
         onCreate(sqLiteDatabase);
+    }
+
+    public void deleteDatabase() {
+
+        getWritableDatabase().execSQL("drop table if exists " + TABLE_NAME_RESTAURANT);
+        getWritableDatabase().execSQL("drop table if exists " + TABLE_NAME_REVIEW);
+        Log.d("Debug", "Database was deleted.");
+
     }
 
     boolean insertRecord(HashMap<String, String> data) {

@@ -4,21 +4,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
 /**
  * Scenario of this class
- *
- * @author Mai
  *
  * 1. Start Service
  *          {@link MyIntentService#onHandleIntent}
  *
  * 2. Receive Broadcast
+ *
+ * 3. Set intent
  *
  * 3. Start Activity of RestaurantList
  *
@@ -26,31 +25,41 @@ import android.widget.ProgressBar;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static Context context;
     IntentFilter filter;
     BroadcastReceiver broadcastReceiver;
+    String response;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.index);
 
-        // TODO : あとで消す
-        context = this;
+        /*
+        * -------------------------------------------------------------------
+        * Start IntentService
+        * -------------------------------------------------------------------
+        */
 
-        // Start Service
         Intent intent_service = new Intent(this, MyIntentService.class);
+
+        //intent_service.putExtra("context", (Serializable) getApplicationContext());
+        intent_service.putExtra("referrer", "MainActivity");
         this.startService(intent_service);
 
-        // Receive broadcast
-        filter = new IntentFilter("com.example.admin.restaurantapp");
+        /*
+        * -------------------------------------------------------------------
+        * Receive Broadcast
+        * -------------------------------------------------------------------
+        */
+
+        filter = new IntentFilter("com.example.admin.restaurantapp.mainactivity");
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
                 // Receive json response
-                String response = intent.getStringExtra("broadcast_nearbySearch");
+                response = intent.getStringExtra("broadcast_nearbySearch");
 
                 Log.d("Debug", "Response: " + response);
 
@@ -94,5 +103,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         registerReceiver(broadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(broadcastReceiver);
+        Log.d("Debug", "broadcastReceiver was deleted.");
+        super.onDestroy();
     }
 }
