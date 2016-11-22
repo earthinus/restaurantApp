@@ -1,16 +1,16 @@
 package com.example.admin.restaurantapp;
 
-public class Review {
+class Review {
 
     private String text,
                    author_name,
                    author_url,
                    profile_photo_url;
-    private int    rating,
-                   time,
+    private double rating;
+    private int    time,
                    restaurant_id; // = primary key of the restaurant in restaurants table
 
-    public Review(String text, String author_name, String author_url, String profile_photo_url, int rating, int time, int restaurant_id) {
+    Review(String text, String author_name, String author_url, String profile_photo_url, double rating, int time, int restaurant_id) {
         this.text = text;
         this.author_name = author_name;
         this.author_url = author_url;
@@ -52,11 +52,11 @@ public class Review {
         this.profile_photo_url = profile_photo_url;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 

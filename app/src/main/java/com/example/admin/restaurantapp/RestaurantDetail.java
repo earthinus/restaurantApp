@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,10 +55,14 @@ public class RestaurantDetail extends AppCompatActivity {
 
     ImageView imageView_photo;
     TextView textView_name,
-             textView_rating;
+             textView_rating,
+             textView_interNationalPhoneNumber,
+             textView_website;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
-    String placeId;
+    String placeId,
+            interNationalPhoneNumber,
+            website;
     private TextView mDate;
     private Menu mainMenu;
     RecyclerView recyclerView;
@@ -82,6 +87,8 @@ public class RestaurantDetail extends AppCompatActivity {
         textView_rating = (TextView) findViewById(R.id.textView_rating);
         mDate = (TextView) findViewById(R.id.date);
         mDateClickListener();
+        textView_interNationalPhoneNumber = (TextView) findViewById(R.id.interNationalPhoneNumber);
+        textView_website = (TextView) findViewById(R.id.interNationalPhoneNumber);
         menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
         menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
         menu3 = (FloatingActionButton) findViewById(R.id.subFloatingMenu3);
@@ -177,12 +184,39 @@ public class RestaurantDetail extends AppCompatActivity {
                     String status = response.getString("status");
                     JSONObject result = response.getJSONObject("result");
 
-                    HashMap<String, String> hashMap_restaurant = new HashMap<>();
-                    HashMap<String, String> hashMap_review = new HashMap<>();
+                    HashMap<String, String> hashMap_restaurant = new HashMap<>(),
+                                            hashMap_review     = new HashMap<>();
 
                     switch (status) {
 
                         case "OK":
+
+                            String formatted_address        = (result.has(DBHelper.FORMATTED_ADDRESS)) ? result.getString(DBHelper.FORMATTED_ADDRESS) : "",
+                                   place_level              = (result.has(DBHelper.PRICE_LEVEL)) ? result.getString(DBHelper.PRICE_LEVEL) : "",
+                                   url                      = (result.has(DBHelper.URL)) ? result.getString(DBHelper.URL) : "";
+                            website                         = (result.has(DBHelper.WEBSITE)) ? result.getString(DBHelper.WEBSITE) : "";
+                            interNationalPhoneNumber        = (result.has(DBHelper.INTERNATIONAL_PHONE_NUMBER)) ? result.getString(DBHelper.INTERNATIONAL_PHONE_NUMBER) : "";
+                            boolean opening_hours           = (result.getJSONObject(DBHelper.OPENING_HOURS).has("open_now")) && result.getJSONObject(DBHelper.OPENING_HOURS).getBoolean("open_now"); // TODO : separate each weekdays later
+
+                            /*
+                            * -------------------------------------------------------------------
+                            * Show to View
+                            * -------------------------------------------------------------------
+                            */
+
+                            // Open or Close
+                            String openingCondition;
+                            if (opening_hours) openingCondition = "open now";
+                            else               openingCondition = "close now";
+
+                            ((TextView) findViewById(R.id.formatted_address)).setText(formatted_address);
+                            ((TextView) findViewById(R.id.opening_hours)).setText(openingCondition);
+
+                            if (!place_level.equals("")) ((TextView) findViewById(R.id.priceLevel)).setText(place_level);
+                            else findViewById(R.id.priceLevel).setVisibility(View.GONE);
+                            textView_interNationalPhoneNumber.setText(interNationalPhoneNumber);
+                            //((TextView) findViewById(R.id.url)).setText(url);
+                            textView_website.setText(website);
 
                             /*
                             * -------------------------------------------------------------------
@@ -192,12 +226,12 @@ public class RestaurantDetail extends AppCompatActivity {
 
                             hashMap_restaurant.put(DBHelper.LOCATION_LAT, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT));
                             hashMap_restaurant.put(DBHelper.LOCATION_LNG, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG));
-                            hashMap_restaurant.put(DBHelper.FORMATTED_ADDRESS, (result.has(DBHelper.FORMATTED_ADDRESS) ? result.getString(DBHelper.FORMATTED_ADDRESS) : ""));
+                            hashMap_restaurant.put(DBHelper.FORMATTED_ADDRESS, formatted_address);
                             hashMap_restaurant.put(DBHelper.PRICE_LEVEL, (result.has(DBHelper.PRICE_LEVEL) ? result.getString(DBHelper.PRICE_LEVEL) : ""));
-                            hashMap_restaurant.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, (result.has(DBHelper.INTERNATIONAL_PHONE_NUMBER) ? result.getString(DBHelper.INTERNATIONAL_PHONE_NUMBER) : ""));
-                            hashMap_restaurant.put(DBHelper.OPENING_HOURS, (result.has(DBHelper.OPENING_HOURS) ? result.getString(DBHelper.OPENING_HOURS) : ""));
-                            hashMap_restaurant.put(DBHelper.URL, (result.has(DBHelper.URL)) ? result.getString(DBHelper.URL) : "");
-                            hashMap_restaurant.put(DBHelper.WEBSITE, (result.has(DBHelper.WEBSITE) ? result.getString(DBHelper.WEBSITE) : ""));
+                            hashMap_restaurant.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, interNationalPhoneNumber);
+                            hashMap_restaurant.put(DBHelper.OPENING_HOURS, String.valueOf(opening_hours));
+                            hashMap_restaurant.put(DBHelper.URL, url);
+                            hashMap_restaurant.put(DBHelper.WEBSITE, website);
                             dbHelper.updateRestaurantsTableRow(placeId, hashMap_restaurant);
 
                             if (result.has("reviews")) {
@@ -258,11 +292,6 @@ public class RestaurantDetail extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                // TODO : Save on database of restaurant
-
-
-                // TODO : Save on database of review
             }
         };
 
@@ -271,6 +300,12 @@ public class RestaurantDetail extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        /*
+        * -------------------------------------------------------------------
+        * Set ClickListener of fab buttons
+        * -------------------------------------------------------------------
+        */
 
         menu1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -302,6 +337,26 @@ public class RestaurantDetail extends AppCompatActivity {
                 startActivity(intent_bookList);
             }
         });
+
+        textView_interNationalPhoneNumber.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + interNationalPhoneNumber)));
+                    }
+                }
+        );
+
+        textView_website.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(website)));
+                    }
+                }
+        );
+
+
     }
 
     @Override

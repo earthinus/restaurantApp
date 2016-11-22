@@ -66,32 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent_restaurantList);
             }
         };
-
-        // TODO : 3. Show Restaurant Detail (Maki)
-        // 1. Load array data by using restaurant's id
-        // 2. Set the array to each object
-        // 3. Set onClick function to "reservation" fab button
-        //      Show toast "This restaurant was added to favorite"
-        // 4. Set onClick function to "favorite" fab
-        //      Change the color or icon of fab
-        //      Set onClick function for removing from favorite list
-
-        // TODO : 4. Show Book List (Maki)
-        // 1. Load book list data
-        // 2. Set ListView
-        // 3. Set onLongClickListener to remove item from ListView
-        //      Show dialog to confirm removing
-        //      Remove data from array of favorite list
-        //      Show toast "The selected item was removed."
-
-        // TODO : 5. Show Favorite List (Maki)
-        // 1. Load item data by use
-        // 2. Set ListView
-        // 3. Set onLongClickListener to remove item from ListView
-        //      Show dialog to confirm removing
-        //      Remove data from array of favorite list
-        //      Show toast "The selected item was removed."
-
     }
 
     @Override

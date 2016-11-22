@@ -52,7 +52,7 @@ public class MyIntentService extends IntentService {
                 // API URL
                 jsonUrl_nearbySearch = getResources().getString(R.string.jsonUrl_nearbySearch)
                         + "location=" + LOCATION
-                        + "&lang=en"
+                        + "&language=en"
                         + "&type=restaurant"
                         + "&radius=" + RADIUS
                         + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
@@ -73,6 +73,7 @@ public class MyIntentService extends IntentService {
                 // API URL
                 jsonUrl_detail = getResources().getString(R.string.jsonUrl_details)
                         + "placeid=" + intent.getStringExtra("placeid")
+                        + "&language=en"
                         + "&key=" + getResources().getString(R.string.API_KEY_IP_ADDRESS);
 
                 Log.d("Debug", "JsonURL(details) : " + jsonUrl_detail);

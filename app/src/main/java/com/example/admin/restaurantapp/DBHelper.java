@@ -151,7 +151,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     /*
     * -------------------------------------------------------------------
-    * Adding restaurant additional info to 'restaurants' table
+    * Adding additional restaurant info to 'restaurants' table
     * -------------------------------------------------------------------
     */
 
