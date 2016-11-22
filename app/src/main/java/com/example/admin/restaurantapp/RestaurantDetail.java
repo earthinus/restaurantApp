@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,12 +40,14 @@ public class RestaurantDetail extends AppCompatActivity {
 
     TextView textView_restaurantDetail;
     ImageView imageView_restaurantMainVisual;
+    public AlertDialog.Builder builder;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
     String restaurantId;
     private Menu mainMenu;
+    public View reservation;
     Button DatePickButton, TimePickButton, BookButton;
-    EditText txtDate, txtTime, txtName, txtNum;
+    EditText txtDate, txtTime, txtName, txtNum, txtEmail;
     int mYear, mMonth, mDay, mHour, mMinute;
 
 
@@ -105,11 +109,16 @@ public class RestaurantDetail extends AppCompatActivity {
         txtDate = (EditText) findViewById(R.id.in_date);
         txtTime = (EditText) findViewById(R.id.in_time);
         txtName = (EditText) findViewById(R.id.in_name);
+        txtEmail = (EditText) findViewById(R.id.in_email);
         txtNum = (EditText) findViewById(R.id.in_num);
+        /*
         txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        */
+
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -122,6 +131,7 @@ public class RestaurantDetail extends AppCompatActivity {
                 txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
             }
 
@@ -130,14 +140,18 @@ public class RestaurantDetail extends AppCompatActivity {
 
             }
         };
+        /*
         txtDate.addTextChangedListener(textWatcher);
         txtName.addTextChangedListener(textWatcher);
         txtNum.addTextChangedListener(textWatcher);
         txtTime.addTextChangedListener(textWatcher);
+        txtEmail.addTextChangedListener(textWatcher);
+        */
         // Fab
         menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
         menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
         menu3 = (FloatingActionButton) findViewById(R.id.subFloatingMenu3);
+
 
         menu1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,14 +173,16 @@ public class RestaurantDetail extends AppCompatActivity {
             }
         });
 
+        // book button
+        LayoutInflater inflater = (LayoutInflater) RestaurantDetail.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        reservation = inflater.inflate(R.layout.reservation_form, null);
+        builder = new AlertDialog.Builder(RestaurantDetail.this);
+        builder.setView(R.layout.reservation_form);
         menu3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Toast.makeText(RestaurantDetail.this, "Added to Book list", Toast.LENGTH_LONG).show();
-                Intent intent_bookList = new Intent(getApplicationContext(), BookList.class);
-                intent_bookList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
-                startActivity(intent_bookList);
+                builder.show();
+                openDialog(v);
             }
         });
 
@@ -310,10 +326,11 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     // reservation form buttons function
-    public void onButtonClick(View v) {
+    public void openDialog(View v) {
         String bookDate = txtDate.getText().toString().trim();
         String bookTime = txtTime.getText().toString().trim();
         String bookName = txtName.getText().toString().trim();
+        String bookEmail = txtEmail.getText().toString().trim();
         String bookNum = txtNum.getText().toString().trim();
 
         if (v == DatePickButton) {
@@ -362,16 +379,18 @@ public class RestaurantDetail extends AppCompatActivity {
         // show notification or error message
         if (v == BookButton) {
 
-            if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") ||bookNum.equals("")))
+            if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") || bookNum.equals("") || bookEmail.equals("")))
             {
                 showNotification(v);
                 txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtDate.setText("");
                 txtName.setText("");
                 txtTime.setText("");
+                txtEmail.setText("");
                 txtNum.setText("");
             }else{
                 if (bookDate.equals("")) {
@@ -385,9 +404,14 @@ public class RestaurantDetail extends AppCompatActivity {
                     txtName.setError(null);
                     txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
 
+                }if(bookEmail.equals("")){
+                txtEmail.setError(null);
+                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+
                 }if(bookNum.equals("")){
                     txtNum.setError(null);
                     txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+
                 }
             }
         }
