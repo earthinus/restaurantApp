@@ -1,6 +1,8 @@
 package com.example.admin.restaurantapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +54,7 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(final Holder holder, final int position) {
 
         Picasso.with(context).load(reviews.get(position).getProfile_photo_url()).fit().into(holder.profile_photo);
         holder.author_name.setText(reviews.get(position).getAuthor_name());
@@ -60,11 +62,13 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
         holder.text.setText(reviews.get(position).getText());
         holder.time.setText(String.valueOf(reviews.get(position).getTime()));
 
+        // Set link to profile photo
         holder.profile_photo.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // TODO : Set link to profile photo
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(reviews.get(position).getAuthor_url()));
+                        context.startActivity(browserIntent);
                     }
                 }
         );
