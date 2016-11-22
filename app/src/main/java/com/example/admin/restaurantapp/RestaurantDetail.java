@@ -198,7 +198,7 @@ public class RestaurantDetail extends AppCompatActivity {
                             hashMap_restaurant.put(DBHelper.OPENING_HOURS, (result.has(DBHelper.OPENING_HOURS) ? result.getString(DBHelper.OPENING_HOURS) : ""));
                             hashMap_restaurant.put(DBHelper.URL, (result.has(DBHelper.URL)) ? result.getString(DBHelper.URL) : "");
                             hashMap_restaurant.put(DBHelper.WEBSITE, (result.has(DBHelper.WEBSITE) ? result.getString(DBHelper.WEBSITE) : ""));
-                            dbHelper.insertRecord(DBHelper.TABLE_NAME_RESTAURANT, hashMap_restaurant);
+                            dbHelper.updateRestaurantsTableRow(placeId, hashMap_restaurant);
 
                             if (result.has("reviews")) {
 

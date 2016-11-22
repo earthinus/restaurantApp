@@ -15,7 +15,7 @@ class DBHelper extends SQLiteOpenHelper {
             DB_NAME = "Restaurants",
             TABLE_NAME_RESTAURANT = "restaurants",
             TABLE_NAME_REVIEW = "reviews";
-    static final int DB_VERSION = 16;
+    static final int DB_VERSION = 17;
     static final String
             NO = "no",
             RESTAURANT_NO = "restaurant_no",
@@ -30,7 +30,6 @@ class DBHelper extends SQLiteOpenHelper {
             FORMATTED_ADDRESS = "formatted_address",
             OPENING_HOURS = "opening_hours",
             INTERNATIONAL_PHONE_NUMBER = "international_phone_number",
-            REVIEWS = "reviews",
             REVIEW_AUTHOR_NAME = "author_name",
             REVIEW_AUTHOR_URL = "author_url",
             REVIEW_PROFILE_PHOTO_URL = "profile_photo_url",
@@ -57,7 +56,6 @@ class DBHelper extends SQLiteOpenHelper {
                     NAME     + " TEXT ," +
                     THUMB    + " TEXT ," +
                     RATING   + " TEXT ," +
-                    REVIEWS  + " TEXT ," +
                     PRICE_LEVEL  + " TEXT ," +
                     FORMATTED_ADDRESS  + " TEXT ," +
                     OPENING_HOURS  + " TEXT ," +
@@ -102,6 +100,12 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    /*
+    * -------------------------------------------------------------------
+    * Inserting data to table
+    * -------------------------------------------------------------------
+    */
+
     boolean insertRecord(String target_table, HashMap<String, String> data) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -116,8 +120,6 @@ class DBHelper extends SQLiteOpenHelper {
                 values.put(NAME,     data.get(NAME));
                 values.put(THUMB,    data.get(THUMB));
                 values.put(RATING,   data.get(RATING));
-
-                result = db.insert(TABLE_NAME_RESTAURANT, null, values);
                 break;
 
             // Insert to reviews table
@@ -129,22 +131,43 @@ class DBHelper extends SQLiteOpenHelper {
                 values.put(REVIEW_RATING,               data.get(REVIEW_RATING));
                 values.put(REVIEW_TIME,                 data.get(REVIEW_TIME));
                 values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
-
-                result = db.insert(TABLE_NAME_REVIEW, null, values);
                 break;
 
             default:
                 break;
         }
 
+        result = db.insert(target_table, null, values);
+
         if (result != -1) {
-            Log.d("Debug", "insertRecord: successful");
+            Log.d("Debug", "insertRecord: successful in " + target_table);
             return true;
 
         } else {
-            Log.d("Debug", "insertRecord: failed");
+            Log.d("Debug", "insertRecord: failed in " + target_table);
             return false;
         }
+    }
+
+    /*
+    * -------------------------------------------------------------------
+    * Adding restaurant additional info to 'restaurants' table
+    * -------------------------------------------------------------------
+    */
+
+    void updateRestaurantsTableRow(String place_id, HashMap<String, String> data) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(PRICE_LEVEL, data.get(PRICE_LEVEL));
+        values.put(FORMATTED_ADDRESS, data.get(FORMATTED_ADDRESS));
+        values.put(OPENING_HOURS, data.get(OPENING_HOURS));
+        values.put(INTERNATIONAL_PHONE_NUMBER, data.get(INTERNATIONAL_PHONE_NUMBER));
+        values.put(LOCATION_LAT, data.get(LOCATION_LAT));
+        values.put(LOCATION_LNG, data.get(LOCATION_LNG));
+        values.put(URL, data.get(URL));
+        values.put(WEBSITE, data.get(WEBSITE));
+        db.update(TABLE_NAME_RESTAURANT, values, DBHelper.PLACE_ID + " = ?", new String[]{place_id});
     }
 
     Cursor getAllRecords() {
