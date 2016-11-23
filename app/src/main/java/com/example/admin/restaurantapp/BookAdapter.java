@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -22,7 +24,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
     private Context context;
     private ArrayList<Book> books;
-    private int restaurantId = new BookList().restaurantId;
+    //private int restaurantId = new BookList().restaurantId;
 
     BookAdapter(Context context, ArrayList<Book> books) {
         this.context = context;
@@ -54,7 +56,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         final int pos = position;
-        holder.icon.setImageDrawable(books.get(position).getIcon());
+        Picasso.with(context).load(books.get(position).getIcon()).fit().into(holder.icon);
         holder.name.setText(books.get(position).getName());
         holder.date.setText(books.get(position).getDate());
 
@@ -65,7 +67,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
                 // Create intent
                 Intent intent = new Intent(context, RestaurantDetail.class);
-                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
+                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, books.get(pos).getRestaurantId());
 
                 // Start Activity
                 context.startActivity(intent);
@@ -78,7 +80,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
             public boolean onLongClick(View view) {
 
                 // Get restaurant's name
-                String restaurantName = context.getResources().getStringArray(R.array.restaurants)[restaurantId];
+                String restaurantName = String.valueOf(books.get(pos).getRestaurantId());
 
                 DialogInterface.OnClickListener posL = new DialogInterface.OnClickListener() {
                     @Override
@@ -115,11 +117,12 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
                 // TODO : Dialog表示がうまくいかないのであとまわし
 
-                // Get sharedPreference
-                SharedPreferences preferences = context.getSharedPreferences(new BookList().PREFERENCE_BOOK_FILENAME, MODE_PRIVATE);
-
-                // Remove sharedPreference
-                preferences.edit().remove("rest-id" + restaurantId).apply();
+                // TODO : Remove the record from 'bookings' table
+//                // Get sharedPreference
+//                SharedPreferences preferences = context.getSharedPreferences(new BookList().PREFERENCE_BOOK_FILENAME, MODE_PRIVATE);
+//
+//                // Remove sharedPreference
+//                preferences.edit().remove("rest-id" + restaurantId).apply();
 
                 // Remove ArrayList
                 books.remove(pos);
@@ -129,7 +132,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
                 Toast.makeText(context, "\"" + restaurantName + "\" was removed.", Toast.LENGTH_SHORT).show();
 
                 Log.d("Debug", "pos: " + pos);
-                Log.d("Debug", "restaurantId: " + restaurantId);
+                //Log.d("Debug", "restaurantId: " + restaurantId);
                 Log.d("Debug", alertDialog.toString());
 
                 return true;

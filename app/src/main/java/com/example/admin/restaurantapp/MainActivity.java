@@ -7,50 +7,54 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
 /**
  * Scenario of this class
  *
- * @author Mai
- *
- * 1. Start Service
- *          {@link MyIntentService#onHandleIntent}
+ * 1. Start Service {@link MyIntentService#onHandleIntent}
  *
  * 2. Receive Broadcast
  *
- * 3. Start Activity of RestaurantList
+ * 3. Set intent
+ *
+ * 4. Start Activity of RestaurantList
  *
  */
 
 public class MainActivity extends AppCompatActivity {
 
-    public static Context context;
-    IntentFilter filter;
     BroadcastReceiver broadcastReceiver;
+    String response;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.index);
 
-        // TODO : あとで消す
-        context = this;
+        /*
+        * -------------------------------------------------------------------
+        * Start IntentService
+        * -------------------------------------------------------------------
+        */
 
-        // Start Service
         Intent intent_service = new Intent(this, MyIntentService.class);
+
+        //intent_service.putExtra("context", (Serializable) getApplicationContext());
+        intent_service.putExtra("referrer", "MainActivity");
         this.startService(intent_service);
 
-        // Receive broadcast
-        filter = new IntentFilter("com.example.admin.restaurantapp");
+        /*
+        * -------------------------------------------------------------------
+        * Get Json (by Receive Broadcast)
+        * -------------------------------------------------------------------
+        */
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
                 // Receive json response
-                String response = intent.getStringExtra("broadcast_nearbySearch");
+                response = intent.getStringExtra(MyIntentService.BROADCAST_KEY_NEARBY);
 
                 Log.d("Debug", "Response: " + response);
 
@@ -62,37 +66,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent_restaurantList);
             }
         };
-
-        // TODO : 3. Show Restaurant Detail (Maki)
-        // 1. Load array data by using restaurant's id
-        // 2. Set the array to each object
-        // 3. Set onClick function to "reservation" fab button
-        //      Show toast "This restaurant was added to favorite"
-        // 4. Set onClick function to "favorite" fab
-        //      Change the color or icon of fab
-        //      Set onClick function for removing from favorite list
-
-        // TODO : 4. Show Book List (Maki)
-        // 1. Load book list data
-        // 2. Set ListView
-        // 3. Set onLongClickListener to remove item from ListView
-        //      Show dialog to confirm removing
-        //      Remove data from array of favorite list
-        //      Show toast "The selected item was removed."
-
-        // TODO : 5. Show Favorite List (Maki)
-        // 1. Load item data by use
-        // 2. Set ListView
-        // 3. Set onLongClickListener to remove item from ListView
-        //      Show dialog to confirm removing
-        //      Remove data from array of favorite list
-        //      Show toast "The selected item was removed."
-
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        registerReceiver(broadcastReceiver, filter);
+        registerReceiver(broadcastReceiver, new IntentFilter(MyIntentService.INTENT_FILTER_MAIN_ACTIVITY));
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(broadcastReceiver);
+        Log.d("Debug", "broadcastReceiver was deleted.");
+        super.onDestroy();
     }
 }

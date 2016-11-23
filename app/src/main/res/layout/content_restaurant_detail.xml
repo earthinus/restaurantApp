@@ -13,76 +13,139 @@
         android:weightSum="1">
 
         <ImageView
-            android:id="@+id/imageView_restaurantMainVisual"
+            android:id="@+id/imageView_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/restaurant_main_visual"
             app:srcCompat="@drawable/sushi01" />
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@color/colorPrimary">
+
+            <TextView
+                android:id="@+id/textView_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:textColorLink="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/textView_formatted_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:textColor="@android:color/white"
+                android:textColorLink="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/textView_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/textView_opening_hours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/textView_priceLevel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/textView_interNationalPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/textView_website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+
+        <!-- Review -->
         <TextView
-            android:id="@+id/textView_restaurantDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="20dp"
-            android:text="@string/textView_restaurantDetail_default" />
-
-        <TextView
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@drawable/round_textview"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="15dp"
+            android:paddingRight="0dp"
             android:text="@string/reviews"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/review_list"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_gravity="center"
-            android:background="#303030">
-        </ListView>
+            android:background="#303030"/>
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:gravity="center"
             android:padding="15dp"
             android:layout_marginBottom="25dp"
             android:background="@drawable/round_textview2"
-            android:text="@string/see_more"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content" />
+            android:text="@string/see_more" />
+        <!-- / Review -->
 
-        <TextView
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/round_textview"
-            android:padding="15dp"
-            android:text="@string/menus"
-            android:textSize="20sp" />
+        <!--<TextView-->
+            <!--android:layout_width="300dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="@drawable/round_textview"-->
+            <!--android:padding="15dp"-->
+            <!--android:text="@string/menus"-->
+            <!--android:textSize="20sp" />-->
 
-        <ListView
-            android:id="@+id/menu_list"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:background="#303030">
-        </ListView>
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/menu_list"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="200dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="#303030" />-->
 
-        <TextView
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="15dp"
-            android:layout_marginBottom="45dp"
-            android:background="@drawable/round_textview2"
-            android:text="@string/see_more"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content" />
+        <!--<TextView-->
+            <!--android:layout_gravity="center"-->
+            <!--android:gravity="center"-->
+            <!--android:padding="15dp"-->
+            <!--android:layout_marginBottom="45dp"-->
+            <!--android:background="@drawable/round_textview2"-->
+            <!--android:text="@string/see_more"-->
+            <!--android:layout_width="300dp"-->
+            <!--android:layout_height="wrap_content" />-->
 
     </LinearLayout>
 </ScrollView>

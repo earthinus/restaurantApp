@@ -1,18 +1,18 @@
 package com.example.admin.restaurantapp;
 
-import android.graphics.drawable.Drawable;
-
 public class Book {
 
-    Drawable icon;
-    String name;
-    String date;
+    String  icon,
+            name,
+            date;
+    int     people,
+            restaurantId;
 
-    public Drawable getIcon() {
+    public String getIcon() {
         return icon;
     }
 
-    public void setIcon(Drawable icon) {
+    public void setIcon(String icon) {
         this.icon = icon;
     }
 
@@ -30,5 +30,21 @@ public class Book {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getPeople() {
+        return people;
+    }
+
+    public void setPeople(int people) {
+        this.people = people;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }
