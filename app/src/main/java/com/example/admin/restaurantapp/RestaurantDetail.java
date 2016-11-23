@@ -134,11 +134,30 @@ public class RestaurantDetail extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) RestaurantDetail.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         reservation = inflater.inflate(R.layout.reservation_form, null);
         builder = new AlertDialog.Builder(RestaurantDetail.this).setView(R.layout.reservation_form);
+
         menu3.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                builder.show();
-                onButtonClick(reservation);
+            public void onClick(View view) {
+                AlertDialog v = builder.show();
+                txtDate = (EditText) v.findViewById(R.id.in_date);
+                txtTime = (EditText) v.findViewById(R.id.in_time);
+                txtName = (EditText) v.findViewById(R.id.in_name);
+                txtEmail = (EditText) v.findViewById(R.id.in_email);
+                txtNum = (EditText) v.findViewById(R.id.in_num);
+                DatePickButton = (Button) v.findViewById(R.id.btn_date);
+                TimePickButton = (Button) v.findViewById(R.id.btn_time);
+                BookButton = (Button) v.findViewById(R.id.book_button);
+                View.OnClickListener clickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openDialog(view);
+                    }
+                };
+                DatePickButton.setOnClickListener(clickListener);
+                BookButton.setOnClickListener(clickListener);
+                TimePickButton.setOnClickListener(clickListener);
+                //builder.show();
+                //openDialog(reservation);
             }
         });
 
@@ -282,111 +301,116 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     // reservation form buttons function
-    public void onButtonClick(View v) {
-        txtDate = (EditText) v.findViewById(R.id.in_date);
-        txtTime = (EditText) v.findViewById(R.id.in_time);
-        txtName = (EditText) v.findViewById(R.id.in_name);
-        txtEmail = (EditText) v.findViewById(R.id.in_email);
-        txtNum = (EditText) v.findViewById(R.id.in_num);
-        DatePickButton = (Button) findViewById(R.id.btn_date);
-        TimePickButton = (Button) findViewById(R.id.btn_time);
-        BookButton = (Button) findViewById(R.id.book_button);
+    public void openDialog(View v) {
 
-        String bookDate = txtDate.getText().toString().trim();
-        String bookTime = txtTime.getText().toString().trim();
-        String bookName = txtName.getText().toString().trim();
-        String bookEmail = txtEmail.getText().toString().trim();
-        String bookNum = txtNum.getText().toString().trim();
+                String bookDate = txtDate.getText().toString().trim();
+                String bookTime = txtTime.getText().toString().trim();
+                String bookName = txtName.getText().toString().trim();
+                String bookEmail = txtEmail.getText().toString().trim();
+                String bookNum = txtNum.getText().toString().trim();
 
-        txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-
-        if (v == DatePickButton) {
-
-            // Get Current Date
-            final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
-
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-                            txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        }
-        if (v == TimePickButton) {
-
-            // Get Current Time
-            final Calendar c = Calendar.getInstance();
-            mHour = c.get(Calendar.HOUR_OF_DAY);
-            mMinute = c.get(Calendar.MINUTE);
-
-            // Launch Time Picker Dialog
-            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                    new TimePickerDialog.OnTimeSetListener() {
-
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay,
-                                              int minute) {
-
-                            txtTime.setText(hourOfDay + ":" + minute);
-                        }
-                    }, mHour, mMinute, false);
-            timePickerDialog.show();
-        }
-
-        // show notification or error message
-        if (v == BookButton) {
-
-            if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") || bookNum.equals("") || bookEmail.equals("")))
-            {
-                showNotification(v);
-                txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                 txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtDate.setText("");
-                txtName.setText("");
-                txtTime.setText("");
-                txtEmail.setText("");
-                txtNum.setText("");
-            }else{
-                if (bookDate.equals("")) {
-                    txtDate.setError(null);
-                    txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+                txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
 
-                }if(bookTime.equals("")){
-                    txtTime.setError(null);
-                    txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
-                }if(bookName.equals("")){
-                    txtName.setError(null);
-                    txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+                txtDate.addTextChangedListener(textWatcher);
+                txtName.addTextChangedListener(textWatcher);
+                txtNum.addTextChangedListener(textWatcher);
+                txtTime.addTextChangedListener(textWatcher);
+                txtEmail.addTextChangedListener(textWatcher);
+                // choose book date
+                if (v == DatePickButton) {
 
-                }if(bookEmail.equals("")){
-                txtEmail.setError(null);
-                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+                    // Get Current Date
+                    final Calendar c = Calendar.getInstance();
+                    mYear = c.get(Calendar.YEAR);
+                    mMonth = c.get(Calendar.MONTH);
+                    mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                }if(bookNum.equals("")){
-                    txtNum.setError(null);
-                    txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,android.R.drawable.stat_notify_error,0);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(RestaurantDetail.this,
+                            new DatePickerDialog.OnDateSetListener() {
 
+                                @Override
+                                public void onDateSet(DatePicker view, int year,
+                                                      int monthOfYear, int dayOfMonth) {
+
+                                    txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                                }
+                            }, mYear, mMonth, mDay);
+                    datePickerDialog.show();
                 }
-            }
-        }
 
+                //choose book time
+                if (v == TimePickButton) {
+
+                    // Get Current Time
+                    final Calendar c = Calendar.getInstance();
+                    mHour = c.get(Calendar.HOUR_OF_DAY);
+                    mMinute = c.get(Calendar.MINUTE);
+
+                    // Launch Time Picker Dialog
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(RestaurantDetail.this,
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay,
+                                                      int minute) {
+
+                                    txtTime.setText(hourOfDay + ":" + minute);
+                                }
+                            }, mHour, mMinute, false);
+                    timePickerDialog.show();
+                }
+
+                // show notification or error message
+                if (v == BookButton) {
+
+                    if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") || bookNum.equals("") || bookEmail.equals(""))) {
+                        showNotification(v);
+                        txtNum.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        txtEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        txtTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        txtDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        txtDate.setText("");
+                        txtName.setText("");
+                        txtTime.setText("");
+                        txtEmail.setText("");
+                        txtNum.setText("");
+                    } else {
+                        if (bookDate.equals("")) {
+                            txtDate.setError(null);
+                            txtDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
+
+                        }
+                        if (bookTime.equals("")) {
+                            txtTime.setError(null);
+                            txtTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
+                        }
+                        if (bookName.equals("")) {
+                            txtName.setError(null);
+                            txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
+
+                        }
+                        if (bookEmail.equals("")) {
+                            txtEmail.setError(null);
+                            txtEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
+
+                        }
+                        if (bookNum.equals("")) {
+                            txtNum.setError(null);
+                            txtNum.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
+
+                        }
+                    }
+                }
+
+    }
+
+        // confirm if there is a blank form or not
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -406,14 +430,11 @@ public class RestaurantDetail extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
             }
+
         };
 
-        txtDate.addTextChangedListener(textWatcher);
-        txtName.addTextChangedListener(textWatcher);
-        txtNum.addTextChangedListener(textWatcher);
-        txtTime.addTextChangedListener(textWatcher);
-        txtEmail.addTextChangedListener(textWatcher);
-    }
+
+
 
     public void showNotification(View v) {
 

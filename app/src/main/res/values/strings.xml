@@ -26,8 +26,8 @@
     <string name="menu_default_3">This restaurant is amazing!I should go again.</string>
 
     <string name="see_more">See More</string>
-    <string name="hint_date">Chose Date from left</string>
-    <string name="hint_time">Chose Time from left</string>
+    <string name="hint_date">Choose Date from left</string>
+    <string name="hint_time">Choose Time from left</string>
     <string name="date">DATE</string>
     <string name="time">TIME</string>
     <string name="your_name">YOUR NAME</string>

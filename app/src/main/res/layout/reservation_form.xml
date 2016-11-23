@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:weightSum="1"
-    android:id="@+id/reservation">
+    android:id="@+id/reservation"
+    tools:context=".RestaurantDetail">
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +35,6 @@
             android:layout_alignParentStart="true"
             android:layout_marginLeft="24dp"
             android:layout_marginStart="24dp"
-            android:onClick="onButtonClick"
             android:text="@string/date" />
 
         <Button
@@ -44,7 +44,6 @@
             android:layout_alignEnd="@+id/btn_date"
             android:layout_alignRight="@+id/btn_date"
             android:layout_below="@+id/btn_date"
-            android:onClick="onButtonClick"
             android:text="@string/time" />
 
         <TextView
@@ -148,7 +147,6 @@
         android:layout_marginBottom="55dp"
         android:background="#45aa3f"
         android:gravity="center"
-        android:onClick="onButtonClick"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:text="@string/reservation_button"
