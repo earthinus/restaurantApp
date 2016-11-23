@@ -103,50 +103,7 @@ public class RestaurantDetail extends AppCompatActivity {
         //textView_restaurantName   = (TextView) findViewById(R.id.textView_restaurantName);
         textView_restaurantDetail = (TextView) findViewById(R.id.textView_restaurantDetail);
         imageView_restaurantMainVisual = (ImageView) findViewById(R.id.imageView_restaurantMainVisual);
-        DatePickButton = (Button) findViewById(R.id.btn_date);
-        TimePickButton = (Button) findViewById(R.id.btn_time);
-        BookButton = (Button) findViewById(R.id.book_button);
-        txtDate = (EditText) findViewById(R.id.in_date);
-        txtTime = (EditText) findViewById(R.id.in_time);
-        txtName = (EditText) findViewById(R.id.in_name);
-        txtEmail = (EditText) findViewById(R.id.in_email);
-        txtNum = (EditText) findViewById(R.id.in_num);
-        /*
-        txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        */
 
-
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        };
-        /*
-        txtDate.addTextChangedListener(textWatcher);
-        txtName.addTextChangedListener(textWatcher);
-        txtNum.addTextChangedListener(textWatcher);
-        txtTime.addTextChangedListener(textWatcher);
-        txtEmail.addTextChangedListener(textWatcher);
-        */
         // Fab
         menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
         menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
@@ -176,13 +133,12 @@ public class RestaurantDetail extends AppCompatActivity {
         // book button
         LayoutInflater inflater = (LayoutInflater) RestaurantDetail.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         reservation = inflater.inflate(R.layout.reservation_form, null);
-        builder = new AlertDialog.Builder(RestaurantDetail.this);
-        builder.setView(R.layout.reservation_form);
+        builder = new AlertDialog.Builder(RestaurantDetail.this).setView(R.layout.reservation_form);
         menu3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 builder.show();
-                openDialog(v);
+                onButtonClick(reservation);
             }
         });
 
@@ -326,12 +282,27 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     // reservation form buttons function
-    public void openDialog(View v) {
+    public void onButtonClick(View v) {
+        txtDate = (EditText) v.findViewById(R.id.in_date);
+        txtTime = (EditText) v.findViewById(R.id.in_time);
+        txtName = (EditText) v.findViewById(R.id.in_name);
+        txtEmail = (EditText) v.findViewById(R.id.in_email);
+        txtNum = (EditText) v.findViewById(R.id.in_num);
+        DatePickButton = (Button) findViewById(R.id.btn_date);
+        TimePickButton = (Button) findViewById(R.id.btn_time);
+        BookButton = (Button) findViewById(R.id.book_button);
+
         String bookDate = txtDate.getText().toString().trim();
         String bookTime = txtTime.getText().toString().trim();
         String bookName = txtName.getText().toString().trim();
         String bookEmail = txtEmail.getText().toString().trim();
         String bookNum = txtNum.getText().toString().trim();
+
+        txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
 
         if (v == DatePickButton) {
 
@@ -415,6 +386,33 @@ public class RestaurantDetail extends AppCompatActivity {
                 }
             }
         }
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                txtDate.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                txtNum.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+
+        txtDate.addTextChangedListener(textWatcher);
+        txtName.addTextChangedListener(textWatcher);
+        txtNum.addTextChangedListener(textWatcher);
+        txtTime.addTextChangedListener(textWatcher);
+        txtEmail.addTextChangedListener(textWatcher);
     }
 
     public void showNotification(View v) {
