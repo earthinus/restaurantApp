@@ -14,8 +14,10 @@ class DBHelper extends SQLiteOpenHelper {
     static final String
             DB_NAME = "Restaurants",
             TABLE_NAME_RESTAURANT = "restaurants",
-            TABLE_NAME_REVIEW = "reviews";
-    static final int DB_VERSION = 17;
+            TABLE_NAME_REVIEW = "reviews",
+            TABLE_NAME_BOOKING = "bookings",
+            TABLE_NAME_FAVORITE= "favorites";
+    static final int DB_VERSION = 18;
     static final String
             NO = "no",
             RESTAURANT_NO = "restaurant_no",
@@ -37,7 +39,9 @@ class DBHelper extends SQLiteOpenHelper {
             REVIEW_TEXT = "text",
             REVIEW_TIME = "time",
             URL = "url",
-            WEBSITE = "website"
+            WEBSITE = "website",
+            BOOKING_TIME = "booking_time",
+            BOOKING_PEOPLE = "booking_people"
             ;
 
     DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -79,6 +83,26 @@ class DBHelper extends SQLiteOpenHelper {
                     REVIEW_TIME + " TEXT ," +
                     RESTAURANT_NO + " TEXT" +
                 ")"
+        );
+
+        sqLiteDatabase.execSQL(
+            "create table " + TABLE_NAME_BOOKING +
+                    " (" +
+                    NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                    BOOKING_TIME + " TEXT ," +
+                    BOOKING_PEOPLE + " TEXT ," +
+                    RESTAURANT_NO + " TEXT" +
+                    ")"
+        );
+
+        sqLiteDatabase.execSQL(
+            "create table " + TABLE_NAME_FAVORITE +
+                    " (" +
+                    NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                    BOOKING_TIME + " TEXT ," +
+                    BOOKING_PEOPLE + " TEXT ," +
+                    RESTAURANT_NO + " TEXT" +
+                    ")"
         );
     }
 
@@ -133,6 +157,13 @@ class DBHelper extends SQLiteOpenHelper {
                 values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
                 break;
 
+            // Insert to reviews table
+            case TABLE_NAME_BOOKING :
+                values.put(BOOKING_TIME,                data.get(BOOKING_TIME));
+                values.put(BOOKING_PEOPLE,              data.get(BOOKING_PEOPLE));
+                values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
+                break;
+
             default:
                 break;
         }
@@ -170,7 +201,7 @@ class DBHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_RESTAURANT, values, DBHelper.PLACE_ID + " = ?", new String[]{place_id});
     }
 
-    Cursor getAllRecords() {
-        return this.getWritableDatabase().rawQuery("select * from " + TABLE_NAME_RESTAURANT, null);
+    Cursor getAllRecords(String tableName) {
+        return this.getWritableDatabase().rawQuery("select * from " + tableName, null);
     }
 }

@@ -114,7 +114,7 @@ public class RestaurantList extends AppCompatActivity {
                     }
 
                     // Database read // TODO: move this to intent.getExtra of RestaurantDetail later
-                    Cursor cursor = dbHelper.getAllRecords();
+                    Cursor cursor = dbHelper.getAllRecords(DBHelper.TABLE_NAME_RESTAURANT);
 
                     System.out.println("Count: " + cursor.getCount());
                     while (cursor.moveToNext()) {

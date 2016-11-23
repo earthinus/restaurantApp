@@ -29,6 +29,7 @@ public class MyIntentService extends IntentService {
     final static String BROADCAST_KEY_DETAIL = "broadcast_detail";
     final static String INTENT_FILTER_MAIN_ACTIVITY = "com.example.admin.restaurantapp.mainactivity";
     final static String INTENT_FILTER_RESTAURANT_DETAIL = "com.example.admin.restaurantapp.restaurantdetail";
+    boolean connection;
 
     public MyIntentService() {
         super("MyIntentService");
@@ -93,9 +94,11 @@ public class MyIntentService extends IntentService {
     * -------------------------------------------------------------------
     */
 
-    private void requestAPI(final String referrer, String jsonUrl) {
+    private boolean requestAPI(final String referrer, String jsonUrl) {
+
 
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
         queue.add(new JsonObjectRequest(
                 Request.Method.GET,
                 jsonUrl,
@@ -140,6 +143,9 @@ public class MyIntentService extends IntentService {
                                     Log.d("Debug", "[onResponse] REQUEST_DENIED");
                                     break;
                             }
+
+                             connection = true;
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -159,8 +165,13 @@ public class MyIntentService extends IntentService {
                             Toast.makeText(getApplicationContext(), "Invalid username/password", Toast.LENGTH_SHORT).show();
 
                         Log.d("Debug", "[onErrorResponse] ErrorMsg: " + error.toString());
+
+                        connection = false;
                     }
                 })
+
         );
+
+        return connection;
     }
 }

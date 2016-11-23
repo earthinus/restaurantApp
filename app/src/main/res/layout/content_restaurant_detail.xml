@@ -35,7 +35,7 @@
                 android:textColorLink="@android:color/white"/>
 
             <TextView
-                android:id="@+id/formatted_address"
+                android:id="@+id/textView_formatted_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
@@ -59,23 +59,23 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/opening_hours"
+                android:id="@+id/textView_opening_hours"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/priceLevel"
+                android:id="@+id/textView_priceLevel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/interNationalPhoneNumber"
+                android:id="@+id/textView_interNationalPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"/>
 
             <TextView
-                android:id="@+id/website"
+                android:id="@+id/textView_website"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"/>

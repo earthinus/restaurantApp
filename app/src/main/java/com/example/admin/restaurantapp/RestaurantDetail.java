@@ -61,8 +61,9 @@ public class RestaurantDetail extends AppCompatActivity {
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
     String placeId,
-            interNationalPhoneNumber,
-            website;
+           interNationalPhoneNumber,
+           website;
+    int restaurant_id = 0; // default
     private TextView mDate;
     private Menu mainMenu;
     RecyclerView recyclerView;
@@ -87,8 +88,8 @@ public class RestaurantDetail extends AppCompatActivity {
         textView_rating = (TextView) findViewById(R.id.textView_rating);
         mDate = (TextView) findViewById(R.id.date);
         mDateClickListener();
-        textView_interNationalPhoneNumber = (TextView) findViewById(R.id.interNationalPhoneNumber);
-        textView_website = (TextView) findViewById(R.id.interNationalPhoneNumber);
+        textView_interNationalPhoneNumber = (TextView) findViewById(R.id.textView_interNationalPhoneNumber);
+        textView_website = (TextView) findViewById(R.id.textView_website);
         menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
         menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
         menu3 = (FloatingActionButton) findViewById(R.id.subFloatingMenu3);
@@ -118,8 +119,6 @@ public class RestaurantDetail extends AppCompatActivity {
 
         dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
         db = dbHelper.getReadableDatabase();
-
-        int restaurant_id = 0; // default
 
         Cursor cursor;
         try {
@@ -209,14 +208,33 @@ public class RestaurantDetail extends AppCompatActivity {
                             if (opening_hours) openingCondition = "open now";
                             else               openingCondition = "close now";
 
-                            ((TextView) findViewById(R.id.formatted_address)).setText(formatted_address);
-                            ((TextView) findViewById(R.id.opening_hours)).setText(openingCondition);
+                            ((TextView) findViewById(R.id.textView_formatted_address)).setText(formatted_address);
+                            ((TextView) findViewById(R.id.textView_opening_hours)).setText(openingCondition);
 
-                            if (!place_level.equals("")) ((TextView) findViewById(R.id.priceLevel)).setText(place_level);
-                            else findViewById(R.id.priceLevel).setVisibility(View.GONE);
+                            if (!place_level.equals("")) ((TextView) findViewById(R.id.textView_priceLevel)).setText(place_level);
+                            else findViewById(R.id.textView_priceLevel).setVisibility(View.GONE);
                             textView_interNationalPhoneNumber.setText(interNationalPhoneNumber);
                             //((TextView) findViewById(R.id.url)).setText(url);
                             textView_website.setText(website);
+
+                            // ClickListener
+                            textView_interNationalPhoneNumber.setOnClickListener(
+                                    new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + interNationalPhoneNumber)));
+                                        }
+                                    }
+                            );
+
+                            textView_website.setOnClickListener(
+                                    new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(website)));
+                                        }
+                                    }
+                            );
 
                             /*
                             * -------------------------------------------------------------------
@@ -333,28 +351,12 @@ public class RestaurantDetail extends AppCompatActivity {
 
                 Toast.makeText(RestaurantDetail.this, "Added to Book list", Toast.LENGTH_LONG).show();
                 Intent intent_bookList = new Intent(getApplicationContext(), BookList.class);
-                intent_bookList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, placeId);
+                intent_bookList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurant_id);
                 startActivity(intent_bookList);
             }
         });
 
-        textView_interNationalPhoneNumber.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + interNationalPhoneNumber)));
-                    }
-                }
-        );
 
-        textView_website.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(website)));
-                    }
-                }
-        );
 
 
     }
