@@ -48,6 +48,12 @@ import com.github.clans.fab.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -75,7 +81,7 @@ import java.util.HashMap;
  *
  */
 
-public class RestaurantDetail extends AppCompatActivity {
+public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback {
 
     public AlertDialog.Builder builder;
     public View reservation;
@@ -90,9 +96,12 @@ public class RestaurantDetail extends AppCompatActivity {
              textView_website;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
-    String placeId,
+    String name,
+           placeId,
            interNationalPhoneNumber,
            website;
+    double lat,
+           lng;
     int restaurant_id = 0; // default
     private TextView mDate;
     private Menu mainMenu;
@@ -104,6 +113,7 @@ public class RestaurantDetail extends AppCompatActivity {
     DBHelper dbHelper;
     Context context;
     BroadcastReceiver broadcastReceiver;
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +135,13 @@ public class RestaurantDetail extends AppCompatActivity {
 
         // ArrayList
         reviewsArrayList = new ArrayList<>();
+
+        // GoogleMap
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         /*
         * -------------------------------------------------------------------
@@ -166,7 +183,8 @@ public class RestaurantDetail extends AppCompatActivity {
 
                 // Put nearby json data into View objects
                 Picasso.with(this).load(cursor.getString(3)).fit().placeholder(R.drawable.progress).into(imageView_photo);
-                textView_name.setText(cursor.getString(2));
+                name = cursor.getString(2);
+                textView_name.setText(name);
                 textView_rating.setText(cursor.getString(4));
 
                 // Keep RestaurantID to insert to reviews table
@@ -224,6 +242,8 @@ public class RestaurantDetail extends AppCompatActivity {
                                     url = (result.has(DBHelper.URL)) ? result.getString(DBHelper.URL) : "";
                             website = (result.has(DBHelper.WEBSITE)) ? result.getString(DBHelper.WEBSITE) : "";
                             interNationalPhoneNumber = (result.has(DBHelper.INTERNATIONAL_PHONE_NUMBER)) ? result.getString(DBHelper.INTERNATIONAL_PHONE_NUMBER) : "";
+                            lat = Double.valueOf(result.getJSONObject("geometry").getJSONObject("location").has(DBHelper.LOCATION_LAT) ? result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT) : "0.0");
+                            lng = Double.valueOf(result.getJSONObject("geometry").getJSONObject("location").has(DBHelper.LOCATION_LNG) ? result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG) : "0.0");
                             boolean opening_hours = (result.getJSONObject(DBHelper.OPENING_HOURS).has("open_now")) && result.getJSONObject(DBHelper.OPENING_HOURS).getBoolean("open_now"); // TODO : separate each weekdays later
 
                             /*
@@ -246,6 +266,9 @@ public class RestaurantDetail extends AppCompatActivity {
                             textView_interNationalPhoneNumber.setText(interNationalPhoneNumber);
                             //((TextView) findViewById(R.id.url)).setText(url);
                             textView_website.setText(website);
+
+                            // GoogleMap
+                            showMap();
 
                             // ClickListener
                             textView_interNationalPhoneNumber.setOnClickListener(
@@ -272,8 +295,8 @@ public class RestaurantDetail extends AppCompatActivity {
                             * -------------------------------------------------------------------
                             */
 
-                            hashMap_restaurant.put(DBHelper.LOCATION_LAT, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT));
-                            hashMap_restaurant.put(DBHelper.LOCATION_LNG, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG));
+                            hashMap_restaurant.put(DBHelper.LOCATION_LAT, String.valueOf(lat));
+                            hashMap_restaurant.put(DBHelper.LOCATION_LNG, String.valueOf(lng));
                             hashMap_restaurant.put(DBHelper.FORMATTED_ADDRESS, formatted_address);
                             hashMap_restaurant.put(DBHelper.PRICE_LEVEL, (result.has(DBHelper.PRICE_LEVEL) ? result.getString(DBHelper.PRICE_LEVEL) : ""));
                             hashMap_restaurant.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, interNationalPhoneNumber);
@@ -406,6 +429,18 @@ public class RestaurantDetail extends AppCompatActivity {
                 //openDialog(reservation);
             }
         });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+    }
+
+    private void showMap() {
+        LatLng restaurantPosition = new LatLng(lat, lng);
+        mMap.addMarker(new MarkerOptions().position(restaurantPosition).title(name).draggable(true));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurantPosition, 15));
     }
 
     @Override
@@ -581,7 +616,6 @@ public class RestaurantDetail extends AppCompatActivity {
                 }
             }
         }
-
     }
 
     // confirm if there is a blank form or not
