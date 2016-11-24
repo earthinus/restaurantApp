@@ -60,19 +60,18 @@ import java.util.HashMap;
 
 /**
  * Scenario of this class
- *
+ * <p>
  * 1. Get place_id through intent
- *
+ * <p>
  * 2. Load restaurant info of the place_id
- *
+ * <p>
  * 3. Start Service {@link MyIntentService#onHandleIntent}
- *
+ * <p>
  * 4. Receive Broadcast
- *
+ * <p>
  * 5. Set ArrayList of review
- *
+ * <p>
  * 6. Save to database
- *
  */
 
 public class RestaurantDetail extends AppCompatActivity {
@@ -85,14 +84,14 @@ public class RestaurantDetail extends AppCompatActivity {
 
     ImageView imageView_photo;
     TextView textView_name,
-             textView_rating,
-             textView_interNationalPhoneNumber,
-             textView_website;
+            textView_rating,
+            textView_interNationalPhoneNumber,
+            textView_website;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
     String placeId,
-           interNationalPhoneNumber,
-           website;
+            interNationalPhoneNumber,
+            website;
     int restaurant_id = 0; // default
     private TextView mDate;
     private Menu mainMenu;
@@ -104,6 +103,7 @@ public class RestaurantDetail extends AppCompatActivity {
     DBHelper dbHelper;
     Context context;
     BroadcastReceiver broadcastReceiver;
+    HashMap<String, String> hashMap_booking = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -551,8 +551,20 @@ public class RestaurantDetail extends AppCompatActivity {
                 //TODO: send & keep data(customer name,booked restaurant,book date...etc) to book list
                 //TODO:      when customer pushed COMPLETE button.
 
-                HashMap<String,String> bookingInfo = new HashMap<>();
-//                bookingInfo.put(txtDate.getText().toString());
+        /*
+        * -------------------------------------------------------------------
+        * Send Booking Data to BookList
+        * -------------------------------------------------------------------
+        */
+                hashMap_booking.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
+                hashMap_booking.put(DBHelper.BOOKING_DATE, String.valueOf(bookDate));
+                hashMap_booking.put(DBHelper.BOOKING_TIME, String.valueOf(bookTime));
+                hashMap_booking.put(DBHelper.BOOKING_NAME, String.valueOf(bookName));
+                hashMap_booking.put(DBHelper.BOOKING_EMAIL, String.valueOf(bookEmail));
+                hashMap_booking.put(DBHelper.BOOKING_PEOPLE, String.valueOf(bookNum));
+
+                // insert the hashMap to the booking table
+                dbHelper.insertRecord(DBHelper.TABLE_NAME_BOOKING, hashMap_booking);
 
 
             } else {
@@ -577,7 +589,6 @@ public class RestaurantDetail extends AppCompatActivity {
                 if (bookNum.equals("")) {
                     txtNum.setError(null);
                     txtNum.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
-
                 }
             }
         }
