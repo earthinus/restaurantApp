@@ -98,6 +98,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private HashMap<String, String> hashMap_booking = new HashMap<>();
     private AlertDialog.Builder builder;
+    DatePickerDialog datePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -471,7 +472,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 startActivity(intent);
                 break;
             case R.id.action_book:
-                Intent intent2 = new Intent(this, BookList.class);
+                Intent intent2 = new Intent(this, BookingList.class);
                 startActivity(intent2);
                 break;
             case android.R.id.home:
@@ -511,7 +512,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
             int mMonth = c.get(Calendar.MONTH);
             int mDay   = c.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(RestaurantDetail.this,
+            datePickerDialog = new DatePickerDialog(RestaurantDetail.this,
                     new DatePickerDialog.OnDateSetListener() {
 
                         @Override
@@ -566,7 +567,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
                 /*
                 * -------------------------------------------------------------------
-                * Send Booking Data to BookList
+                * Send Booking Data to BookingList
                 * -------------------------------------------------------------------
                 */
 
@@ -580,6 +581,9 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
                 // insert the hashMap to the booking table
                 dbHelper.insertRecord(DBHelper.TABLE_NAME_BOOKING, hashMap_booking);
+
+                // Close the dialog
+                datePickerDialog.dismiss();
 
             } else {
 
@@ -632,13 +636,13 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
     public void showNotification(View v) {
 
-        Intent intent = new Intent(this, BookList.class);
+        Intent intent = new Intent(this, BookingList.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Notification notification =
                 new NotificationCompat.Builder(this)
                         .setContentText("Booking was Completed!")
-                        .setContentTitle("Thank you for using our app.Please confirm your book from Book List.")
+                        .setContentTitle("Thank you for using our app.Please confirm your book from BookingList.")
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentIntent(pendingIntent)
                         .build();

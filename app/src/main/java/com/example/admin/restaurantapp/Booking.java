@@ -1,6 +1,6 @@
 package com.example.admin.restaurantapp;
 
-public class Book {
+public class Booking {
 
     String  icon,
             name,

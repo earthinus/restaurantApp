@@ -194,7 +194,7 @@ public class RestaurantList extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.action_book:
-                Intent intent2 = new Intent(this, BookList.class);
+                Intent intent2 = new Intent(this, BookingList.class);
                 startActivity(intent2);
                 break;
             case android.R.id.home:

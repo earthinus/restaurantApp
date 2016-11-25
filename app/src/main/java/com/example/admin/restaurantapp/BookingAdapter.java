@@ -17,14 +17,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
+class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.Holder> {
 
     private Context context;
-    private ArrayList<Book> books;
+    private ArrayList<Booking> bookings;
 
-    BookAdapter(Context context, ArrayList<Book> books) {
+    BookingAdapter(Context context, ArrayList<Booking> bookings) {
         this.context = context;
-        this.books = books;
+        this.bookings = bookings;
     }
 
     class Holder extends RecyclerView.ViewHolder {
@@ -44,7 +44,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
     @Override
     public Holder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.book_list_item, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.booking_list_item, viewGroup, false);
 
         return new Holder(view);
     }
@@ -52,10 +52,10 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         final int pos = position;
-        Picasso.with(context).load(books.get(position).getIcon()).fit().into(holder.icon);
-        holder.name.setText(books.get(position).getName());
-        holder.date.setText(books.get(position).getBooking_date() + " " + books.get(position).getBooking_time());
-        holder.people.setText(books.get(position).getBooking_people() + "person");
+        Picasso.with(context).load(bookings.get(position).getIcon()).fit().into(holder.icon);
+        holder.name.setText(bookings.get(position).getName());
+        holder.date.setText(bookings.get(position).getBooking_date() + " " + bookings.get(position).getBooking_time());
+        holder.people.setText(bookings.get(position).getBooking_people() + "person");
 
         // Click (= open restaurant detail page)
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +64,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
                 // Intent
                 Intent intent = new Intent(context, RestaurantDetail.class);
-                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID + ".place_id", books.get(pos).getPlace_id());
+                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID + ".place_id", bookings.get(pos).getPlace_id());
                 context.startActivity(intent);
             }
         });
@@ -75,7 +75,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
             public boolean onLongClick(View view) {
 
                 // Get restaurant's name
-                String restaurantName = String.valueOf(books.get(pos).getName());
+                String restaurantName = String.valueOf(bookings.get(pos).getName());
 
                 DialogInterface.OnClickListener posL = new DialogInterface.OnClickListener() {
                     @Override
@@ -107,7 +107,7 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
                 // TODO : Remove the booking from 'bookings' table
 
                 // Remove ArrayList
-                books.remove(pos);
+                bookings.remove(pos);
                 notifyItemRemoved(pos);
 
                 // Show Toast
@@ -124,6 +124,6 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
     @Override
     public int getItemCount() {
-        return books.size();
+        return bookings.size();
     }
 }

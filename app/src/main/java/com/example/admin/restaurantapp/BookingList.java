@@ -13,10 +13,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class BookList extends AppCompatActivity {
+public class BookingList extends AppCompatActivity {
 
     public int restaurantId;
-    private ArrayList<Book> bookings = new ArrayList<>();
+    private ArrayList<Booking> bookings = new ArrayList<>();
     private RecyclerView recyclerView;
     public static final String PREFERENCE_BOOK_KEY      = "rest-id";
 
@@ -24,7 +24,7 @@ public class BookList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.book_list);
+        setContentView(R.layout.booking_list);
 
         // Set backButton on ActionBar
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -58,7 +58,7 @@ public class BookList extends AppCompatActivity {
                     String restaurantId = cursor_booking.getString(7);
 
                     // Get data (data, people) from booking table
-                    Book booking = new Book();
+                    Booking booking = new Booking();
                     booking.setBooking_date(cursor_booking.getString(1));
                     booking.setBooking_time(cursor_booking.getString(2));
                     booking.setBooking_name(cursor_booking.getString(3));
@@ -108,7 +108,7 @@ public class BookList extends AppCompatActivity {
                 */
 
                 // Adapter
-                RecyclerView.Adapter adapter = new BookAdapter(this, bookings);
+                RecyclerView.Adapter adapter = new BookingAdapter(this, bookings);
 
                 // RecyclerView
                 recyclerView = (RecyclerView) findViewById(R.id.bookList);
