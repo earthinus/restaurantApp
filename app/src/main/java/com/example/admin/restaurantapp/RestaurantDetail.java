@@ -56,20 +56,6 @@ import org.json.JSONObject;
 
 /**
  * Scenario of this class
-<<<<<<< HEAD
- * <p>
- * 1. Get place_id through intent
- * <p>
- * 2. Load restaurant info of the place_id
- * <p>
- * 3. Start Service {@link MyIntentService#onHandleIntent}
- * <p>
- * 4. Receive Broadcast
- * <p>
- * 5. Set ArrayList of review
- * <p>
- * 6. Save to database
-=======
  *
  * 1. Get place_id through intent of clickListener of RestaurantList
  *
