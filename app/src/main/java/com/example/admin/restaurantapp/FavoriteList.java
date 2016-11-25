@@ -1,37 +1,22 @@
 package com.example.admin.restaurantapp;
 
-import android.app.DownloadManager;
-import android.content.Intent;
-import android.content.res.TypedArray;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class FavoriteList extends AppCompatActivity {
 
-    public int restaurantId;
-    public static final String PREFERENCE_FAVORITE_FILENAME = "Favorite-list";
-    public static final String PREFERENCE_FAVORITE_KEY      = "rest-id";
-
     private ArrayList<Favorite> favorites = new ArrayList<>();
-    Favorite favorite;
-
-    RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,43 +30,88 @@ public class FavoriteList extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        // Get intent
-        final Intent intent = getIntent();
-        if (intent != null) {
-            restaurantId = intent.getIntExtra(RestaurantList.EXTRA_RESTAURANT_ID, -1);
-            getSharedPreferences(PREFERENCE_FAVORITE_FILENAME, MODE_PRIVATE).edit().putInt(PREFERENCE_FAVORITE_KEY + restaurantId, restaurantId).apply();
+        /*
+        * -------------------------------------------------------------------
+        * Read 'booking' table
+        * -------------------------------------------------------------------
+        */
 
-        } else {
-            System.out.println("getExtra: NG");
-        }
+        DBHelper dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Initialize RecyclerView of restaurantList
-        recyclerView = (RecyclerView) findViewById(R.id.favList);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        Cursor cursor_favorite;
+        Cursor cursor_restaurant;
+        try {
+            cursor_favorite = dbHelper.getAllRecords(DBHelper.TABLE_NAME_FAVORITE);
 
-        // Data-sets
-        TypedArray icons = getResources().obtainTypedArray(R.array.icons);
-        icons.recycle(); // recycle() : to release the bitmap pixel's data in native memory to avoid 'OutOfMemoryError'
-        String[]   names = getResources().getStringArray(R.array.restaurants);
+            if (cursor_favorite.getCount() > 0) {
+                // Debug
+                System.out.println("Count: " + cursor_favorite.getCount());
 
-        // Set each restaurant's data to ArrayList
-        for (int i = 0; i < names.length; i++) {
-            if (getSharedPreferences(PREFERENCE_FAVORITE_FILENAME, MODE_PRIVATE).getInt(PREFERENCE_FAVORITE_KEY + i, -1) != -1) {
-                favorite = new Favorite();
-                favorite.setIcon(icons.getDrawable(i));
-                favorite.setName(names[i]);
-                favorites.add(favorite);
+                while (cursor_favorite.moveToNext()) {
+
+                    String restaurantId = cursor_favorite.getString(2);
+
+                    Favorite favorite = new Favorite();
+
+                    /*
+                    * -------------------------------------------------------------------
+                    * Read 'restaurant' table by using restaurantId
+                    * -------------------------------------------------------------------
+                    */
+
+                    try {
+
+                        cursor_restaurant = db.query(
+                                DBHelper.TABLE_NAME_RESTAURANT, // Table name
+                                null,                           // columns
+                                DBHelper.NO + " = ?" ,          // Selection
+                                new String[]{restaurantId},     // SelectionArgs
+                                null,                           // groupBy
+                                null,                           // Having
+                                null                            // orderBy
+                        );
+
+                        cursor_restaurant.moveToFirst();
+
+                        favorite.setPlace_id(cursor_restaurant.getString(1));
+                        favorite.setName(cursor_restaurant.getString(2));
+                        favorite.setIcon(cursor_restaurant.getString(3));
+
+                        cursor_restaurant.close();
+
+                    } catch (Exception e) {
+                        Log.d("Debug", "Catch error: " + e.toString());
+                    }
+
+                    favorites.add(favorite);
+                }
+
+                /*
+                * -------------------------------------------------------------------
+                * Show recycler view
+                * -------------------------------------------------------------------
+                */
+
+                RecyclerView.Adapter adapter = new FavoriteAdapter(this, favorites);
+
+                recyclerView = (RecyclerView) findViewById(R.id.favList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                recyclerView.setAdapter(adapter);
+
+            // No booking data
+            } else {
+                Toast.makeText(this, "No favorite data.", Toast.LENGTH_SHORT).show();
+                recyclerView.setVisibility(View.GONE);
             }
+            cursor_favorite.close();
+
+        } catch (Exception e) {
+            Log.d("Debug", "Catch error: " + e.toString());
+
+        } finally {
+            db.close();
         }
-
-        // Initialize adapter
-        adapter = new FavoriteAdapter(getApplicationContext(), favorites);
-
-        // TODO : set EmptyView
-
-        // Set adapter to ListView
-        recyclerView.setAdapter(adapter);
     }
 
     // Set function of backButton on ActionBar

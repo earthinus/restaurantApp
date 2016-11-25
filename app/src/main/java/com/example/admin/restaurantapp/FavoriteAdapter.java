@@ -1,9 +1,7 @@
 package com.example.admin.restaurantapp;
 
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,15 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
 
-import static android.content.Context.MODE_PRIVATE;
+import java.util.ArrayList;
 
 class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Holder> {
 
     private Context context;
     private ArrayList<Favorite> favorites;
-    private int restaurantId = new BookingList().restaurantId;
 
     FavoriteAdapter(Context context, ArrayList<Favorite> favorites) {
         this.context = context;
@@ -51,7 +48,7 @@ class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Holder> {
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         final int pos = position;
-        holder.icon.setImageDrawable(favorites.get(position).getIcon());
+        Picasso.with(context).load(favorites.get(position).getIcon()).fit().into(holder.icon);
         holder.name.setText(favorites.get(position).getName());
 
         // Click (= open restaurant detail page)
@@ -61,7 +58,7 @@ class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Holder> {
 
                 // Create intent
                 Intent intent = new Intent(context, RestaurantDetail.class);
-                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, restaurantId);
+                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, favorites.get(pos).getPlace_id());
 
                 // Start Activity
                 context.startActivity(intent);
@@ -73,24 +70,15 @@ class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Holder> {
             @Override
             public boolean onLongClick(View view) {
 
-                // Get restaurant's name
-                String restaurantName = context.getResources().getStringArray(R.array.restaurants)[restaurantId];
-
-                // Get sharedPreference
-                SharedPreferences preferences = context.getSharedPreferences(new FavoriteList().PREFERENCE_FAVORITE_FILENAME, MODE_PRIVATE);
-
-                // Remove sharedPreference
-                preferences.edit().remove("rest-id" + restaurantId).apply();
-
                 // Remove ArrayList
                 favorites.remove(pos);
                 notifyItemRemoved(pos);
 
                 // Show Toast
-                Toast.makeText(context, "\"" + restaurantName + "\" was removed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "\"" + favorites.get(pos).getName() + "\" was removed.", Toast.LENGTH_SHORT).show();
 
                 Log.d("Debug", "pos: " + pos);
-                Log.d("Debug", "restaurantId: " + restaurantId);
+                Log.d("Debug", "place_id: " + favorites.get(pos).getPlace_id());
 
                 return true;
             }

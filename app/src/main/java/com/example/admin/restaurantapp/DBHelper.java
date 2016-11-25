@@ -17,7 +17,7 @@ class DBHelper extends SQLiteOpenHelper {
             TABLE_NAME_REVIEW = "reviews",
             TABLE_NAME_BOOKING = "bookings",
             TABLE_NAME_FAVORITE= "favorites";
-    static final int DB_VERSION = 25;
+    static final int DB_VERSION = 26;
     static final String
             NO = "no",
             RESTAURANT_NO = "restaurant_no",
@@ -106,9 +106,8 @@ class DBHelper extends SQLiteOpenHelper {
             "create table " + TABLE_NAME_FAVORITE +
                 " (" +
                     NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                    BOOKING_TIME   + " TEXT ," +
-                    BOOKING_PEOPLE + " TEXT ," +
-                    RESTAURANT_NO  + " TEXT" +
+                    PLACE_ID      + " TEXT ," +
+                    RESTAURANT_NO + " TEXT" +
                 ")"
         );
     }
@@ -173,13 +172,19 @@ class DBHelper extends SQLiteOpenHelper {
                 values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
                 break;
 
-            // Insert to reviews table
+            // Insert to bookings table
             case TABLE_NAME_BOOKING :
                 values.put(BOOKING_DATE,                data.get(BOOKING_DATE));
                 values.put(BOOKING_TIME,                data.get(BOOKING_TIME));
                 values.put(BOOKING_NAME,                data.get(BOOKING_NAME));
                 values.put(BOOKING_EMAIL,               data.get(BOOKING_EMAIL));
                 values.put(BOOKING_PEOPLE,              data.get(BOOKING_PEOPLE));
+                values.put(PLACE_ID,                    data.get(PLACE_ID));
+                values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
+                break;
+
+            // Insert to bookings table
+            case TABLE_NAME_FAVORITE :
                 values.put(PLACE_ID,                    data.get(PLACE_ID));
                 values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
                 break;

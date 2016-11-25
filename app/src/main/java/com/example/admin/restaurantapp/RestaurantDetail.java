@@ -97,7 +97,9 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
     private DBHelper dbHelper;
     private BroadcastReceiver broadcastReceiver;
     private GoogleMap mMap;
-    private HashMap<String, String> hashMap_booking = new HashMap<>();
+    private HashMap<String, String>
+            hashMap_booking  = new HashMap<>(),
+            hashMap_favorite = new HashMap<>();
     private AlertDialog.Builder builder;
     DatePickerDialog datePickerDialog;
 
@@ -374,10 +376,18 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View v) {
 
                 Toast.makeText(RestaurantDetail.this, "Added to Favorite list", Toast.LENGTH_LONG).show();
-                Intent intent_favoriteList = new Intent(getApplicationContext(), FavoriteList.class);
-                intent_favoriteList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, placeId);
-                Log.d("Debug", "Start activity");
-                startActivity(intent_favoriteList);
+
+                /*
+                * -------------------------------------------------------------------
+                * Send favorite Data to 'favorite' table
+                * -------------------------------------------------------------------
+                */
+
+                hashMap_favorite.put(DBHelper.PLACE_ID, String.valueOf(placeId));
+                hashMap_favorite.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
+
+                // insert the hashMap to the booking table
+                dbHelper.insertRecord(DBHelper.TABLE_NAME_FAVORITE, hashMap_favorite);
             }
         });
 
