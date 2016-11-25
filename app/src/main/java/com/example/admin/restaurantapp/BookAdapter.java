@@ -3,7 +3,6 @@ package com.example.admin.restaurantapp;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,13 +17,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import static android.content.Context.MODE_PRIVATE;
-
 class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
     private Context context;
     private ArrayList<Book> books;
-    //private int restaurantId = new BookList().restaurantId;
 
     BookAdapter(Context context, ArrayList<Book> books) {
         this.context = context;
@@ -33,15 +29,15 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
 
     class Holder extends RecyclerView.ViewHolder {
         ImageView icon;
-        TextView  name;
-        TextView  date;
+        TextView  name, date, people;
         View itemView;
 
         Holder(View itemView) {
             super(itemView);
-            this.icon     = (ImageView) itemView.findViewById(R.id.icon);
-            this.name     = (TextView)  itemView.findViewById(R.id.name);
-            this.date     = (TextView)  itemView.findViewById(R.id.date);
+            this.icon     = (ImageView) itemView.findViewById(R.id.bookingList_icon);
+            this.name     = (TextView)  itemView.findViewById(R.id.bookingList_name);
+            this.date     = (TextView)  itemView.findViewById(R.id.bookingList_date);
+            this.people   = (TextView)  itemView.findViewById(R.id.bookingList_people);
             this.itemView = itemView;
         }
     }
@@ -58,18 +54,17 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
         final int pos = position;
         Picasso.with(context).load(books.get(position).getIcon()).fit().into(holder.icon);
         holder.name.setText(books.get(position).getName());
-        holder.date.setText(books.get(position).getDate());
+        holder.date.setText(books.get(position).getBooking_date() + " " + books.get(position).getBooking_time());
+        holder.people.setText(books.get(position).getBooking_people() + "person");
 
         // Click (= open restaurant detail page)
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // Create intent
+                // Intent
                 Intent intent = new Intent(context, RestaurantDetail.class);
-                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, books.get(pos).getRestaurantId());
-
-                // Start Activity
+                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID + ".place_id", books.get(pos).getPlace_id());
                 context.startActivity(intent);
             }
         });
@@ -80,18 +75,12 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
             public boolean onLongClick(View view) {
 
                 // Get restaurant's name
-                String restaurantName = String.valueOf(books.get(pos).getRestaurantId());
+                String restaurantName = String.valueOf(books.get(pos).getName());
 
                 DialogInterface.OnClickListener posL = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-//                            // Get sharedPreference
-//                            SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILENAME, MODE_PRIVATE);
-//
-//                            // Remove sharedPreference
-//                            preferences.edit().remove("rest-id" + restaurantId).apply();
-//
 //                            // Remove ArrayList
 //                            books.remove(pos);
 //                            notifyItemRemoved(pos);
@@ -112,17 +101,10 @@ class BookAdapter extends RecyclerView.Adapter<BookAdapter.Holder> {
                 alertDialog.setPositiveButton("OK", posL);
                 alertDialog.setNegativeButton("Cancel", negL);
 
-                // Show AlertDialog
+                // Show AlertDialog TODO : Dialog表示がうまくいかないのであとまわし
                 //alertDialog.create().show();
 
-                // TODO : Dialog表示がうまくいかないのであとまわし
-
-                // TODO : Remove the record from 'bookings' table
-//                // Get sharedPreference
-//                SharedPreferences preferences = context.getSharedPreferences(new BookList().PREFERENCE_BOOK_FILENAME, MODE_PRIVATE);
-//
-//                // Remove sharedPreference
-//                preferences.edit().remove("rest-id" + restaurantId).apply();
+                // TODO : Remove the booking from 'bookings' table
 
                 // Remove ArrayList
                 books.remove(pos);

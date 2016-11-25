@@ -61,7 +61,7 @@ class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Holder> {
 
                 // Create intent
                 Intent intent = new Intent(context, RestaurantDetail.class);
-                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID + "restaurantId", restaurants.get(pos).getId());
+                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID + ".place_id", restaurants.get(pos).getId());
 
                 // Start Activity
                 context.startActivity(intent);
