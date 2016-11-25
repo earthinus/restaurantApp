@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -77,6 +78,7 @@ import org.json.JSONObject;
 
 public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback{
 
+    //TODO
     // View Objects
     private TextView textView_interNationalPhoneNumber, textView_website;
     private EditText txtDate, txtTime, txtName, txtNum, txtEmail;
@@ -555,6 +557,17 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
         // Show notification or error message
         if (v == BookButton) {
 
+            String mailAddress =
+                    "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
+                            +"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                            +"[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                            +"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                            +"[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                            +"([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$";
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
             if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") || bookNum.equals("") || bookEmail.equals(""))) {
                 showNotification(v);
 
@@ -593,19 +606,19 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
             } else {
 
                 // Validation
-                if (bookDate.equals("")) {
+                if (bookDate.equals("") || !(bookDate.matches(dateFormat.toString()))) {
                     txtDate.setError(null);
                     txtDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
                 }
-                if (bookTime.equals("")) {
+                if (bookTime.equals("") || !(bookTime.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))) {
                     txtTime.setError(null);
                     txtTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
                 }
-                if (bookName.equals("")) {
+                if ((bookName.equals("") || !(bookName.matches("[a-zA-Z]+")))) {
                     txtName.setError(null);
                     txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
                 }
-                if (bookEmail.equals("")) {
+                if (bookEmail.equals("") || !(bookEmail.matches(mailAddress))) {
                     txtEmail.setError(null);
                     txtEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
                 }
@@ -615,7 +628,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 }
             }
         }
-
     }
 
     // confirm if there is a blank form or not
