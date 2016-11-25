@@ -1,6 +1,5 @@
 package com.example.admin.restaurantapp;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -9,16 +8,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class BookList extends AppCompatActivity {
 
     private ArrayList<Book> bookings = new ArrayList<>();
 
     public int restaurantId;
-    public static final String PREFERENCE_BOOK_FILENAME = "Book-list";
     public static final String PREFERENCE_BOOK_KEY      = "rest-id";
 
     RecyclerView recyclerView;
@@ -27,7 +26,6 @@ public class BookList extends AppCompatActivity {
 
     DBHelper dbHelper;
     SQLiteDatabase db;
-    HashMap<String, String > hashMap_booking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,50 +39,13 @@ public class BookList extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        final Intent intent = getIntent();
-
-        /*
-        * -------------------------------------------------------------------
-        * If the access came from booking button, insert the booking
-        * -------------------------------------------------------------------
-        */
-
-        if (intent != null) {
-            // TODO : switch from static values to dynamic values
-            String booking_time = "2016/12/01 8:00 PM";
-            int booking_people = 3;
-//            booking_time = String.valueOf(intent.getIntExtra(DBHelper.BOOKING_TIME, -1));
-//            booking_people = String.valueOf(intent.getIntExtra(DBHelper.BOOKING_PEOPLE, -1));
-            int restaurantId = intent.getIntExtra(RestaurantList.EXTRA_RESTAURANT_ID, -1);
-            //getSharedPreferences(PREFERENCE_BOOK_FILENAME, MODE_PRIVATE).edit().putInt(PREFERENCE_BOOK_KEY + restaurantId, restaurantId).apply();
-
-            /*
-            * -------------------------------------------------------------------
-            * Insert a booking to Database
-            * -------------------------------------------------------------------
-            */
-
-            hashMap_booking = new HashMap<>();
-
-            // Set keys & values to hashMap
-            hashMap_booking.put(DBHelper.BOOKING_TIME, booking_time);
-            hashMap_booking.put(DBHelper.BOOKING_PEOPLE, String.valueOf(booking_people));
-            hashMap_booking.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurantId));
-
-            // insert the hashMap to the booking table
-            dbHelper.insertRecord(DBHelper.TABLE_NAME_BOOKING, hashMap_booking);
-        }
-
-        // Initialize RecyclerView of restaurantList
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView = (RecyclerView) findViewById(R.id.bookList);
-        recyclerView.setLayoutManager(layoutManager);
-
         /*
         * -------------------------------------------------------------------
         * Read 'booking' table
         * -------------------------------------------------------------------
         */
+
+        recyclerView = (RecyclerView) findViewById(R.id.bookList);
 
         dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
         db = dbHelper.getReadableDatabase();
@@ -121,6 +82,7 @@ public class BookList extends AppCompatActivity {
                         Book booking = new Book();
                         booking.setDate(cursor_booking.getString(1));
                         booking.setPeople(Integer.valueOf(cursor_booking.getString(2)));
+                        booking.setRestaurantId(Integer.valueOf(cursor_booking.getString(3)));
 
                         // Define restaurantId for get specific restaurant's data from restaurant table
                         String restaurantId = cursor_booking.getString(3);
@@ -138,12 +100,8 @@ public class BookList extends AppCompatActivity {
                                 null                            // orderBy
                         );
 
-                        booking.setName(cursor_restaurant.getString(2));    // Name
-                        booking.setIcon(cursor_restaurant.getString(3));       // Thumb
-
-
-                        // Define place_id for ClickListener
-                        String place_id = cursor_restaurant.getString(1);      // place_id
+                        booking.setName(cursor_restaurant.getString(2));
+                        booking.setIcon(cursor_restaurant.getString(3));
 
                         bookings.add(booking);
 
@@ -155,14 +113,27 @@ public class BookList extends AppCompatActivity {
                     // Initialize adapter
                     adapter = new BookAdapter(getApplicationContext(), bookings);
 
-                    // TODO : set EmptyView
-
                     // Set adapter to ListView
                     recyclerView.setAdapter(adapter);
 
                 } catch (Exception e) {
                     Log.d("Debug", "Catch error: " + e.toString());
                 }
+
+                /*
+                * -------------------------------------------------------------------
+                * Show recycler view
+                * -------------------------------------------------------------------
+                */
+
+                // Initialize RecyclerView of restaurantList
+                layoutManager = new LinearLayoutManager(this);
+                recyclerView.setLayoutManager(layoutManager);
+
+            // No booking data
+            } else {
+                Toast.makeText(this, "No booking data.", Toast.LENGTH_SHORT).show();
+                recyclerView.setVisibility(View.GONE);
             }
             cursor_booking.close();
 
