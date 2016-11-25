@@ -42,18 +42,21 @@ import com.github.clans.fab.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Scenario of this class
+<<<<<<< HEAD
  * <p>
  * 1. Get place_id through intent
  * <p>
@@ -66,38 +69,53 @@ import java.util.HashMap;
  * 5. Set ArrayList of review
  * <p>
  * 6. Save to database
+=======
+ *
+ * 1. Get place_id through intent of clickListener of RestaurantList
+ *
+ * 2. Load restaurant info from 'restaurants' table by using the place_id
+ *
+ * 3. Start IntentService {@link MyIntentService#onHandleIntent} to request to 'detail' API with place_id
+ *
+ * 4. Receive response of API through BroadcastReceiver
+ *
+ * 5. Set RecyclerView of reviews
+ *
+ * 6. Save restaurant detail info on 'restaurants' table
+ *    and save reviews on 'reviews' table
+ *
+ * 7. If user booked, save the booking info on 'booking' table
+ *
+>>>>>>> 6d1c02d3719cb8bd7dfb9d0a808d56195879534e
  */
 
-public class RestaurantDetail extends AppCompatActivity {
+public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback{
 
-    public AlertDialog.Builder builder;
-    public View reservation;
-    Button DatePickButton, TimePickButton, BookButton;
-    EditText txtDate, txtTime, txtName, txtNum, txtEmail;
-    int mYear, mMonth, mDay, mHour, mMinute;
+    // View Objects
+    private TextView textView_interNationalPhoneNumber, textView_website;
+    private EditText txtDate, txtTime, txtName, txtNum, txtEmail;
+    public  Button favListButton, bookListButton;
+    private Button DatePickButton, TimePickButton, BookButton;
+    public  View reservation;
+    private AlertDialog alertDialog;
 
-    ImageView imageView_photo;
-    TextView textView_name,
-            textView_rating,
-            textView_interNationalPhoneNumber,
-            textView_website;
-    FloatingActionButton menu1, menu2, menu3;
-    Button favListButton, bookListButton;
-    String placeId,
-            interNationalPhoneNumber,
-            website;
-    int restaurant_id = 0; // default
-    private TextView mDate;
+    // Values
+    private int restaurant_id = 0; // default
+    private String name, placeId, interNationalPhoneNumber, website;
+    private double lat, lng;
+
+    public  Context context;
     private Menu mainMenu;
-    RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
-    ArrayList<Review> reviewsArrayList;
-    JSONObject response;
-    SQLiteDatabase db;
-    DBHelper dbHelper;
-    Context context;
-    BroadcastReceiver broadcastReceiver;
-    HashMap<String, String> hashMap_booking = new HashMap<>();
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private ArrayList<Review> reviewsArrayList;
+    private JSONObject response;
+    private DBHelper dbHelper;
+    private BroadcastReceiver broadcastReceiver;
+    private GoogleMap mMap;
+    private HashMap<String, String> hashMap_booking = new HashMap<>();
+    private AlertDialog.Builder builder;
+    DatePickerDialog datePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,18 +125,22 @@ public class RestaurantDetail extends AppCompatActivity {
         context = getApplicationContext();
 
         // View Objects
-        imageView_photo = (ImageView) findViewById(R.id.imageView_photo); // TODO Picassoで、CardViewのhorizontalScroll表示にする
-        textView_name = (TextView) findViewById(R.id.textView_name);
-        textView_rating = (TextView) findViewById(R.id.textView_rating);
-        mDate = (TextView) findViewById(R.id.date);
+        ImageView imageView_photo = (ImageView) findViewById(R.id.imageView_photo);
+        TextView textView_name = (TextView) findViewById(R.id.textView_name);
+        TextView textView_rating = (TextView) findViewById(R.id.textView_rating);
         textView_interNationalPhoneNumber = (TextView) findViewById(R.id.textView_interNationalPhoneNumber);
         textView_website = (TextView) findViewById(R.id.textView_website);
-        menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
-        menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
-        menu3 = (FloatingActionButton) findViewById(R.id.subFloatingMenu3);
+        FloatingActionButton menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
+        FloatingActionButton menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
+        FloatingActionButton menu3 = (FloatingActionButton) findViewById(R.id.subFloatingMenu3);
 
         // ArrayList
         reviewsArrayList = new ArrayList<>();
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         /*
         * -------------------------------------------------------------------
@@ -128,7 +150,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            placeId = intent.getStringExtra(RestaurantList.EXTRA_RESTAURANT_ID + "restaurantId");
+            placeId = intent.getStringExtra(RestaurantList.EXTRA_RESTAURANT_ID + ".place_id");
 
         } else {
             Log.d("Debug", "RestaurantDetail: intent is null.");
@@ -141,14 +163,14 @@ public class RestaurantDetail extends AppCompatActivity {
         */
 
         dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
-        db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursor;
         try {
             cursor = db.query(
                     DBHelper.TABLE_NAME_RESTAURANT,     // Table name
                     null,                               // columns
-                    DBHelper.PLACE_ID + " = ?",        // Selection
+                    DBHelper.PLACE_ID + " = ?",         // Selection
                     new String[]{placeId},              // SelectionArgs
                     null,                               // groupBy
                     null,                               // Having
@@ -162,6 +184,8 @@ public class RestaurantDetail extends AppCompatActivity {
                 Picasso.with(this).load(cursor.getString(3)).fit().placeholder(R.drawable.progress).into(imageView_photo);
                 textView_name.setText(cursor.getString(2));
                 textView_rating.setText(cursor.getString(4));
+                name = cursor.getString(2);
+                textView_name.setText(name);
 
                 // Keep RestaurantID to insert to reviews table
                 System.out.println("rowID: " + cursor.getString(0));
@@ -218,6 +242,8 @@ public class RestaurantDetail extends AppCompatActivity {
                                     url = (result.has(DBHelper.URL)) ? result.getString(DBHelper.URL) : "";
                             website = (result.has(DBHelper.WEBSITE)) ? result.getString(DBHelper.WEBSITE) : "";
                             interNationalPhoneNumber = (result.has(DBHelper.INTERNATIONAL_PHONE_NUMBER)) ? result.getString(DBHelper.INTERNATIONAL_PHONE_NUMBER) : "";
+                            lat = Double.valueOf(result.getJSONObject("geometry").getJSONObject("location").has(DBHelper.LOCATION_LAT) ? result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT) : "0.0");
+                            lng = Double.valueOf(result.getJSONObject("geometry").getJSONObject("location").has(DBHelper.LOCATION_LNG) ? result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG) : "0.0");
                             boolean opening_hours = (result.getJSONObject(DBHelper.OPENING_HOURS).has("open_now")) && result.getJSONObject(DBHelper.OPENING_HOURS).getBoolean("open_now"); // TODO : separate each weekdays later
 
                             /*
@@ -240,6 +266,9 @@ public class RestaurantDetail extends AppCompatActivity {
                             textView_interNationalPhoneNumber.setText(interNationalPhoneNumber);
                             //((TextView) findViewById(R.id.url)).setText(url);
                             textView_website.setText(website);
+
+                            // GoogleMap
+                            showMap();
 
                             // ClickListener
                             textView_interNationalPhoneNumber.setOnClickListener(
@@ -266,8 +295,8 @@ public class RestaurantDetail extends AppCompatActivity {
                             * -------------------------------------------------------------------
                             */
 
-                            hashMap_restaurant.put(DBHelper.LOCATION_LAT, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT));
-                            hashMap_restaurant.put(DBHelper.LOCATION_LNG, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG));
+                            hashMap_restaurant.put(DBHelper.LOCATION_LAT, String.valueOf(lat));
+                            hashMap_restaurant.put(DBHelper.LOCATION_LNG, String.valueOf(lng));
                             hashMap_restaurant.put(DBHelper.FORMATTED_ADDRESS, formatted_address);
                             hashMap_restaurant.put(DBHelper.PRICE_LEVEL, (result.has(DBHelper.PRICE_LEVEL) ? result.getString(DBHelper.PRICE_LEVEL) : ""));
                             hashMap_restaurant.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, interNationalPhoneNumber);
@@ -370,7 +399,7 @@ public class RestaurantDetail extends AppCompatActivity {
             }
         });
 
-        // book button
+        // Booking button
         LayoutInflater inflater = (LayoutInflater) RestaurantDetail.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         reservation = inflater.inflate(R.layout.reservation_form, null);
         builder = new AlertDialog.Builder(RestaurantDetail.this).setView(R.layout.reservation_form);
@@ -378,15 +407,15 @@ public class RestaurantDetail extends AppCompatActivity {
         menu3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog v = builder.show();
-                txtDate = (EditText) v.findViewById(R.id.in_date);
-                txtTime = (EditText) v.findViewById(R.id.in_time);
-                txtName = (EditText) v.findViewById(R.id.in_name);
-                txtEmail = (EditText) v.findViewById(R.id.in_email);
-                txtNum = (EditText) v.findViewById(R.id.in_num);
-                DatePickButton = (Button) v.findViewById(R.id.btn_date);
-                TimePickButton = (Button) v.findViewById(R.id.btn_time);
-                BookButton = (Button) v.findViewById(R.id.book_button);
+                alertDialog = builder.show();
+                txtDate = (EditText) alertDialog.findViewById(R.id.in_date);
+                txtTime = (EditText) alertDialog.findViewById(R.id.in_time);
+                txtName = (EditText) alertDialog.findViewById(R.id.in_name);
+                txtEmail = (EditText) alertDialog.findViewById(R.id.in_email);
+                txtNum = (EditText) alertDialog.findViewById(R.id.in_num);
+                DatePickButton = (Button) alertDialog.findViewById(R.id.btn_date);
+                TimePickButton = (Button) alertDialog.findViewById(R.id.btn_time);
+                BookButton = (Button) alertDialog.findViewById(R.id.book_button);
                 View.OnClickListener clickListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -396,10 +425,20 @@ public class RestaurantDetail extends AppCompatActivity {
                 DatePickButton.setOnClickListener(clickListener);
                 TimePickButton.setOnClickListener(clickListener);
                 BookButton.setOnClickListener(clickListener);
-                //builder.show();
-                //openDialog(reservation);
             }
         });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+    }
+
+    private void showMap() {
+        LatLng restaurantPosition = new LatLng(lat, lng);
+        mMap.addMarker(new MarkerOptions().position(restaurantPosition).title(name).draggable(true));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurantPosition, 15));
     }
 
     @Override
@@ -452,7 +491,7 @@ public class RestaurantDetail extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.action_book:
-                Intent intent2 = new Intent(this, BookList.class);
+                Intent intent2 = new Intent(this, BookingList.class);
                 startActivity(intent2);
                 break;
             case android.R.id.home:
@@ -482,16 +521,17 @@ public class RestaurantDetail extends AppCompatActivity {
         txtNum.addTextChangedListener(textWatcher);
         txtTime.addTextChangedListener(textWatcher);
         txtEmail.addTextChangedListener(textWatcher);
-        // choose book date
+
+        // Choose booking date
         if (v == DatePickButton) {
 
             // Get Current Date
             final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+            int mYear  = c.get(Calendar.YEAR);
+            int mMonth = c.get(Calendar.MONTH);
+            int mDay   = c.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(RestaurantDetail.this,
+            datePickerDialog = new DatePickerDialog(RestaurantDetail.this,
                     new DatePickerDialog.OnDateSetListener() {
 
                         @Override
@@ -509,8 +549,8 @@ public class RestaurantDetail extends AppCompatActivity {
 
             // Get Current Time
             final Calendar c = Calendar.getInstance();
-            mHour = c.get(Calendar.HOUR_OF_DAY);
-            mMinute = c.get(Calendar.MINUTE);
+            int mHour   = c.get(Calendar.HOUR_OF_DAY);
+            int mMinute = c.get(Calendar.MINUTE);
 
             // Launch Time Picker Dialog
             TimePickerDialog timePickerDialog = new TimePickerDialog(RestaurantDetail.this,
@@ -526,41 +566,47 @@ public class RestaurantDetail extends AppCompatActivity {
             timePickerDialog.show();
         }
 
-        // show notification or error message
+        // Show notification or error message
         if (v == BookButton) {
 
             if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") || bookNum.equals("") || bookEmail.equals(""))) {
                 showNotification(v);
+
                 txtNum.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
                 txtDate.setText("");
                 txtName.setText("");
                 txtTime.setText("");
                 txtEmail.setText("");
                 txtNum.setText("");
 
-                //TODO: send & keep data(customer name,booked restaurant,book date...etc) to book list
-                //TODO:      when customer pushed COMPLETE button.
+                /*
+                * -------------------------------------------------------------------
+                * Send Booking Data to BookingList
+                * -------------------------------------------------------------------
+                */
 
-        /*
-        * -------------------------------------------------------------------
-        * Send Booking Data to BookList
-        * -------------------------------------------------------------------
-        */
-                hashMap_booking.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
                 hashMap_booking.put(DBHelper.BOOKING_DATE, String.valueOf(bookDate));
                 hashMap_booking.put(DBHelper.BOOKING_TIME, String.valueOf(bookTime));
                 hashMap_booking.put(DBHelper.BOOKING_NAME, String.valueOf(bookName));
                 hashMap_booking.put(DBHelper.BOOKING_EMAIL, String.valueOf(bookEmail));
                 hashMap_booking.put(DBHelper.BOOKING_PEOPLE, String.valueOf(bookNum));
+                hashMap_booking.put(DBHelper.PLACE_ID, String.valueOf(placeId));
+                hashMap_booking.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
 
                 // insert the hashMap to the booking table
                 dbHelper.insertRecord(DBHelper.TABLE_NAME_BOOKING, hashMap_booking);
 
+                // Close the dialog
+                alertDialog.dismiss();
+
             } else {
+
+                // Validation
                 if (bookDate.equals("")) {
                     txtDate.setError(null);
                     txtDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
@@ -572,12 +618,10 @@ public class RestaurantDetail extends AppCompatActivity {
                 if (bookName.equals("")) {
                     txtName.setError(null);
                     txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
-
                 }
                 if (bookEmail.equals("")) {
                     txtEmail.setError(null);
                     txtEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
-
                 }
                 if (bookNum.equals("")) {
                     txtNum.setError(null);
@@ -608,19 +652,17 @@ public class RestaurantDetail extends AppCompatActivity {
         public void afterTextChanged(Editable editable) {
 
         }
-
     };
-
 
     public void showNotification(View v) {
 
-        Intent intent = new Intent(this, RestaurantDetail.class);
+        Intent intent = new Intent(this, BookingList.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Notification notification =
                 new NotificationCompat.Builder(this)
-                        .setContentText("Booking Complete!")
-                        .setContentTitle("Thank you for using our app.Please confirm your book from Book List.")
+                        .setContentText("Booking was Completed!")
+                        .setContentTitle("Thank you for using our app.Please confirm your book from BookingList.")
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentIntent(pendingIntent)
                         .build();

@@ -17,7 +17,7 @@ class DBHelper extends SQLiteOpenHelper {
             TABLE_NAME_REVIEW = "reviews",
             TABLE_NAME_BOOKING = "bookings",
             TABLE_NAME_FAVORITE= "favorites";
-    static final int DB_VERSION = 18;
+    static final int DB_VERSION = 25;
     static final String
             NO = "no",
             RESTAURANT_NO = "restaurant_no",
@@ -59,18 +59,18 @@ class DBHelper extends SQLiteOpenHelper {
             "create table " + TABLE_NAME_RESTAURANT +
                 " (" +
                     NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                    PLACE_ID + " TEXT ," +
-                    NAME     + " TEXT ," +
-                    THUMB    + " TEXT ," +
-                    RATING   + " TEXT ," +
-                    PRICE_LEVEL  + " TEXT ," +
-                    FORMATTED_ADDRESS  + " TEXT ," +
-                    OPENING_HOURS  + " TEXT ," +
-                    LOCATION_LAT  + " TEXT ," +
-                    LOCATION_LNG  + " TEXT ," +
+                    PLACE_ID                   + " TEXT ," +
+                    NAME                       + " TEXT ," +
+                    THUMB                      + " TEXT ," +
+                    RATING                     + " TEXT ," +
+                    PRICE_LEVEL                + " TEXT ," +
+                    FORMATTED_ADDRESS          + " TEXT ," +
+                    OPENING_HOURS              + " TEXT ," +
+                    LOCATION_LAT               + " TEXT ," +
+                    LOCATION_LNG               + " TEXT ," +
                     INTERNATIONAL_PHONE_NUMBER + " TEXT ," +
-                    URL + " TEXT ," +
-                    WEBSITE + " TEXT" +
+                    URL                        + " TEXT ," +
+                    WEBSITE                    + " TEXT" +
                 ")"
         );
 
@@ -78,38 +78,38 @@ class DBHelper extends SQLiteOpenHelper {
             "create table " + TABLE_NAME_REVIEW +
                 " (" +
                     NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                    REVIEW_AUTHOR_NAME + " TEXT ," +
-                    REVIEW_AUTHOR_URL + " TEXT ," +
+                    REVIEW_AUTHOR_NAME       + " TEXT ," +
+                    REVIEW_AUTHOR_URL        + " TEXT ," +
                     REVIEW_PROFILE_PHOTO_URL + " TEXT ," +
-                    REVIEW_RATING + " TEXT ," +
-                    REVIEW_TEXT + " TEXT ," +
-                    REVIEW_TIME + " TEXT ," +
-                    RESTAURANT_NO + " TEXT" +
+                    REVIEW_RATING            + " TEXT ," +
+                    REVIEW_TEXT              + " TEXT ," +
+                    REVIEW_TIME              + " TEXT ," +
+                    RESTAURANT_NO            + " TEXT" +
                 ")"
         );
 
         sqLiteDatabase.execSQL(
             "create table " + TABLE_NAME_BOOKING +
-                    " (" +
+                " (" +
                     NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                    BOOKING_NAME + " TEXT ," +
-                    BOOKING_DATE + " TEXT ," +
-                    BOOKING_TIME + " TEXT ," +
+                    BOOKING_DATE   + " TEXT ," +
+                    BOOKING_TIME   + " TEXT ," +
+                    BOOKING_NAME   + " TEXT ," +
+                    BOOKING_EMAIL  + " TEXT ," +
                     BOOKING_PEOPLE + " TEXT ," +
-                    BOOKING_EMAIL + " TEXT" +
-                    RESTAURANT_NO + " TEXT" +
-
-                    ")"
+                    PLACE_ID       + " TEXT ," +
+                    RESTAURANT_NO  + " TEXT" +
+                ")"
         );
 
         sqLiteDatabase.execSQL(
             "create table " + TABLE_NAME_FAVORITE +
-                    " (" +
+                " (" +
                     NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                    BOOKING_TIME + " TEXT ," +
+                    BOOKING_TIME   + " TEXT ," +
                     BOOKING_PEOPLE + " TEXT ," +
-                    RESTAURANT_NO + " TEXT" +
-                    ")"
+                    RESTAURANT_NO  + " TEXT" +
+                ")"
         );
     }
 
@@ -118,6 +118,8 @@ class DBHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("drop table if exists " + TABLE_NAME_RESTAURANT);
         sqLiteDatabase.execSQL("drop table if exists " + TABLE_NAME_REVIEW);
+        sqLiteDatabase.execSQL("drop table if exists " + TABLE_NAME_BOOKING);
+        sqLiteDatabase.execSQL("drop table if exists " + TABLE_NAME_FAVORITE);
 
         // Recreate
         onCreate(sqLiteDatabase);
@@ -127,7 +129,14 @@ class DBHelper extends SQLiteOpenHelper {
 
         getWritableDatabase().execSQL("drop table if exists " + TABLE_NAME_RESTAURANT);
         getWritableDatabase().execSQL("drop table if exists " + TABLE_NAME_REVIEW);
+        getWritableDatabase().execSQL("drop table if exists " + TABLE_NAME_BOOKING);
+        getWritableDatabase().execSQL("drop table if exists " + TABLE_NAME_FAVORITE);
         Log.d("Debug", "Database was deleted.");
+
+    }
+
+    public void deleteRecord(String target_table) {
+
 
     }
 
@@ -166,8 +175,12 @@ class DBHelper extends SQLiteOpenHelper {
 
             // Insert to reviews table
             case TABLE_NAME_BOOKING :
+                values.put(BOOKING_DATE,                data.get(BOOKING_DATE));
                 values.put(BOOKING_TIME,                data.get(BOOKING_TIME));
+                values.put(BOOKING_NAME,                data.get(BOOKING_NAME));
+                values.put(BOOKING_EMAIL,               data.get(BOOKING_EMAIL));
                 values.put(BOOKING_PEOPLE,              data.get(BOOKING_PEOPLE));
+                values.put(PLACE_ID,                    data.get(PLACE_ID));
                 values.put(RESTAURANT_NO,               data.get(RESTAURANT_NO));
                 break;
 

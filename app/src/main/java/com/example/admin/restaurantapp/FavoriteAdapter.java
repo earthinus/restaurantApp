@@ -21,7 +21,7 @@ class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Holder> {
 
     private Context context;
     private ArrayList<Favorite> favorites;
-    private int restaurantId = new BookList().restaurantId;
+    private int restaurantId = new BookingList().restaurantId;
 
     FavoriteAdapter(Context context, ArrayList<Favorite> favorites) {
         this.context = context;
