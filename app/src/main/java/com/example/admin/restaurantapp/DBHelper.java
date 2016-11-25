@@ -40,7 +40,10 @@ class DBHelper extends SQLiteOpenHelper {
             REVIEW_TIME = "time",
             URL = "url",
             WEBSITE = "website",
+            BOOKING_DATE = "booking_date",
+            BOOKING_NAME = "booking_name",
             BOOKING_TIME = "booking_time",
+            BOOKING_EMAIL = "booking_email",
             BOOKING_PEOPLE = "booking_people"
             ;
 
@@ -89,9 +92,13 @@ class DBHelper extends SQLiteOpenHelper {
             "create table " + TABLE_NAME_BOOKING +
                     " (" +
                     NO + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                    BOOKING_NAME + " TEXT ," +
+                    BOOKING_DATE + " TEXT ," +
                     BOOKING_TIME + " TEXT ," +
                     BOOKING_PEOPLE + " TEXT ," +
+                    BOOKING_EMAIL + " TEXT" +
                     RESTAURANT_NO + " TEXT" +
+
                     ")"
         );
 

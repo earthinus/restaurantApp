@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.content.IntentFilter;
@@ -22,7 +21,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,20 +28,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,10 +53,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Scenario of this class
  *
@@ -78,7 +67,6 @@ import java.util.HashMap;
  * 5. Set ArrayList of review
  *
  * 6. Save to database
- *
  */
 
 public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback {
@@ -91,9 +79,9 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
     ImageView imageView_photo;
     TextView textView_name,
-             textView_rating,
-             textView_interNationalPhoneNumber,
-             textView_website;
+            textView_rating,
+            textView_interNationalPhoneNumber,
+            textView_website;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
     String name,
@@ -114,6 +102,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
     Context context;
     BroadcastReceiver broadcastReceiver;
     private GoogleMap mMap;
+    HashMap<String, String> hashMap_booking = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,7 +303,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                                 // Set reviewsArrayList
                                 for (int i = 0; i < reviews.length(); i++) {
 
-                                    String text = (reviews.getJSONObject(i).has("text")) ? reviews.getJSONObject(i).getString("text") : "",
+                                    String text = reviews.getJSONObject(i).getString("text"),
                                             author_name = (reviews.getJSONObject(i).has("author_name")) ? reviews.getJSONObject(i).getString("author_name") : "",
                                             author_url = (reviews.getJSONObject(i).has("author_url")) ? reviews.getJSONObject(i).getString("author_url") : "",
                                             profile_photo_url = (reviews.getJSONObject(i).has("profile_photo_url")) ? "https:" + reviews.getJSONObject(i).getString("profile_photo_url") : "http://pictogram2.com/p/p0146/i/m.png";
@@ -586,8 +575,20 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 //TODO: send & keep data(customer name,booked restaurant,book date...etc) to book list
                 //TODO:      when customer pushed COMPLETE button.
 
-                HashMap<String,String> bookingInfo = new HashMap<>();
-//                bookingInfo.put(txtDate.getText().toString());
+        /*
+        * -------------------------------------------------------------------
+        * Send Booking Data to BookList
+        * -------------------------------------------------------------------
+        */
+                hashMap_booking.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
+                hashMap_booking.put(DBHelper.BOOKING_DATE, String.valueOf(bookDate));
+                hashMap_booking.put(DBHelper.BOOKING_TIME, String.valueOf(bookTime));
+                hashMap_booking.put(DBHelper.BOOKING_NAME, String.valueOf(bookName));
+                hashMap_booking.put(DBHelper.BOOKING_EMAIL, String.valueOf(bookEmail));
+                hashMap_booking.put(DBHelper.BOOKING_PEOPLE, String.valueOf(bookNum));
+
+                // insert the hashMap to the booking table
+                dbHelper.insertRecord(DBHelper.TABLE_NAME_BOOKING, hashMap_booking);
 
 
             } else {
@@ -612,7 +613,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 if (bookNum.equals("")) {
                     txtNum.setError(null);
                     txtNum.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.stat_notify_error, 0);
-
                 }
             }
         }
