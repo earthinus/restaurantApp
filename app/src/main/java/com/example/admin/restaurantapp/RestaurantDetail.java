@@ -81,6 +81,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
     public  Button favListButton, bookListButton;
     private Button DatePickButton, TimePickButton, BookButton;
     public  View reservation;
+    private AlertDialog alertDialog;
 
     // Values
     private int restaurant_id = 0; // default
@@ -388,15 +389,15 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
         menu3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog v = builder.show();
-                txtDate = (EditText) v.findViewById(R.id.in_date);
-                txtTime = (EditText) v.findViewById(R.id.in_time);
-                txtName = (EditText) v.findViewById(R.id.in_name);
-                txtEmail = (EditText) v.findViewById(R.id.in_email);
-                txtNum = (EditText) v.findViewById(R.id.in_num);
-                DatePickButton = (Button) v.findViewById(R.id.btn_date);
-                TimePickButton = (Button) v.findViewById(R.id.btn_time);
-                BookButton = (Button) v.findViewById(R.id.book_button);
+                alertDialog = builder.show();
+                txtDate = (EditText) alertDialog.findViewById(R.id.in_date);
+                txtTime = (EditText) alertDialog.findViewById(R.id.in_time);
+                txtName = (EditText) alertDialog.findViewById(R.id.in_name);
+                txtEmail = (EditText) alertDialog.findViewById(R.id.in_email);
+                txtNum = (EditText) alertDialog.findViewById(R.id.in_num);
+                DatePickButton = (Button) alertDialog.findViewById(R.id.btn_date);
+                TimePickButton = (Button) alertDialog.findViewById(R.id.btn_time);
+                BookButton = (Button) alertDialog.findViewById(R.id.book_button);
                 View.OnClickListener clickListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -583,7 +584,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 dbHelper.insertRecord(DBHelper.TABLE_NAME_BOOKING, hashMap_booking);
 
                 // Close the dialog
-                datePickerDialog.dismiss();
+                alertDialog.dismiss();
 
             } else {
 

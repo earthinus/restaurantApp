@@ -18,7 +18,6 @@ public class BookingList extends AppCompatActivity {
     public int restaurantId;
     private ArrayList<Booking> bookings = new ArrayList<>();
     private RecyclerView recyclerView;
-    public static final String PREFERENCE_BOOK_KEY      = "rest-id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -24,7 +24,7 @@ public class FavoriteList extends AppCompatActivity {
 
     public int restaurantId;
     public static final String PREFERENCE_FAVORITE_FILENAME = "Favorite-list";
-    public static final String PREFERENCE_FAVORITE_KEY      = new BookingList().PREFERENCE_BOOK_KEY; // = "rest-id"
+    public static final String PREFERENCE_FAVORITE_KEY      = "rest-id";
 
     private ArrayList<Favorite> favorites = new ArrayList<>();
     Favorite favorite;
