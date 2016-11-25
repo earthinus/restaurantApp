@@ -42,4 +42,5 @@
     <string name="restaurant_main_visual">Restaurant Main Visual</string>
     <string name="no_data_available">No data</string>
     <string name="thumbnail_alt">Thumbnail</string>
+    <string name="unitOfPeople">person</string>
 </resources>
