@@ -38,38 +38,37 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Scenario of this class
- *
+ * <p>
  * 1. Get place_id through intent
- *
+ * <p>
  * 2. Load restaurant info of the place_id
- *
+ * <p>
  * 3. Start Service {@link MyIntentService#onHandleIntent}
- *
+ * <p>
  * 4. Receive Broadcast
- *
+ * <p>
  * 5. Set ArrayList of review
- *
+ * <p>
  * 6. Save to database
  */
 
-public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback {
+public class RestaurantDetail extends AppCompatActivity {
 
     public AlertDialog.Builder builder;
     public View reservation;
@@ -84,12 +83,9 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
             textView_website;
     FloatingActionButton menu1, menu2, menu3;
     Button favListButton, bookListButton;
-    String name,
-           placeId,
-           interNationalPhoneNumber,
-           website;
-    double lat,
-           lng;
+    String placeId,
+            interNationalPhoneNumber,
+            website;
     int restaurant_id = 0; // default
     private TextView mDate;
     private Menu mainMenu;
@@ -101,7 +97,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
     DBHelper dbHelper;
     Context context;
     BroadcastReceiver broadcastReceiver;
-    private GoogleMap mMap;
     HashMap<String, String> hashMap_booking = new HashMap<>();
 
     @Override
@@ -124,13 +119,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
         // ArrayList
         reviewsArrayList = new ArrayList<>();
-
-        // GoogleMap
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         /*
         * -------------------------------------------------------------------
@@ -172,8 +160,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
                 // Put nearby json data into View objects
                 Picasso.with(this).load(cursor.getString(3)).fit().placeholder(R.drawable.progress).into(imageView_photo);
-                name = cursor.getString(2);
-                textView_name.setText(name);
+                textView_name.setText(cursor.getString(2));
                 textView_rating.setText(cursor.getString(4));
 
                 // Keep RestaurantID to insert to reviews table
@@ -231,8 +218,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                                     url = (result.has(DBHelper.URL)) ? result.getString(DBHelper.URL) : "";
                             website = (result.has(DBHelper.WEBSITE)) ? result.getString(DBHelper.WEBSITE) : "";
                             interNationalPhoneNumber = (result.has(DBHelper.INTERNATIONAL_PHONE_NUMBER)) ? result.getString(DBHelper.INTERNATIONAL_PHONE_NUMBER) : "";
-                            lat = Double.valueOf(result.getJSONObject("geometry").getJSONObject("location").has(DBHelper.LOCATION_LAT) ? result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT) : "0.0");
-                            lng = Double.valueOf(result.getJSONObject("geometry").getJSONObject("location").has(DBHelper.LOCATION_LNG) ? result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG) : "0.0");
                             boolean opening_hours = (result.getJSONObject(DBHelper.OPENING_HOURS).has("open_now")) && result.getJSONObject(DBHelper.OPENING_HOURS).getBoolean("open_now"); // TODO : separate each weekdays later
 
                             /*
@@ -255,9 +240,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                             textView_interNationalPhoneNumber.setText(interNationalPhoneNumber);
                             //((TextView) findViewById(R.id.url)).setText(url);
                             textView_website.setText(website);
-
-                            // GoogleMap
-                            showMap();
 
                             // ClickListener
                             textView_interNationalPhoneNumber.setOnClickListener(
@@ -284,8 +266,8 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                             * -------------------------------------------------------------------
                             */
 
-                            hashMap_restaurant.put(DBHelper.LOCATION_LAT, String.valueOf(lat));
-                            hashMap_restaurant.put(DBHelper.LOCATION_LNG, String.valueOf(lng));
+                            hashMap_restaurant.put(DBHelper.LOCATION_LAT, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LAT));
+                            hashMap_restaurant.put(DBHelper.LOCATION_LNG, result.getJSONObject("geometry").getJSONObject("location").getString(DBHelper.LOCATION_LNG));
                             hashMap_restaurant.put(DBHelper.FORMATTED_ADDRESS, formatted_address);
                             hashMap_restaurant.put(DBHelper.PRICE_LEVEL, (result.has(DBHelper.PRICE_LEVEL) ? result.getString(DBHelper.PRICE_LEVEL) : ""));
                             hashMap_restaurant.put(DBHelper.INTERNATIONAL_PHONE_NUMBER, interNationalPhoneNumber);
@@ -303,7 +285,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                                 // Set reviewsArrayList
                                 for (int i = 0; i < reviews.length(); i++) {
 
-                                    String text = reviews.getJSONObject(i).getString("text"),
+                                    String text = (reviews.getJSONObject(i).has("text")) ? reviews.getJSONObject(i).getString("text") : "",
                                             author_name = (reviews.getJSONObject(i).has("author_name")) ? reviews.getJSONObject(i).getString("author_name") : "",
                                             author_url = (reviews.getJSONObject(i).has("author_url")) ? reviews.getJSONObject(i).getString("author_url") : "",
                                             profile_photo_url = (reviews.getJSONObject(i).has("profile_photo_url")) ? "https:" + reviews.getJSONObject(i).getString("profile_photo_url") : "http://pictogram2.com/p/p0146/i/m.png";
@@ -418,18 +400,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 //openDialog(reservation);
             }
         });
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-    }
-
-    private void showMap() {
-        LatLng restaurantPosition = new LatLng(lat, lng);
-        mMap.addMarker(new MarkerOptions().position(restaurantPosition).title(name).draggable(true));
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurantPosition, 15));
     }
 
     @Override
@@ -590,7 +560,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 // insert the hashMap to the booking table
                 dbHelper.insertRecord(DBHelper.TABLE_NAME_BOOKING, hashMap_booking);
 
-
             } else {
                 if (bookDate.equals("")) {
                     txtDate.setError(null);
@@ -616,6 +585,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 }
             }
         }
+
     }
 
     // confirm if there is a blank form or not
