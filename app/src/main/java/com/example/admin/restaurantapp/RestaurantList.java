@@ -86,7 +86,7 @@ public class RestaurantList extends AppCompatActivity {
 
                             for (int j = 0; j < results_photos.length(); j++)
                                 photoUrls[j] =
-                                    getResources().getString(R.string.jsonUrl_photo)
+                                    getResources().getString(R.string.url_photo)
                                     + "photoreference=" + results.getJSONObject(i).getJSONArray("photos").getJSONObject(0).getString("photo_reference")
                                     + "&maxwidth=400"
                                     + "&maxheight=400"

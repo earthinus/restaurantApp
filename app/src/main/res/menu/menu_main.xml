@@ -8,16 +8,16 @@
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/action_favorite"
-                android:icon="@drawable/icon_favorite"
-                android:orderInCategory="1"
-                android:title="@string/menu_favoriteList"
-                app:showAsAction="ifRoom" />
-            <item
                 android:id="@+id/action_book"
                 android:icon="@drawable/icon_reservation"
-                android:orderInCategory="2"
+                android:orderInCategory="1"
                 android:title="@string/menu_bookList"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_favorite"
+                android:icon="@drawable/icon_favorite"
+                android:orderInCategory="2"
+                android:title="@string/menu_favoriteList"
                 app:showAsAction="ifRoom" />
         </menu>
     </item>

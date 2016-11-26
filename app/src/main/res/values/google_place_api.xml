@@ -5,5 +5,5 @@
 
     <string name="jsonUrl_nearbySearch">https://maps.googleapis.com/maps/api/place/nearbysearch/json?</string>
     <string name="jsonUrl_details">https://maps.googleapis.com/maps/api/place/details/json?</string>
-    <string name="jsonUrl_photo">https://maps.googleapis.com/maps/api/place/photo?</string>
+    <string name="url_photo">https://maps.googleapis.com/maps/api/place/photo?</string>
 </resources>
