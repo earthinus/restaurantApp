@@ -73,7 +73,6 @@ import org.json.JSONObject;
  *
  * 7. If user booked, save the booking info on 'booking' table
  *
->>>>>>> 6d1c02d3719cb8bd7dfb9d0a808d56195879534e
  */
 
 public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback{
