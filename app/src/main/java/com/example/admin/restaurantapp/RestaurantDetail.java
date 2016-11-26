@@ -101,7 +101,9 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
     private DBHelper dbHelper;
     private BroadcastReceiver broadcastReceiver;
     private GoogleMap mMap;
-    private HashMap<String, String> hashMap_booking = new HashMap<>();
+    private HashMap<String, String>
+            hashMap_booking  = new HashMap<>(),
+            hashMap_favorite = new HashMap<>();
     private AlertDialog.Builder builder;
     DatePickerDialog datePickerDialog;
 
@@ -155,15 +157,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
         Cursor cursor;
         try {
-            cursor = db.query(
-                    DBHelper.TABLE_NAME_RESTAURANT,     // Table name
-                    null,                               // columns
-                    DBHelper.PLACE_ID + " = ?",         // Selection
-                    new String[]{placeId},              // SelectionArgs
-                    null,                               // groupBy
-                    null,                               // Having
-                    null                                // orderBy
-            );
+            cursor = dbHelper.getSpecificRecords(DBHelper.TABLE_NAME_RESTAURANT, DBHelper.PLACE_ID, new String[]{placeId});
 
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -380,10 +374,18 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View v) {
 
                 Toast.makeText(RestaurantDetail.this, "Added to Favorite list", Toast.LENGTH_LONG).show();
-                Intent intent_favoriteList = new Intent(getApplicationContext(), FavoriteList.class);
-                intent_favoriteList.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, placeId);
-                Log.d("Debug", "Start activity");
-                startActivity(intent_favoriteList);
+
+                /*
+                * -------------------------------------------------------------------
+                * Send favorite Data to 'favorite' table
+                * -------------------------------------------------------------------
+                */
+
+                hashMap_favorite.put(DBHelper.PLACE_ID, String.valueOf(placeId));
+                hashMap_favorite.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
+
+                // insert the hashMap to the booking table
+                dbHelper.insertRecord(DBHelper.TABLE_NAME_FAVORITE, hashMap_favorite);
             }
         });
 
@@ -576,12 +578,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-
-                txtDate.setText("");
-                txtName.setText("");
-                txtTime.setText("");
-                txtEmail.setText("");
-                txtNum.setText("");
 
                 /*
                 * -------------------------------------------------------------------

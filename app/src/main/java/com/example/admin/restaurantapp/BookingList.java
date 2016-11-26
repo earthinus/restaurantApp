@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public class BookingList extends AppCompatActivity {
 
-    public int restaurantId;
     private ArrayList<Booking> bookings = new ArrayList<>();
     private RecyclerView recyclerView;
 
@@ -53,7 +52,6 @@ public class BookingList extends AppCompatActivity {
                 while (cursor_booking.moveToNext()) {
 
                     // Define restaurantId for get specific restaurant's data from restaurant table
-
                     String restaurantId = cursor_booking.getString(7);
 
                     // Get data (data, people) from booking table
@@ -74,15 +72,7 @@ public class BookingList extends AppCompatActivity {
                     try {
 
                         // Get data (name, icon, placeId) from restaurants table
-                        cursor_restaurant = db.query(
-                                DBHelper.TABLE_NAME_RESTAURANT, // Table name
-                                null,                           // columns
-                                DBHelper.NO + " = ?" ,          // Selection
-                                new String[]{restaurantId},     // SelectionArgs
-                                null,                           // groupBy
-                                null,                           // Having
-                                null                            // orderBy
-                        );
+                        cursor_restaurant = dbHelper.getSpecificRecords(DBHelper.TABLE_NAME_RESTAURANT, DBHelper.NO, new String[]{restaurantId});
 
                         cursor_restaurant.moveToFirst();
 
@@ -94,7 +84,6 @@ public class BookingList extends AppCompatActivity {
 
                     } catch (Exception e) {
                         Log.d("Debug", "Catch error: " + e.toString());
-
                     }
 
                     bookings.add(booking);
