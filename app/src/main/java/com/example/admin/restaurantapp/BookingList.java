@@ -72,15 +72,7 @@ public class BookingList extends AppCompatActivity {
                     try {
 
                         // Get data (name, icon, placeId) from restaurants table
-                        cursor_restaurant = db.query(
-                                DBHelper.TABLE_NAME_RESTAURANT, // Table name
-                                null,                           // columns
-                                DBHelper.NO + " = ?" ,          // Selection
-                                new String[]{restaurantId},     // SelectionArgs
-                                null,                           // groupBy
-                                null,                           // Having
-                                null                            // orderBy
-                        );
+                        cursor_restaurant = dbHelper.getSpecificRecords(DBHelper.TABLE_NAME_RESTAURANT, DBHelper.NO, new String[]{restaurantId});
 
                         cursor_restaurant.moveToFirst();
 

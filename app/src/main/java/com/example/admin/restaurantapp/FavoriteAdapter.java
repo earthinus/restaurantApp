@@ -58,7 +58,7 @@ class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Holder> {
 
                 // Create intent
                 Intent intent = new Intent(context, RestaurantDetail.class);
-                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID, favorites.get(pos).getPlace_id());
+                intent.putExtra(RestaurantList.EXTRA_RESTAURANT_ID + ".place_id", favorites.get(pos).getPlace_id());
 
                 // Start Activity
                 context.startActivity(intent);

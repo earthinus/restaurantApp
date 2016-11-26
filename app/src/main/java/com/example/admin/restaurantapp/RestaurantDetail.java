@@ -153,15 +153,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
         Cursor cursor;
         try {
-            cursor = db.query(
-                    DBHelper.TABLE_NAME_RESTAURANT,     // Table name
-                    null,                               // columns
-                    DBHelper.PLACE_ID + " = ?",         // Selection
-                    new String[]{placeId},              // SelectionArgs
-                    null,                               // groupBy
-                    null,                               // Having
-                    null                                // orderBy
-            );
+            cursor = dbHelper.getSpecificRecords(DBHelper.TABLE_NAME_RESTAURANT, DBHelper.PLACE_ID, new String[]{placeId});
 
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -569,12 +561,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                 txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 txtDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-
-                txtDate.setText("");
-                txtName.setText("");
-                txtTime.setText("");
-                txtEmail.setText("");
-                txtNum.setText("");
 
                 /*
                 * -------------------------------------------------------------------

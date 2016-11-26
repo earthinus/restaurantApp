@@ -32,7 +32,7 @@ public class FavoriteList extends AppCompatActivity {
 
         /*
         * -------------------------------------------------------------------
-        * Read 'booking' table
+        * Read 'favorite' table
         * -------------------------------------------------------------------
         */
 
@@ -61,16 +61,8 @@ public class FavoriteList extends AppCompatActivity {
                     */
 
                     try {
-
-                        cursor_restaurant = db.query(
-                                DBHelper.TABLE_NAME_RESTAURANT, // Table name
-                                null,                           // columns
-                                DBHelper.NO + " = ?" ,          // Selection
-                                new String[]{restaurantId},     // SelectionArgs
-                                null,                           // groupBy
-                                null,                           // Having
-                                null                            // orderBy
-                        );
+                        // Get specific record from 'restaurants' table by using restaurantId
+                        cursor_restaurant = dbHelper.getSpecificRecords(DBHelper.TABLE_NAME_RESTAURANT, DBHelper.NO, new String[]{restaurantId});
 
                         cursor_restaurant.moveToFirst();
 

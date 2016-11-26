@@ -113,22 +113,6 @@ public class RestaurantList extends AppCompatActivity {
                         dbHelper.insertRecord(DBHelper.TABLE_NAME_RESTAURANT, data);
                     }
 
-                    // Database read // TODO: move this to intent.getExtra of RestaurantDetail later
-                    Cursor cursor = dbHelper.getAllRecords(DBHelper.TABLE_NAME_RESTAURANT);
-
-                    System.out.println("Count: " + cursor.getCount());
-                    while (cursor.moveToNext()) {
-
-                        System.out.println(
-                            cursor.getString(0) + "\t" +
-                            cursor.getString(1) + "\t" +
-                            cursor.getString(2) + "\t" +
-                            cursor.getString(3) + "\n" +
-                            "-------------------------------------"
-                        );
-                    }
-                    cursor.close();
-
                     // Adapter
                     adapter = new RestaurantAdapter(this, restaurants);
 
