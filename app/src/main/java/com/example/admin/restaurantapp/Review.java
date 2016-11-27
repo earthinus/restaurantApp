@@ -10,6 +10,7 @@ class Review {
     private int    time,
                    restaurant_id; // = primary key of the restaurant in restaurants table
 
+
     Review(String text, String author_name, String author_url, String profile_photo_url, double rating, int time, int restaurant_id) {
         this.text = text;
         this.author_name = author_name;

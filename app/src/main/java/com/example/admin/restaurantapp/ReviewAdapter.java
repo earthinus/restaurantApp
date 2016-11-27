@@ -20,6 +20,7 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
     private Context context;
     private ArrayList<Review> reviews;
 
+
     ReviewAdapter(Context context, ArrayList<Review> reviews) {
         this.context = context;
         this.reviews = reviews;

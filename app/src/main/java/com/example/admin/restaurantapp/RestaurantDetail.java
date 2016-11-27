@@ -77,7 +77,7 @@ import org.json.JSONObject;
 
 public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback{
 
-    //TODO
+    //TODO:レビューの投稿時間をミリセカンドから日付に変換する
     // View Objects
     private TextView textView_interNationalPhoneNumber, textView_website;
     private EditText txtDate, txtTime, txtName, txtNum, txtEmail;
@@ -567,7 +567,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                             +"([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$";
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
             if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") || bookNum.equals("") || bookEmail.equals(""))) {
                 showNotification(v);
