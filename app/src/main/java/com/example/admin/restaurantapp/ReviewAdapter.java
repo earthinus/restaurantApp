@@ -2,6 +2,7 @@ package com.example.admin.restaurantapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,13 +14,13 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
 
     private Context context;
     private ArrayList<Review> reviews;
-
 
     ReviewAdapter(Context context, ArrayList<Review> reviews) {
         this.context = context;
@@ -61,7 +62,9 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Holder> {
         holder.author_name.setText(reviews.get(position).getAuthor_name());
         holder.rating.setText(String.valueOf(reviews.get(position).getRating()));
         holder.text.setText(reviews.get(position).getText());
-        holder.time.setText(String.valueOf(reviews.get(position).getTime()));
+        Date date = new Date(reviews.get(position).getTime());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-mm-yyyy, HH:mm");
+        holder.time.setText(String.valueOf(simpleDateFormat.format(date)));
 
         // Set link to profile photo
         holder.profile_photo.setOnClickListener(
