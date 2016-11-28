@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import java.util.Date;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
@@ -41,6 +42,7 @@ import com.github.clans.fab.FloatingActionButton;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -77,7 +79,7 @@ import org.json.JSONObject;
 
 public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback{
 
-    //TODO
+    //TODO:レビューの投稿時間をミリセカンドから日付に変換する
     // View Objects
     private TextView textView_interNationalPhoneNumber, textView_website;
     private EditText txtDate, txtTime, txtName, txtNum, txtEmail;
@@ -276,6 +278,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                             * -------------------------------------------------------------------
                             */
 
+
                             hashMap_restaurant.put(DBHelper.LOCATION_LAT, String.valueOf(lat));
                             hashMap_restaurant.put(DBHelper.LOCATION_LNG, String.valueOf(lng));
                             hashMap_restaurant.put(DBHelper.FORMATTED_ADDRESS, formatted_address);
@@ -310,6 +313,7 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                                     * Insert reviews to Database
                                     * -------------------------------------------------------------------
                                     */
+
 
                                     hashMap_review.put(DBHelper.REVIEW_TEXT, text);
                                     hashMap_review.put(DBHelper.REVIEW_AUTHOR_NAME, author_name);
@@ -567,7 +571,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
                             +"([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$";
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
             if (!(bookDate.equals("") || bookTime.equals("") || bookName.equals("") || bookNum.equals("") || bookEmail.equals(""))) {
                 showNotification(v);

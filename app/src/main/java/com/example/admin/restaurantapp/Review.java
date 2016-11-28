@@ -1,5 +1,7 @@
 package com.example.admin.restaurantapp;
 
+import android.icu.text.SimpleDateFormat;
+
 class Review {
 
     private String text,
@@ -9,6 +11,7 @@ class Review {
     private double rating;
     private int    time,
                    restaurant_id; // = primary key of the restaurant in restaurants table
+
 
     Review(String text, String author_name, String author_url, String profile_photo_url, double rating, int time, int restaurant_id) {
         this.text = text;
