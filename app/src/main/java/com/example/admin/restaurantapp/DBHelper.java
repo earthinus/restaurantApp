@@ -134,11 +134,6 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void deleteRecord(String target_table) {
-
-
-    }
-
     /*
     * -------------------------------------------------------------------
     * Inserting data to table
@@ -224,20 +219,6 @@ class DBHelper extends SQLiteOpenHelper {
         values.put(URL, data.get(URL));
         values.put(WEBSITE, data.get(WEBSITE));
         db.update(TABLE_NAME_RESTAURANT, values, DBHelper.PLACE_ID + " = ?", new String[]{place_id});
-    }
-
-    Cursor getSpecificRecords(String tableName, String selection, String[] selectionArgs) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        return db.query(
-                tableName,                      // Table name
-                null,                           // columns
-                selection + " = ?" ,            // Selection
-                selectionArgs,                  // SelectionArgs
-                null,                           // groupBy
-                null,                           // Having
-                null                            // orderBy
-        );
     }
 
     Cursor getAllRecords(String tableName) {

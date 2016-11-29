@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.content.IntentFilter;
@@ -77,7 +78,6 @@ import org.json.JSONObject;
 
 public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCallback{
 
-    //TODO
     // View Objects
     private TextView textView_interNationalPhoneNumber, textView_website;
     private EditText txtDate, txtTime, txtName, txtNum, txtEmail;
@@ -85,13 +85,17 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
     private Button DatePickButton, TimePickButton, BookButton;
     public  View reservation;
     private AlertDialog alertDialog;
+    private FloatingActionButton menu1, menu2, menu3;
 
     // Values
     private int restaurant_id = 0; // default
     private String name, placeId, interNationalPhoneNumber, website;
     private double lat, lng;
+    SQLiteDatabase db;
+    private boolean favoriteBtn_on = true; // status of favoriteButton
 
     public  Context context;
+    private Cursor cursor_favorite;
     private Menu mainMenu;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -119,9 +123,9 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
         TextView textView_rating = (TextView) findViewById(R.id.textView_rating);
         textView_interNationalPhoneNumber = (TextView) findViewById(R.id.textView_interNationalPhoneNumber);
         textView_website = (TextView) findViewById(R.id.textView_website);
-        FloatingActionButton menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
-        FloatingActionButton menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
-        FloatingActionButton menu3 = (FloatingActionButton) findViewById(R.id.subFloatingMenu3);
+        menu1 = (FloatingActionButton) findViewById(R.id.subFloatingMenu1);
+        menu2 = (FloatingActionButton) findViewById(R.id.subFloatingMenu2);
+        menu3 = (FloatingActionButton) findViewById(R.id.subFloatingMenu3);
 
         // ArrayList
         reviewsArrayList = new ArrayList<>();
@@ -152,11 +156,12 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
         */
 
         dbHelper = new DBHelper(this, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor;
+        db = dbHelper.getReadableDatabase();
+
+        final Cursor cursor;
         try {
-            cursor = dbHelper.getSpecificRecords(DBHelper.TABLE_NAME_RESTAURANT, DBHelper.PLACE_ID, new String[]{placeId});
+            cursor = db.query(DBHelper.TABLE_NAME_RESTAURANT, null, DBHelper.PLACE_ID + "=?", new String[]{placeId}, null, null, null);
 
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -347,6 +352,26 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
             }
         };
 
+        /*
+        * -------------------------------------------------------------------
+        * Get favorite status from 'favorite' table
+        * -------------------------------------------------------------------
+        */
+
+        db = dbHelper.getReadableDatabase();
+
+        cursor_favorite = db.query(DBHelper.TABLE_NAME_FAVORITE, null, DBHelper.PLACE_ID + "=?", new String[]{placeId}, null, null, null);
+        cursor_favorite.moveToFirst();
+
+        if (cursor_favorite.getCount() == 0)
+            changeFavoriteBtnColor(favoriteBtn_on);
+        else {
+            favoriteBtn_on = false;
+            changeFavoriteBtnColor(favoriteBtn_on);
+        }
+
+        cursor_favorite.close();
+
         // Set backButton on ActionBar
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -359,7 +384,6 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
         * -------------------------------------------------------------------
         */
 
-
         menu1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -371,20 +395,44 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
         menu2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                db = dbHelper.getReadableDatabase();
 
-                Toast.makeText(RestaurantDetail.this, "Added to Favorite list", Toast.LENGTH_LONG).show();
+                if (favoriteBtn_on) {
 
-                /*
-                * -------------------------------------------------------------------
-                * Send favorite Data to 'favorite' table
-                * -------------------------------------------------------------------
-                */
+                    /*
+                    * -------------------------------------------------------------------
+                    * Save on 'favorite' table
+                    * -------------------------------------------------------------------
+                    */
 
-                hashMap_favorite.put(DBHelper.PLACE_ID, String.valueOf(placeId));
-                hashMap_favorite.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
+                    hashMap_favorite.put(DBHelper.PLACE_ID, String.valueOf(placeId));
+                    hashMap_favorite.put(DBHelper.RESTAURANT_NO, String.valueOf(restaurant_id));
 
-                // insert the hashMap to the booking table
-                dbHelper.insertRecord(DBHelper.TABLE_NAME_FAVORITE, hashMap_favorite);
+                    // insert the hashMap to the booking table
+                    dbHelper.insertRecord(DBHelper.TABLE_NAME_FAVORITE, hashMap_favorite);
+
+                    Toast.makeText(RestaurantDetail.this, "Added to Favorite list", Toast.LENGTH_LONG).show();
+
+                    favoriteBtn_on = false;
+                    changeFavoriteBtnColor(favoriteBtn_on);
+
+                } else {
+
+                    /*
+                    * -------------------------------------------------------------------
+                    * Remove from 'favorite' table
+                    * -------------------------------------------------------------------
+                    */
+
+                    db.delete(DBHelper.TABLE_NAME_FAVORITE, DBHelper.PLACE_ID + "=?", new String[]{placeId});
+
+                    Toast.makeText(RestaurantDetail.this, "Removed from Favorite list", Toast.LENGTH_LONG).show();
+
+                    favoriteBtn_on = true;
+                    changeFavoriteBtnColor(favoriteBtn_on);
+                }
+
+                db.close();
             }
         });
 
@@ -646,6 +694,18 @@ public class RestaurantDetail extends AppCompatActivity implements OnMapReadyCal
 
         }
     };
+
+    public void changeFavoriteBtnColor(boolean status) {
+        if (status) { // on
+            menu2.setColorNormal(Color.parseColor("#DA4336"));
+            menu2.setLabelText("Add Favorite");
+
+        } else { // off
+            menu2.setColorNormal(Color.LTGRAY);
+            menu2.setImageAlpha(80);
+            menu2.setLabelText("Remove Favorite");
+        }
+    }
 
     public void showNotification(View v) {
 

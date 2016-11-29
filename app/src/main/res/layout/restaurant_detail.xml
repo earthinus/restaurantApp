@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_star"
-            fab:fab_label="Post Review"
+            fab:fab_label="Post review"
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -62,8 +62,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_favorite"
-            fab:fab_label="Add Favorite"
-            fab:fab_size="mini" />
+            fab:fab_label="Add favorite"
+            fab:fab_size="mini"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/subFloatingMenu3"
@@ -72,7 +72,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
             android:src="@drawable/icon_reservation"
-            fab:fab_label="Add Book"
+            fab:fab_label="Add booking"
             fab:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>
